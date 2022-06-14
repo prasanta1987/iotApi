@@ -98,6 +98,33 @@ app.get('/:symbol/:fromDate/:toDate', (req, res) => {
         .catch(err => console.log(err))
 })
 
+app.get('/:symbol', (req, res) => {
+
+    let symbolData = JSON.stringify({
+        "symbol": (req.params.symbol).toLowerCase()
+    });
+
+    var config = {
+        method: 'post',
+        url: 'https://api.niftytrader.in/webapi/Live/stockAnalysis',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: symbolData
+    };
+
+    axios(config)
+        .then(response => {
+            res.status(200).json(response.data);
+        })
+        .catch(function (error) {
+            res.status(501).json(error);
+            // console.log(error);
+        });
+
+})
+
+
 const port = process.env.PORT || 3000
 
 app.listen(port, () => console.log(`Server Running at http://localhost:${port}`))
