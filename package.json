@@ -19,7 +19,7 @@
   "homepage": "https://github.com/prasanta1987/stockapi#readme",
   "dependencies": {
     "axios": "^0.19.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "node-html-parser": "^1.2.20",
     "request": "^2.81.0"
   }
