@@ -4,8 +4,28 @@ var HTMLParser = require('node-html-parser');
 
 
 const app = express()
+let formattedCookie = ""
+
+const getCookie = (req, res, next) => {
+
+    var config = {
+        method: 'get',
+        url: 'https://www.nseindia.com/',
+    };
+
+    axios(config)
+        .then(response => {
+            const rawCookie = response.headers["set-cookie"];
+            formattedCookie = `${rawCookie[0].split(";")[0]};${rawCookie[1].split(";")[0]}`
+            // console.log("---------------------------------")
+            // console.log(formattedCookie)
+            // console.log("---------------------------------")
+            return next();
+        })
+        .catch(error => console.log(error));
 
 
+}
 
 // app.get('/:symbol/:fromDate/:toDate', (req, res) => {
 
@@ -124,22 +144,29 @@ const app = express()
 
 // })
 
-app.get('/marketStatus', (req, res) => {
+
+
+app.get('/marketStatus', getCookie, (req, res) => {
+
     var config = {
         method: 'get',
         // url: 'https://www.nseindia.com/market-data/live-equity-market?symbol=NIFTY%2050',
         url: 'https://www.nseindia.com/api/marketStatus',
         // url: 'https://www.nseindia.com/',
-        // headers: {
-        //     'Content-Type': 'application/json'
-        // },
+        // url: 'https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY',
+        headers: {
+            // 'Content-Type': 'application/json',
+            'cookie': formattedCookie
+        },
         // data: symbolData
     };
+
+    console.log(config)
 
     axios(config)
         .then(response => {
             res.status(200).json(response.data);
-            console.log(response.data)
+            // console.log(response.data)
         })
         .catch(function (error) {
             res.status(501).json(error);
@@ -149,21 +176,8 @@ app.get('/marketStatus', (req, res) => {
 })
 
 
-const getCookie = () => {
-
-    var config = {
-        method: 'get',
-        url: 'https://www.nseindia.com/',
-    };
-
-    axios(config)
-        .then(response => console.log(response.headers))
-        .catch(error => console.log(error));
-
-
-}
-
-setInterval(getCookie, 5000);
+// getCookie();
+// setInterval(getCookie, 5000);
 
 const port = process.env.PORT || 3000
 
