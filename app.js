@@ -1,5 +1,5 @@
 const express = require('express');
-const { marketStatus } = require('./routes');
+const { marketStatus, historicalData } = require('./routes');
 const axios = require("axios").default;
 
 const app = express()
@@ -24,6 +24,7 @@ const getCookie = (req, res, next) => {
 }
 
 app.get('/marketStatus', getCookie, marketStatus)
+app.get('/historicalData', getCookie, historicalData)
 
 
 
