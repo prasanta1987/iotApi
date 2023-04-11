@@ -1,5 +1,10 @@
 const express = require('express');
-const { marketStatus, historicalData } = require('./routes');
+const {
+    marketStatus,
+    historicalData,
+    stockData
+} = require('./routes');
+
 const axios = require("axios").default;
 
 const app = express()
@@ -25,7 +30,7 @@ const getCookie = (req, res, next) => {
 
 app.get('/marketStatus', getCookie, marketStatus)
 app.get('/historicalData', getCookie, historicalData)
-
+app.get('/symbol/:symbol', getCookie, stockData)
 
 
 const port = process.env.PORT || 3000
