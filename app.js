@@ -28,6 +28,7 @@ const getCookie = (req, res, next) => {
 
 }
 
+app.get('/marketStatus', landingPage)
 app.get('/marketStatus', getCookie, marketStatus)
 app.get('/historicalData', getCookie, historicalData)
 app.get('/symbol/:symbol', getCookie, stockData)
