@@ -5,6 +5,11 @@ exports.marketStatus = (req, res) => {
     sendHttpRequest(req, res, url)
 }
 
+exports.landingPage = (req,res)=>{
+const url = 'https://www.nseindia.com/api/marketStatus'
+sendHttpRequest(req, res, url)
+}
+
 exports.historicalData = (req, res) => {
     const url = 'https://www.nseindia.com/api/historical/fo/derivatives/meta?&from=09-03-2023&to=09-04-2023&instrumentType=FUTIDX&symbol=NIFTY&CSV=TRUE'
     sendHttpRequest(req, res, url)
@@ -22,6 +27,7 @@ exports.stockData = (req, res) => {
 // https://www.nseindia.com/api/equity-meta-info?symbol=ABBOTINDIA
 // https://www.nseindia.com/api/quote-equity?symbol=ABBOTINDIA&section=trade_info
 // https://www.nseindia.com/api/quote-equity?symbol=ABBOTINDIA
+
 
 sendHttpRequest = (req, res, url) => {
 
