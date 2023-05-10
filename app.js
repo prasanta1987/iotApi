@@ -2,7 +2,8 @@ const express = require('express');
 const {
     marketStatus,
     historicalData,
-    stockData
+    stockData,
+    landingPage
 } = require('./routes');
 
 const axios = require("axios").default;
