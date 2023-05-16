@@ -6,7 +6,7 @@ exports.marketStatus = (req, res) => {
 }
 
 exports.landingPage = (req,res)=>{
-const url = 'https://api.openweathermap.org/data/2.5/weather?q=rourkela&units=metric&appid=0c6ddcd4bf425f7a1ecc76a92d9f9eb9'
+const url = 'https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=NIFTY'
 sendHttpRequest(req, res, url)
 }
 
