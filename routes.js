@@ -5,9 +5,9 @@ exports.marketStatus = (req, res) => {
     sendHttpRequest(req, res, url)
 }
 
-exports.landingPage = (req,res)=>{
-const url = 'https://api.openweathermap.org/data/2.5/weather?q=rourkela&units=metric&appid=0c6ddcd4bf425f7a1ecc76a92d9f9eb9'
-sendHttpRequest(req, res, url)
+exports.landingPage = (req, res) => {
+    const url = 'https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=NIFTY'
+    sendHttpRequest(req, res, url)
 }
 
 exports.historicalData = (req, res) => {
@@ -35,8 +35,8 @@ sendHttpRequest = (req, res, url) => {
         method: 'get',
         url: url,
         headers: {
-            // 'Content-Type': 'application/json',
-            'cookie': res.locals.myCookie
+            'Content-Type': 'application/json',
+            //             'cookie': res.locals.myCookie || ""
         },
     };
 
