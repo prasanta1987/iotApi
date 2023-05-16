@@ -36,7 +36,7 @@ sendHttpRequest = (req, res, url) => {
         url: url,
         headers: {
             // 'Content-Type': 'application/json',
-            'cookie': res.locals.myCookie
+            'cookie': res.locals.myCookie || ""
         },
     };
 
