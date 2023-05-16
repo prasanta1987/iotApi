@@ -45,11 +45,7 @@ const getCookie = (req, res, next) => {
 
 }
 
-<<<<<<< HEAD
 app.get('/',)
-=======
-app.get('/', )
->>>>>>> cf1e2081cf6d18622f4934cb0e11e5cd94bc5774
 app.get('/marketStatus', getCookie, marketStatus)
 app.get('/historicalData', getCookie, historicalData)
 app.get('/symbol/:symbol', getCookie, stockData)
@@ -64,15 +60,9 @@ const getHttpRequest = (url) => {
         },
     };
 
-<<<<<<< HEAD
     // axios(config)
     // .then(response => return response.data)
     // .catch(error => return error);
-=======
-    axios(config)
-        .then(response => return response.data)
-        .catch(error => return error);
->>>>>>> cf1e2081cf6d18622f4934cb0e11e5cd94bc5774
 }
 
 const port = process.env.PORT || 3000
