@@ -55,6 +55,7 @@ function fetchAll(urlParam) {
     
     axios.all(requests).then((responses) => {
   responses.forEach((resp) => {
+      console.log(resp);
       finalData.push(resp);
   });
 });
