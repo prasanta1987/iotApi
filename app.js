@@ -49,7 +49,7 @@ function fetchAll(urlParam) {
 //                 .catch(err => console.log(err))
 //         })
     
-    const requests = urls.map((data) => {
+    const requests = urlParam.map((data) => {
         axios.get(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
     });
     
