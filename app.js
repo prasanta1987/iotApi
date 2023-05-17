@@ -41,20 +41,30 @@ const getHttpRequest = (url) => {
         .catch(error => { console.log(error) });
 }
 
-async function fetchAll(urlParam) {
+function fetchAll(urlParam) {
 
-    const results = await Promise.all(
-
-        urlParam.map(data => {
-
-            fetch(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
-                .then(r => r.json())
-                .catch(err => console.log(err))
-        })
-
-    );
-    // const results = await Promise.all(urls.map((url) => fetch(url).then((r) => r.json())));
-    console.log(JSON.stringify(results, null, 2));
+//         urlParam.map(data => {
+//             fetch(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
+//                 .then(r => r.json())
+//                 .catch(err => console.log(err))
+//         })
+    
+    const requests = urls.map((data) => {
+        axios.get(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
+    });
+    
+    axios.all(requests).then((responses) => {
+  responses.forEach((resp) => {
+    let msg = {
+      server: resp.headers.server,
+      status: resp.status,
+      fields: Object.keys(resp.data).toString(),
+    };
+    console.info(resp.config.url);
+    console.table(msg);
+      finalData.push(msg);
+  });
+});
 
 }
 
