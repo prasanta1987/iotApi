@@ -10,7 +10,43 @@ const {
 const axios = require("axios").default;
 const app = express()
 
-let finalData = []
+
+
+
+
+// const locations = ['London', 'San Francisco', 'Tokyo', 'Berlin'];
+// const apiURL = 'http://api.openweathermap.org/data/2.5/weather';
+// const token = '0c6ddcd4bf425f7a1ecc76a92d9f9eb9';
+
+let myUrl = [
+    'https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=NIFTY&ExpiryDate=2023-05-18&strike_price=18000.00',
+    'https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=NIFTY&ExpiryDate=2023-05-18&strike_price=17000.00'
+]
+
+
+const batchHttpRequest = async (myUrl) => {
+
+    let finalData = []
+    let allLocations = myUrl.map(town => axios(town));
+    let weather = await Promise.all(allLocations);
+
+    weather.map(response => {
+
+        let objData = {
+            "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
+            "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice),
+            "ltp": parseFloat(response.data.fno_list.item[0].lastprice),
+        }
+
+        console.log(objData)
+
+        finalData.push(objData)
+    });
+
+    return finalData
+
+}
+
 
 const getHttpRequest = (url) => {
 
@@ -41,34 +77,15 @@ const getHttpRequest = (url) => {
         .catch(error => { console.log(error) });
 }
 
-function fetchAll(urlParam) {
 
-//         urlParam.map(data => {
-//             fetch(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
-//                 .then(r => r.json())
-//                 .catch(err => console.log(err))
-//         })
-    
-    const requests = urlParam.map((data) => {
-        axios.get(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
-    });
-    
-    axios.all(requests).then((responses) => {
-  responses.forEach((resp) => {
-      console.log(resp);
-      finalData.push(resp);
-  });
-});
 
-}
 
-// let scripLists = "2023-05-18,18000CE,1L"
-let scripLists = "2023-05-18,18000CE,1L.2023-05-18,17500PE,2L.2023-05-18,17000CE,3L.2023-05-18,18000PE,3L"
-let urlParamList = []
 
 
 
 const generateUrlList = (lists) => {
+    let urlLists = []
+    let urlParamList = []
 
     let scriptsArrray = lists.split(".")
 
@@ -84,22 +101,15 @@ const generateUrlList = (lists) => {
         myArrayData.splice(5, 6)
 
         urlParamList.push(myArrayData)
-
     })
 
-    fetchAll(urlParamList)
-    // generateUrlLists(urlParamList)
-
-}
-
-const generateUrlLists = (params) => {
-
-    params.map(data => {
-        let url = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`
-        getHttpRequest(url)
+    urlParamList.map(data => {
+        urlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
     })
 
+    return urlLists
 }
+
 
 
 
@@ -132,11 +142,11 @@ const generateUrlLists = (params) => {
 
 // }
 
-app.get('/:script/:data', (req, res) => {
+app.get('/:script/:data', async (req, res) => {
 
-    generateUrlList(req.params.data)
-
-    res.status(200).json(finalData)
+    const urlLists = generateUrlList(req.params.data)
+    const jsonData = await batchHttpRequest(urlLists)
+    res.status(200).json(jsonData)
 })
 
 // app.get('/marketStatus', getCookie, marketStatus)
