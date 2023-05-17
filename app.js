@@ -55,14 +55,7 @@ function fetchAll(urlParam) {
     
     axios.all(requests).then((responses) => {
   responses.forEach((resp) => {
-    let msg = {
-      server: resp.headers.server,
-      status: resp.status,
-      fields: Object.keys(resp.data).toString(),
-    };
-    console.info(resp.config.url);
-    console.table(msg);
-      finalData.push(msg);
+      finalData.push(resp);
   });
 });
 
