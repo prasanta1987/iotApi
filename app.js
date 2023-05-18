@@ -13,46 +13,57 @@ const {
 const axios = require("axios").default;
 const app = express()
 
+let finalDataObj = {}
 
-const batchHttpRequest = async (myUrl) => {
+const batchHttpRequest = async (allUrls) => {
 
     let finalData = []
-    let allLocations = myUrl.map(town => axios(town));
-    let weather = await Promise.all(allLocations);
+    let index = 0
+    let allRequests = allUrls.map(data => axios(data));
+    let allResponses = await Promise.all(allRequests);
 
-    weather.map(response => {
+    allResponses.map(response => {
 
+        index++
         let urlParts = url.parse(response.config.url, true)
         let queryData = urlParts.query
+
         try {
             let objData = {
                 "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
                 "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice),
                 "ltp": parseFloat(response.data.fno_list.item[0].lastprice),
                 "mkt_lot": parseInt(response.data.fno_list.item[0].fno_details.mkt_lot),
-                "tr_lot": queryData.tr_lot,
+                "tr_lot": parseInt(queryData.tr_lot),
                 "tr_type": queryData.tr_type,
                 "ce_pe": queryData.ce_pe
             }
+
             finalData.push(objData)
+            finalDataObj.data = finalData
 
         } catch (error) {
             console.log(error)
+            finalDataObj.urlError = `URL -> ${index} Error`;
         }
 
     });
 
-    return finalData
+    return finalDataObj
 
 }
 
 const generateUrlList = (lists) => {
     let urlLists = []
     let urlParamList = []
+    let index = 0
+    finalDataObj = {}
 
     let scriptsArrray = lists.split(".")
 
     scriptsArrray.map(data => {
+
+        index++
 
         try {
 
@@ -69,6 +80,7 @@ const generateUrlList = (lists) => {
 
         } catch (error) {
             console.log(error)
+            finalDataObj.stringError = `Query -> ${index} Error`;
         }
 
     })
