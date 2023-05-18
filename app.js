@@ -8,6 +8,8 @@ const {
     landingPage
 } = require('./routes');
 
+
+
 const axios = require("axios").default;
 const app = express()
 
@@ -20,7 +22,6 @@ const batchHttpRequest = async (myUrl) => {
 
     weather.map(response => {
 
-        // console.log(response.config.url)
         let urlParts = url.parse(response.config.url, true)
         let queryData = urlParts.query
         try {
@@ -45,26 +46,31 @@ const batchHttpRequest = async (myUrl) => {
 
 }
 
-
-
 const generateUrlList = (lists) => {
     let urlLists = []
     let urlParamList = []
-    let cepe = []
 
     let scriptsArrray = lists.split(".")
 
     scriptsArrray.map(data => {
-        let myArrayData = data.split(',')
 
-        let strikeLength = myArrayData[1].length - 2
-        myArrayData.splice(1, 0, myArrayData[1].slice(-2)); //CE or PE
-        myArrayData.splice(2, 0, parseFloat(myArrayData[2].substring(0, strikeLength)).toFixed(2)); //Strike Price
-        myArrayData.splice(3, 0, myArrayData[4].slice(-1)); //Long or
-        myArrayData.splice(4, 0, myArrayData[5].substring(0, 1)); // Lot Size
-        myArrayData.splice(5, 6)
+        try {
 
-        urlParamList.push(myArrayData)
+            let myArrayData = data.split(',')
+
+            let strikeLength = myArrayData[1].length - 2
+            myArrayData.splice(1, 0, myArrayData[1].slice(-2)); //CE or PE
+            myArrayData.splice(2, 0, parseFloat(myArrayData[2].substring(0, strikeLength)).toFixed(2)); //Strike Price
+            myArrayData.splice(3, 0, myArrayData[4].slice(-1)); //Long or
+            myArrayData.splice(4, 0, myArrayData[5].substring(0, 1)); // Lot Size
+            myArrayData.splice(5, 6)
+
+            urlParamList.push(myArrayData)
+
+        } catch (error) {
+            console.log(error)
+        }
+
     })
 
     urlParamList.map(data => {
@@ -73,7 +79,6 @@ const generateUrlList = (lists) => {
 
     return urlLists
 }
-
 
 app.get('/:script/:data', async (req, res) => {
 
