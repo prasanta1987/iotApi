@@ -1,4 +1,5 @@
 const express = require('express');
+const url = require('url')
 
 const {
     marketStatus,
@@ -11,66 +12,45 @@ const axios = require("axios").default;
 const app = express()
 
 
-const batchHttpRequest = async (urlParamList) => {
+const batchHttpRequest = async (myUrl) => {
 
     let finalData = []
-    let urlLists = []
-
-    console.log(urlParamList)
-
-    urlParamList.map(data => {
-        urlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
-    })
-
-    console.log(urlLists)
-
-    let allLocations = urlLists.map(town => axios(town));
+    let allLocations = myUrl.map(town => axios(town));
     let weather = await Promise.all(allLocations);
 
     weather.map(response => {
-        
-        console.log(response.config)
-        let objData = {
-            "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
-            "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice),
-            "ltp": parseFloat(response.data.fno_list.item[0].lastprice),
+
+        // console.log(response.config.url)
+        let urlParts = url.parse(response.config.url, true)
+        let queryData = urlParts.query
+        try {
+            let objData = {
+                "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
+                "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice),
+                "ltp": parseFloat(response.data.fno_list.item[0].lastprice),
+                "mkt_lot": parseInt(response.data.fno_list.item[0].fno_details.mkt_lot),
+                "tr_lot": queryData.tr_lot,
+                "tr_type": queryData.tr_type,
+                "ce_pe": queryData.ce_pe
+            }
+            finalData.push(objData)
+
+        } catch (error) {
+            console.log(error)
         }
 
-        console.log(objData)
-
-        finalData.push(objData)
     });
 
     return finalData
 
 }
-// const batchHttpRequest = async (myUrl) => {
 
-//     let finalData = []
-//     let allLocations = myUrl.map(town => axios(town));
-//     let weather = await Promise.all(allLocations);
-
-//     weather.map(response => {
-
-//         let objData = {
-//             "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
-//             "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice),
-//             "ltp": parseFloat(response.data.fno_list.item[0].lastprice),
-//         }
-
-//         console.log(objData)
-
-//         finalData.push(objData)
-//     });
-
-//     return finalData
-
-// }
 
 
 const generateUrlList = (lists) => {
-    // let urlLists = []
+    let urlLists = []
     let urlParamList = []
+    let cepe = []
 
     let scriptsArrray = lists.split(".")
 
@@ -78,7 +58,6 @@ const generateUrlList = (lists) => {
         let myArrayData = data.split(',')
 
         let strikeLength = myArrayData[1].length - 2
-
         myArrayData.splice(1, 0, myArrayData[1].slice(-2)); //CE or PE
         myArrayData.splice(2, 0, parseFloat(myArrayData[2].substring(0, strikeLength)).toFixed(2)); //Strike Price
         myArrayData.splice(3, 0, myArrayData[4].slice(-1)); //Long or
@@ -88,51 +67,19 @@ const generateUrlList = (lists) => {
         urlParamList.push(myArrayData)
     })
 
-    // urlParamList.map(data => {
-    //     urlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
-    // })
+    urlParamList.map(data => {
+        urlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}?tr_lot=${data[4]}&tr_type=${data[3]}&ce_pe=${data[1]}`)
+    })
 
-    return urlParamList.pop()
+    return urlLists
 }
-
-// const generateUrlList = (lists) => {
-//     let urlLists = []
-//     let urlParamList = []
-
-//     let scriptsArrray = lists.split(".")
-
-//     scriptsArrray.map(data => {
-//         let myArrayData = data.split(',')
-
-//         let strikeLength = myArrayData[1].length - 2
-
-//         myArrayData.splice(1, 0, myArrayData[1].slice(-2)); //CE or PE
-//         myArrayData.splice(2, 0, parseFloat(myArrayData[2].substring(0, strikeLength)).toFixed(2)); //Strike Price
-//         myArrayData.splice(3, 0, myArrayData[4].slice(-1)); //Long or
-//         myArrayData.splice(4, 0, myArrayData[5].substring(0, 1)); // Lot Size
-//         myArrayData.splice(5, 6)
-
-//         urlParamList.push(myArrayData)
-//     })
-
-//     urlParamList.map(data => {
-//         urlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}`)
-//     })
-
-//     return urlLists
-// }
 
 
 app.get('/:script/:data', async (req, res) => {
 
-    const urlParamList = generateUrlList(req.params.data)
-    const jsonData = await batchHttpRequest(urlParamList)
-
-    res.status(200).json({})
-
-    // const urlLists = generateUrlList(req.params.data)
-    // const jsonData = await batchHttpRequest(urlLists)
-    // res.status(200).json(jsonData)
+    const urlLists = generateUrlList(req.params.data)
+    const jsonData = await batchHttpRequest(urlLists)
+    res.status(200).json(jsonData)
 
 })
 
