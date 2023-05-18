@@ -31,6 +31,8 @@ const batchHttpRequest = async (myUrl) => {
     let weather = await Promise.all(allLocations);
 
     weather.map(response => {
+        
+        console.log(response.config)
         let objData = {
             "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
             "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice),
