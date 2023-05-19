@@ -31,10 +31,10 @@ const batchHttpRequest = async (allUrls) => {
         try {
             let objData = {
                 "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
-                "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice),
-                "ltp": parseFloat(response.data.fno_list.item[0].lastprice),
-                "mkt_lot": parseInt(response.data.fno_list.item[0].fno_details.mkt_lot),
-                "tr_lot": parseInt(queryData.tr_lot),
+                "strikePrice": response.data.fno_list.item[0].strikeprice,
+                "ltp": response.data.fno_list.item[0].lastprice,
+                "mkt_lot": response.data.fno_list.item[0].fno_details.mkt_lot,
+                "tr_lot": queryData.tr_lot,
                 "tr_type": queryData.tr_type,
                 "ce_pe": queryData.ce_pe
             }
@@ -53,7 +53,7 @@ const batchHttpRequest = async (allUrls) => {
 
 }
 
-const generateUrlList = (lists) => {
+const generateUrlList = (lists, scripCode) => {
     let urlLists = []
     let urlParamList = []
     let index = 0
@@ -86,7 +86,7 @@ const generateUrlList = (lists) => {
     })
 
     urlParamList.map(data => {
-        urlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=NIFTY&ExpiryDate=${data[0]}&strike_price=${data[2]}?tr_lot=${data[4]}&tr_type=${data[3]}&ce_pe=${data[1]}`)
+        urlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=${scripCode}&ExpiryDate=${data[0]}&strike_price=${data[2]}?tr_lot=${data[4]}&tr_type=${data[3]}&ce_pe=${data[1]}`)
     })
 
     return urlLists
@@ -94,7 +94,7 @@ const generateUrlList = (lists) => {
 
 app.get('/:script/:data', async (req, res) => {
 
-    const urlLists = generateUrlList(req.params.data)
+    const urlLists = generateUrlList(req.params.data,req.params.script)
     const jsonData = await batchHttpRequest(urlLists)
     res.status(200).json(jsonData)
 
