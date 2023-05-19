@@ -17,6 +17,7 @@ let finalDataObj = {}
 
 const batchHttpRequest = async (allUrls) => {
 
+    console.log(allUrls)
     let finalData = []
     let index = 0
     let allRequests = allUrls.map(data => axios(data));
