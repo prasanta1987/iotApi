@@ -95,7 +95,7 @@ const generateUrlList = (lists, scripCode) => {
 
 app.get('/:script/:data', async (req, res) => {
 
-    const urlLists = generateUrlList(req.params.data,req.params.script)
+    const urlLists = generateUrlList(req.params.data,req.params.script.toUpperCase())
     const jsonData = await batchHttpRequest(urlLists)
     res.status(200).json(jsonData)
 
