@@ -1,4 +1,13 @@
 const axios = require("axios").default;
+const { generateUrlList, batchHttpRequest, sendHttpRequest } = require('./helperFunctions');
+
+exports.fnoDataFetch = async (req, res) => {
+
+    const urlLists = generateUrlList(req.params.data.toUpperCase(), req.params.script.toUpperCase())
+    const jsonData = await batchHttpRequest(urlLists)
+    res.status(200).json(jsonData)
+
+}
 
 exports.marketStatus = (req, res) => {
     const url = 'https://www.nseindia.com/api/marketStatus'
@@ -29,18 +38,3 @@ exports.stockData = (req, res) => {
 // https://www.nseindia.com/api/quote-equity?symbol=ABBOTINDIA
 
 
-sendHttpRequest = (req, res, url) => {
-
-    var config = {
-        method: 'get',
-        url: url,
-        headers: {
-            'Content-Type': 'application/json',
-            //             'cookie': res.locals.myCookie || ""
-        },
-    };
-
-    axios(config)
-        .then(response => res.status(200).json(response.data))
-        .catch(error => res.status(501).json(error));
-}
