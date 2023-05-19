@@ -21,10 +21,10 @@ const batchHttpRequest = async (allUrls) => {
 
     let finalData = []
     let index = 0
+    let indexList = []
     let allRequests = allUrls.map(data => axios(data));
     let allResponses = await Promise.all(allRequests);
 
-    console.log(allResponses.length)
     allResponses.map(response => {
 
         index++
@@ -47,7 +47,8 @@ const batchHttpRequest = async (allUrls) => {
 
         } catch (error) {
             console.log(error)
-            finalDataObj.urlError = `URL -> ${index} Error`;
+            indexList.push(index)
+            finalDataObj.urlError = `URL -> ${indexList.join()} Error`;
         }
 
     });
@@ -60,6 +61,7 @@ const generateUrlList = (lists, scripCode) => {
     let urlLists = []
     let urlParamList = []
     let index = 0
+    let indexList = []
     finalDataObj = {}
 
     let scriptsArrray = lists.split(".")
@@ -83,7 +85,8 @@ const generateUrlList = (lists, scripCode) => {
 
         } catch (error) {
             console.log(error)
-            finalDataObj.stringError = `Query -> ${index} Error`;
+            indexList.push(index)
+            finalDataObj.stringError = `Query -> ${indexList.join()} Error`;
         }
 
     })
