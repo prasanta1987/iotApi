@@ -18,11 +18,13 @@ let finalDataObj = {}
 const batchHttpRequest = async (allUrls) => {
 
     console.log(allUrls)
+
     let finalData = []
     let index = 0
     let allRequests = allUrls.map(data => axios(data));
     let allResponses = await Promise.all(allRequests);
 
+    console.log(allResponses.length)
     allResponses.map(response => {
 
         index++
@@ -95,7 +97,7 @@ const generateUrlList = (lists, scripCode) => {
 
 app.get('/:script/:data', async (req, res) => {
 
-    const urlLists = generateUrlList(req.params.data,req.params.script.toUpperCase())
+    const urlLists = generateUrlList(req.params.data, req.params.script.toUpperCase())
     const jsonData = await batchHttpRequest(urlLists)
     res.status(200).json(jsonData)
 
