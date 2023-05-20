@@ -138,10 +138,10 @@ exports.fetchSpotData = async (scripCode) => {
     let soptDataRequest = await axios.get(baseUrl);
 
     let objData = {
+        "spotName": soptDataRequest.data.data.company,
         "spotPrice": soptDataRequest.data.data.pricecurrent,
         "spotChng": soptDataRequest.data.data.pricechange,
         "spotChngPct": soptDataRequest.data.data.pricepercentchange,
-        "spotName": soptDataRequest.data.data.company,
     }
 
     return objData

@@ -1,5 +1,5 @@
 const axios = require("axios").default;
-const { generateUrlList, batchHttpRequest, sendHttpRequest, searchSpot } = require('./helperFunctions');
+const { generateUrlList, batchHttpRequest, sendHttpRequest, searchSpot, fetchSpotData } = require('./helperFunctions');
 
 exports.fnoDataFetch = async (req, res) => {
 
@@ -16,7 +16,14 @@ exports.search = async (req, res) => {
     const jsonData = await searchSpot(scripCode)
 
     res.status(200).json(jsonData)
+}
 
+exports.getSpotData = async (req, res) => {
+
+    const scripCode = req.params.script.toUpperCase();
+    const jsonData = await fetchSpotData(scripCode)
+
+    res.status(200).json(jsonData)
 }
 
 exports.marketStatus = (req, res) => {
