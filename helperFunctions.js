@@ -77,9 +77,13 @@ exports.batchHttpRequest = async (allUrls) => {
         try {
 
             finalData.push(this.makeFnoObject(response, queryData))
-            finalDataObj.mkt_lot = response.data.fno_list.item[0].fno_details.mkt_lot;
-            finalDataObj.script_name = response.data.fno_list.nm;
-            finalDataObj.data = finalData
+            finalDataObj.mktLot = response.data.fno_list.item[0].fno_details.mkt_lot;
+            finalDataObj.scriptName = response.data.fno_list.nm;
+            finalDataObj.spotPrice = null;
+            finalDataObj.spotChng = null;
+            finalDataObj.spotChngPct = null;
+            finalDataObj.optData = finalData;
+            finalDataObj.futData = []
 
         } catch (error) {
             console.log(error)
