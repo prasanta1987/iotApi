@@ -77,7 +77,8 @@ exports.batchHttpRequest = async (allUrls) => {
         try {
 
             finalData.push(this.makeFnoObject(response, queryData))
-            finalDataObj.mkt_lot = response.data.fno_list.item[0].fno_details.mkt_lot
+            finalDataObj.mkt_lot = response.data.fno_list.item[0].fno_details.mkt_lot;
+            finalDataObj.script_name = response.data.fno_list.nm;
             finalDataObj.data = finalData
 
         } catch (error) {
