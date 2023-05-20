@@ -1,10 +1,11 @@
 const express = require('express');
 
-const { fnoDataFetch, landingPage } = require('./routes');
+const { fnoDataFetch, landingPage, search } = require('./routes');
 
 const app = express()
 
 app.get('/ALL/:script/:data', fnoDataFetch)
+app.get('/search/:script', search)
 app.get('/', landingPage)
 
 

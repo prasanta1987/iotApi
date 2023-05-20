@@ -148,6 +148,14 @@ exports.fetchSpotData = async (scripCode) => {
 
 }
 
+exports.searchSpot = async (param) => {
+    const url = `https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`
+
+    let searchData = await axios.get(url)
+
+    return searchData.data[0].sc_id
+}
+
 exports.sendHttpRequest = (req, res, url) => {
 
     var config = {
