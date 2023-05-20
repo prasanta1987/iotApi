@@ -4,7 +4,7 @@ const { fnoDataFetch, landingPage } = require('./routes');
 
 const app = express()
 
-app.get('/OPT/:script/:data', fnoDataFetch)
+app.get('/ALL/:script/:data', fnoDataFetch)
 app.get('/', landingPage)
 
 
