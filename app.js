@@ -4,9 +4,12 @@ const { fnoDataFetch, landingPage, search, getSpotData } = require('./routes');
 
 const app = express()
 
-app.get('/ALL/:script/:data', fnoDataFetch)
+app.get('/all/:script/:data', fnoDataFetch)
 app.get('/search/:script', search)
 app.get('/spot/:script', getSpotData)
+
+
+
 app.get('/', landingPage)
 
 

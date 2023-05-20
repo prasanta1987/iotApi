@@ -122,12 +122,15 @@ exports.fetchFutData = async (scripCode) => {
 
 }
 
-exports.fetchSpotData = async (scripCode) => {
+exports.fetchSpotData = async (param) => {
 
     let baseUrl
+    let scripCode = param.toUpperCase()
 
     if (scripCode == "NIFTY") {
         baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX";
+    } else if (scripCode == "BANKNIFTY") {
+        baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx";
     } else if (scripCode == "USDINR") {
         baseUrl = "https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies";
     } else {
