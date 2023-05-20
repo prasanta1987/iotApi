@@ -64,6 +64,9 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     let finalData = []
     let index = 0
     let indexList = []
+
+    const spotDataObj = await this.fetchSpotData(scripCode)
+
     let allOptRequests = allUrls.map(data => axios(data));
     let allOptResponses = await Promise.all(allOptRequests);
 
@@ -78,9 +81,9 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
             finalData.push(this.makeOptDataObject(response, queryData))
             finalDataObj.mktLot = response.data.fno_list.item[0].fno_details.mkt_lot;
             finalDataObj.scriptName = response.data.fno_list.nm;
-            finalDataObj.spotPrice = null;
-            finalDataObj.spotChng = null;
-            finalDataObj.spotChngPct = null;
+            finalDataObj.spotPrice = spotDataObj.spotPrice;
+            finalDataObj.spotChng = spotDataObj.spotChng;
+            finalDataObj.spotChngPct = spotDataObj.spotChngPct
             finalDataObj.optData = finalData;
 
         } catch (error) {
@@ -102,7 +105,6 @@ exports.fetchFutData = async (scripCode) => {
     const futUrl = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=Futures&id=${scripCode}`
     futArrayData = []
 
-
     let allFutRequests = await axios.get(futUrl);
 
     allFutRequests.data.fno_list.item.map(data => {
@@ -116,6 +118,31 @@ exports.fetchFutData = async (scripCode) => {
     })
 
     return futArrayData
+
+}
+
+exports.fetchSpotData = async (scripCode) => {
+
+    let baseUrl
+
+    if (scripCode == "NIFTY") {
+        baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX";
+    } else if (scripCode == "USDINR") {
+        baseUrl = "https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies";
+    } else {
+        baseUrl = "https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode;
+    }
+
+
+    let soptDataRequest = await axios.get(baseUrl);
+
+    let objData = {
+        "spotPrice": soptDataRequest.data.data.pricecurrent,
+        "spotChng": soptDataRequest.data.data.pricechange,
+        "spotChngPct": soptDataRequest.data.data.pricepercentchange
+    }
+
+    return objData
 
 }
 
