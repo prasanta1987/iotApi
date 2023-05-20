@@ -67,6 +67,11 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
 
     const spotDataObj = await this.fetchSpotData(scripCode)
 
+    finalDataObj.scriptName = spotDataObj.spotName
+    finalDataObj.spotPrice = spotDataObj.spotPrice;
+    finalDataObj.spotChng = spotDataObj.spotChng;
+    finalDataObj.spotChngPct = spotDataObj.spotChngPct
+
     let allOptRequests = allUrls.map(data => axios(data));
     let allOptResponses = await Promise.all(allOptRequests);
 
@@ -80,10 +85,6 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
 
             finalData.push(this.makeOptDataObject(response, queryData))
             finalDataObj.mktLot = response.data.fno_list.item[0].fno_details.mkt_lot;
-            finalDataObj.scriptName = response.data.fno_list.nm;
-            finalDataObj.spotPrice = spotDataObj.spotPrice;
-            finalDataObj.spotChng = spotDataObj.spotChng;
-            finalDataObj.spotChngPct = spotDataObj.spotChngPct
             finalDataObj.optData = finalData;
 
         } catch (error) {
@@ -139,7 +140,8 @@ exports.fetchSpotData = async (scripCode) => {
     let objData = {
         "spotPrice": soptDataRequest.data.data.pricecurrent,
         "spotChng": soptDataRequest.data.data.pricechange,
-        "spotChngPct": soptDataRequest.data.data.pricepercentchange
+        "spotChngPct": soptDataRequest.data.data.pricepercentchange,
+        "spotName": soptDataRequest.data.data.company,
     }
 
     return objData
