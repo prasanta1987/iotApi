@@ -51,7 +51,7 @@ exports.makeFnoObject = (response, queryData) => {
         "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
         "strikePrice": response.data.fno_list.item[0].strikeprice,
         "ltp": response.data.fno_list.item[0].lastprice,
-        "mkt_lot": response.data.fno_list.item[0].fno_details.mkt_lot,
+//         "mkt_lot": response.data.fno_list.item[0].fno_details.mkt_lot,
         "tr_lot": queryData.tr_lot,
         "tr_type": queryData.tr_type,
         "ce_pe": queryData.ce_pe
