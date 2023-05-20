@@ -65,10 +65,10 @@ exports.batchHttpRequest = async (allUrls) => {
     let finalData = []
     let index = 0
     let indexList = []
-    let allRequests = allUrls.map(data => axios(data));
-    let allResponses = await Promise.all(allRequests);
+    let allOptRequests = allUrls.map(data => axios(data));
+    let allOptResponses = await Promise.all(allOptRequests);
 
-    allResponses.map(response => {
+    allOptResponses.map(response => {
 
         index++
         let urlParts = url.parse(response.config.url, true)
