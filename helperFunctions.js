@@ -5,7 +5,7 @@ let finalDataObj = {}
 
 exports.generateUrlList = (lists, scripCode) => {
 
-    let urlLists = []
+    let optUrlLists = []
     let urlParamList = []
     let index = 0
     let indexList = []
@@ -39,19 +39,18 @@ exports.generateUrlList = (lists, scripCode) => {
     })
 
     urlParamList.map(data => {
-        urlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=${scripCode}&ExpiryDate=${data[0]}&strike_price=${data[2]}?tr_lot=${data[4]}&tr_type=${data[3]}&ce_pe=${data[1]}`)
+        optUrlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=${scripCode}&ExpiryDate=${data[0]}&strike_price=${data[2]}?tr_lot=${data[4]}&tr_type=${data[3]}&ce_pe=${data[1]}`)
     })
 
-    return urlLists
+    return optUrlLists
 
 }
 
-exports.makeFnoObject = (response, queryData) => {
+exports.makeOptDataObject = (response, queryData) => {
     let objData = {
         "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
         "strikePrice": response.data.fno_list.item[0].strikeprice,
         "ltp": response.data.fno_list.item[0].lastprice,
-//         "mkt_lot": response.data.fno_list.item[0].fno_details.mkt_lot,
         "tr_lot": queryData.tr_lot,
         "tr_type": queryData.tr_type,
         "ce_pe": queryData.ce_pe
@@ -60,7 +59,7 @@ exports.makeFnoObject = (response, queryData) => {
     return objData
 }
 
-exports.batchHttpRequest = async (allUrls) => {
+exports.batchHttpRequest = async (allUrls, scripCode) => {
 
     let finalData = []
     let index = 0
@@ -76,14 +75,13 @@ exports.batchHttpRequest = async (allUrls) => {
 
         try {
 
-            finalData.push(this.makeFnoObject(response, queryData))
+            finalData.push(this.makeOptDataObject(response, queryData))
             finalDataObj.mktLot = response.data.fno_list.item[0].fno_details.mkt_lot;
             finalDataObj.scriptName = response.data.fno_list.nm;
             finalDataObj.spotPrice = null;
             finalDataObj.spotChng = null;
             finalDataObj.spotChngPct = null;
             finalDataObj.optData = finalData;
-            finalDataObj.futData = []
 
         } catch (error) {
             console.log(error)
@@ -93,7 +91,31 @@ exports.batchHttpRequest = async (allUrls) => {
 
     });
 
+    finalDataObj.futData = await this.fetchFutData(scripCode)
+
     return finalDataObj
+
+}
+
+exports.fetchFutData = async (scripCode) => {
+
+    const futUrl = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=Futures&id=${scripCode}`
+    futArrayData = []
+
+
+    let allFutRequests = await axios.get(futUrl);
+
+    allFutRequests.data.fno_list.item.map(data => {
+
+        let objData = {
+            "futExpiry": data.expiry_date_d.substring(0, 6),
+            "futLtp": data.lastprice
+        }
+
+        futArrayData.push(objData)
+    })
+
+    return futArrayData
 
 }
 
@@ -109,7 +131,7 @@ exports.sendHttpRequest = (req, res, url) => {
     };
 
     axios(config)
-        .then(response => res.status(200).json(response.data))
+        .then(response => { res.status(200).json(response.data) })
         .catch(error => res.status(501).json(error));
 }
 

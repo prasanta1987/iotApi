@@ -3,8 +3,9 @@ const { generateUrlList, batchHttpRequest, sendHttpRequest } = require('./helper
 
 exports.fnoDataFetch = async (req, res) => {
 
-    const urlLists = generateUrlList(req.params.data.toUpperCase(), req.params.script.toUpperCase())
-    const jsonData = await batchHttpRequest(urlLists)
+    const scripCode = req.params.script.toUpperCase();
+    const urlLists = generateUrlList(req.params.data.toUpperCase(), scripCode)
+    const jsonData = await batchHttpRequest(urlLists, scripCode)
     res.status(200).json(jsonData)
 
 }
