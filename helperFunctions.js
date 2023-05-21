@@ -18,7 +18,6 @@ exports.generateUrlList = (lists, scripCode) => {
 
             index++
 
-
             let myArrayData = data.split(',')
 
             let strikeLength = myArrayData[1].length - 2
@@ -126,6 +125,7 @@ exports.fetchFutData = async (scripCode) => {
 exports.fetchSpotData = async (param) => {
 
     let baseUrl
+    let objData = {}
     let scripCode = param.toUpperCase()
 
     if (scripCode == "NIFTY") {
@@ -140,12 +140,17 @@ exports.fetchSpotData = async (param) => {
 
 
     let soptDataRequest = await axios.get(baseUrl);
+    try {
+        objData = {
+            "spotName": soptDataRequest.data.data.company || "Not Found",
+            "spotPrice": soptDataRequest.data.data.pricecurrent || null,
+            "spotChng": soptDataRequest.data.data.pricechange || null,
+            "spotChngPct": soptDataRequest.data.data.pricepercentchange || null,
+        }
 
-    let objData = {
-        "spotName": soptDataRequest.data.data.company,
-        "spotPrice": soptDataRequest.data.data.pricecurrent,
-        "spotChng": soptDataRequest.data.data.pricechange,
-        "spotChngPct": soptDataRequest.data.data.pricepercentchange,
+
+    } catch (error) {
+        console.log(error)
     }
 
     return objData
