@@ -49,7 +49,7 @@ exports.generateUrlList = (lists, scripCode) => {
 exports.makeOptDataObject = (response, queryData) => {
     let objData = {
         "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
-        "strikePrice": response.data.fno_list.item[0].strikeprice,
+        "strikePrice": new String(parseInt(response.data.fno_list.item[0].strikeprice)),
         "ltp": response.data.fno_list.item[0].lastprice,
         "tr_lot": queryData.tr_lot,
         "tr_type": queryData.tr_type,
@@ -146,6 +146,13 @@ exports.fetchSpotData = async (param) => {
             "spotPrice": soptDataRequest.data.data.pricecurrent || null,
             "spotChng": soptDataRequest.data.data.pricechange || null,
             "spotChngPct": soptDataRequest.data.data.pricepercentchange || null,
+            "dayHigh": soptDataRequest.data.data.HP || soptDataRequest.data.data.HIGH,
+            "dayLow": soptDataRequest.data.data.LP || soptDataRequest.data.data.LOW,
+        }
+
+        if (soptDataRequest.data.data.decl) {
+            objData.decl = new String(soptDataRequest.data.data.decl)
+            objData.adv = new String(soptDataRequest.data.data.adv)
         }
 
 
