@@ -11,35 +11,36 @@ exports.generateUrlList = (lists, scripCode) => {
     let indexList = []
     finalDataObj = {}
 
-    let scriptsArrray = lists.split(".")
+    try {
+        let scriptsArrray = lists.split("&")
 
-    scriptsArrray.map(data => {
+        scriptsArrray.map(data => {
 
-        index++
+            index++
 
-        try {
 
             let myArrayData = data.split(',')
 
             let strikeLength = myArrayData[1].length - 2
             myArrayData.splice(1, 0, myArrayData[1].slice(-2)); //CE or PE
             myArrayData.splice(2, 0, parseFloat(myArrayData[2].substring(0, strikeLength)).toFixed(2)); //Strike Price
-            myArrayData.splice(3, 0, myArrayData[4].slice(-1)); //Long or
-            myArrayData.splice(4, 0, myArrayData[5].substring(0, 1)); // Lot Size
-            myArrayData.splice(5, 6)
+            myArrayData.splice(3, 0, myArrayData[4]); //Long or
+            // myArrayData.splice(3, 0, myArrayData[4].slice(-1)); //Long or
+            // myArrayData.splice(4, 0, myArrayData[5].substring(0, 1)); // Lot Size
+            myArrayData.splice(4, 6)
 
             urlParamList.push(myArrayData)
+        })
 
-        } catch (error) {
-            console.log(error)
-            indexList.push(index)
-            finalDataObj.stringError = `Query -> ${indexList.join()} Error`;
-        }
+    } catch (error) {
+        console.log(error)
+        indexList.push(index)
+        finalDataObj.stringError = `Query -> ${indexList.join()} Error`;
+    }
 
-    })
 
     urlParamList.map(data => {
-        optUrlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=${scripCode}&ExpiryDate=${data[0]}&strike_price=${data[2]}?tr_lot=${data[4]}&tr_type=${data[3]}&ce_pe=${data[1]}`)
+        optUrlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=${scripCode}&ExpiryDate=${data[0]}&strike_price=${data[2]}?tr_lot=${data[3]}&ce_pe=${data[1]}`)
     })
 
     return optUrlLists
