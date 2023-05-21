@@ -11,14 +11,15 @@ exports.generateUrlList = (lists, scripCode) => {
     let indexList = []
     finalDataObj = {}
 
-    try {
-        let scriptsArrray = lists.split("&")
 
-        scriptsArrray.map(data => {
+    let scriptsArrray = lists.split("&")
 
-            index++
+    scriptsArrray.map(data => {
 
-            let myArrayData = data.split(',')
+        index++
+
+        let myArrayData = data.split(',')
+        try {
 
             let strikeLength = myArrayData[1].length - 2
             myArrayData.splice(1, 0, myArrayData[1].slice(-2)); //CE or PE
@@ -27,15 +28,15 @@ exports.generateUrlList = (lists, scripCode) => {
             // myArrayData.splice(3, 0, myArrayData[4].slice(-1)); //Long or
             // myArrayData.splice(4, 0, myArrayData[5].substring(0, 1)); // Lot Size
             myArrayData.splice(4, 6)
+        } catch (error) {
+            console.log(error)
+            indexList.push(index)
+            finalDataObj.stringError = `Query -> ${indexList.join()} Error`;
+        }
 
-            urlParamList.push(myArrayData)
-        })
+        urlParamList.push(myArrayData)
 
-    } catch (error) {
-        console.log(error)
-        indexList.push(index)
-        finalDataObj.stringError = `Query -> ${indexList.join()} Error`;
-    }
+    })
 
 
     urlParamList.map(data => {
@@ -142,10 +143,10 @@ exports.fetchSpotData = async (param) => {
     let soptDataRequest = await axios.get(baseUrl);
     try {
         objData = {
-            "spotName": soptDataRequest.data.data.company || "Not Found",
-            "spotPrice": soptDataRequest.data.data.pricecurrent || null,
-            "spotChng": soptDataRequest.data.data.pricechange || null,
-            "spotChngPct": soptDataRequest.data.data.pricepercentchange || null,
+            "spotName": soptDataRequest.data.data.company,
+            "spotPrice": soptDataRequest.data.data.pricecurrent,
+            "spotChng": soptDataRequest.data.data.pricechange,
+            "spotChngPct": soptDataRequest.data.data.pricepercentchange,
             "dayHigh": soptDataRequest.data.data.HP || soptDataRequest.data.data.HIGH,
             "dayLow": soptDataRequest.data.data.LP || soptDataRequest.data.data.LOW,
         }
@@ -158,6 +159,7 @@ exports.fetchSpotData = async (param) => {
 
     } catch (error) {
         console.log(error)
+        objData.ERROR = "Not Found"
     }
 
     return objData
