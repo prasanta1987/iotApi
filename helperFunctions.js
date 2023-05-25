@@ -214,11 +214,26 @@ exports.fetchSpotData = async (param) => {
 
 exports.searchSpot = async (param) => {
 
+    let searchDataObj = {}
+    let dataArray = []
+
     const url = `https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`
 
     let searchData = await axios.get(url)
 
-    return searchData.data[0].sc_id
+    searchData.data.map(data => {
+
+        console.log(data)
+        let objData = {
+            "id": data.sc_id,
+            "Name": data.stock_name
+        }
+
+        dataArray.push(objData)
+    })
+    searchDataObj.searchResult = dataArray
+
+    return searchDataObj
 }
 
 exports.sendHttpRequest = (req, res, url) => {
