@@ -47,24 +47,9 @@ exports.generateUrlList = (lists, scripCode) => {
 
 }
 
-exports.makeOptDataObject = (response, queryData) => {
-    let objData = {
-        "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
-        "strikePrice": new String(parseInt(response.data.fno_list.item[0].strikeprice)),
-        "ltp": response.data.fno_list.item[0].lastprice,
-        "tr_lot": queryData.tr_lot,
-        "tr_type": queryData.tr_type,
-        "ce_pe": queryData.ce_pe
-    }
-
-    return objData
-}
-
 exports.batchHttpRequest = async (allUrls, scripCode) => {
 
     let finalData = []
-    let index = 0
-    let indexList = []
 
     const spotDataObj = await this.fetchSpotData(scripCode)
 
@@ -73,7 +58,61 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     finalDataObj.spotChng = spotDataObj.spotChng;
     finalDataObj.spotChngPct = spotDataObj.spotChngPct
 
-    let allOptRequests = allUrls.map(data => axios(data));
+    const vixData = await this.fetchSpotData("INDVIX")
+
+    finalDataObj.vixCmp = vixData.spotPrice
+    finalDataObj.vixChng = vixData.spotChng
+    finalDataObj.vixPerChng = vixData.spotChngPct
+
+
+    // const optDataObj = await this.fetchOptData(allUrls);
+
+    // optDataObj.map(response => {
+    //     let urlParts = url.parse(response.config.url, true)
+    //     let queryData = urlParts.query
+
+
+    //     try {
+
+    //         let objData = {
+    //             "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
+    //             "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice).toString(),
+    //             "ltp": response.data.fno_list.item[0].lastprice,
+    //             "tr_lot": queryData.tr_lot,
+    //             "ce_pe": queryData.ce_pe
+    //         }
+
+    //         finalData.push(objData)
+    //         finalDataObj.mktLot = response.data.fno_list.item[0].fno_details.mkt_lot;
+
+    //     } catch (error) {
+    //         console.log("ERROR = >", error)
+    //         indexList.push(index)
+    //         finalDataObj.urlError = `URL -> ${indexList.join()} Error`;
+    //     }
+
+
+    // })
+
+    // finalDataObj.optData = finalData
+
+
+    finalDataObj.optData = await this.fetchOptData(allUrls)
+    finalDataObj.futData = await this.fetchFutData(scripCode)
+
+
+
+    return finalDataObj
+
+}
+
+exports.fetchOptData = async (allUrls) => {
+
+    let index = 0
+    let indexList = []
+    let finalData = []
+
+    let allOptRequests = await allUrls.map(data => axios(data));
     let allOptResponses = await Promise.all(allOptRequests);
 
     allOptResponses.map(response => {
@@ -84,9 +123,18 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
 
         try {
 
-            finalData.push(this.makeOptDataObject(response, queryData))
+            let objData = {
+                "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
+                "strikePrice": new String(parseInt(response.data.fno_list.item[0].strikeprice)),
+                "ltp": response.data.fno_list.item[0].lastprice,
+                "tr_lot": queryData.tr_lot,
+                "tr_type": queryData.tr_type,
+                "ce_pe": queryData.ce_pe
+            }
+
+            finalData.push(objData)
+
             finalDataObj.mktLot = response.data.fno_list.item[0].fno_details.mkt_lot;
-            finalDataObj.optData = finalData;
 
         } catch (error) {
             console.log(error)
@@ -96,11 +144,9 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
 
     });
 
-    finalDataObj.futData = await this.fetchFutData(scripCode)
-
-    return finalDataObj
-
+    return finalData
 }
+
 
 exports.fetchFutData = async (scripCode) => {
 
@@ -133,8 +179,8 @@ exports.fetchSpotData = async (param) => {
         baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX";
     } else if (scripCode == "BANKNIFTY") {
         baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx";
-    } else if (scripCode == "USDINR") {
-        baseUrl = "https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies";
+    } else if (scripCode == "INDVIX") {
+        baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN";
     } else {
         baseUrl = "https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode;
     }
@@ -167,6 +213,7 @@ exports.fetchSpotData = async (param) => {
 }
 
 exports.searchSpot = async (param) => {
+
     const url = `https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`
 
     let searchData = await axios.get(url)
