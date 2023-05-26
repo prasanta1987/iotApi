@@ -65,38 +65,6 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     finalDataObj.vixPerChng = vixData.spotChngPct
 
 
-    // const optDataObj = await this.fetchOptData(allUrls);
-
-    // optDataObj.map(response => {
-    //     let urlParts = url.parse(response.config.url, true)
-    //     let queryData = urlParts.query
-
-
-    //     try {
-
-    //         let objData = {
-    //             "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
-    //             "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice).toString(),
-    //             "ltp": response.data.fno_list.item[0].lastprice,
-    //             "tr_lot": queryData.tr_lot,
-    //             "ce_pe": queryData.ce_pe
-    //         }
-
-    //         finalData.push(objData)
-    //         finalDataObj.mktLot = response.data.fno_list.item[0].fno_details.mkt_lot;
-
-    //     } catch (error) {
-    //         console.log("ERROR = >", error)
-    //         indexList.push(index)
-    //         finalDataObj.urlError = `URL -> ${indexList.join()} Error`;
-    //     }
-
-
-    // })
-
-    // finalDataObj.optData = finalData
-
-
     finalDataObj.optData = await this.fetchOptData(allUrls)
     finalDataObj.futData = await this.fetchFutData(scripCode)
 
@@ -223,7 +191,6 @@ exports.searchSpot = async (param) => {
 
     searchData.data.map(data => {
 
-        console.log(data)
         let objData = {
             "id": data.sc_id,
             "Name": data.stock_name
