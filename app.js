@@ -12,6 +12,11 @@ const io = new Server(server);
 
 io.on('connection', (socket) => {
     console.log('a user connected');
+    
+io.send("hi");
+
+
+
 });
 
 // const server = require('http').createServer(app);
