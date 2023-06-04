@@ -5,43 +5,44 @@ const express = require('express');
 const app = express()
 
 
-// const http = require('http');
-// const server = http.createServer(app);
-// const { Server } = require("socket.io");
-// const io = new Server(server);
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 
-// io.on('connection', (socket) => {
-//     socket.on('disconnect', (data) => {
-//         console.log(data)
-//     })
+io.on('connection', (socket) => {
+    socket.on('disconnect', (data) => {
+        console.log(data)
+    })
 
-//     socket.on('message', data => {
-//         console.log(data)
-//     })
+    socket.on('message', data => {
+        console.log(data)
+    })
 
-//     socket.send("here")
-// });
-
-const server = require('http').createServer(app);
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({ server: server });
-
-
-wss.on('connection', function connection(ws) {
-    console.log('A new client Connected!');
-    ws.send('Welcome New Client!');
-
-    ws.on('message', function incoming(message) {
-        console.log('received: %s', message);
-
-        wss.clients.forEach(function each(client) {
-            if (client !== ws && client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
-        });
-
-    });
+    socket.send("here")
 });
+
+
+// const server = require('http').createServer(app);
+// const WebSocket = require('ws');
+// const wss = new WebSocket.Server({ server: server });
+
+
+// wss.on('connection', function connection(ws) {
+//     console.log('A new client Connected!');
+//     ws.send('Welcome New Client!');
+
+//     ws.on('message', function incoming(message) {
+//         console.log('received: %s', message);
+
+//         wss.clients.forEach(function each(client) {
+//             if (client !== ws && client.readyState === WebSocket.OPEN) {
+//                 client.send(message);
+//             }
+//         });
+
+//     });
+// });
 
 
 app.get('/', (req, res) => {
