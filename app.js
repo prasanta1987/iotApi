@@ -11,8 +11,15 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
-    io.send("Hello")
+    socket.on('disconnect', (data) => {
+        console.log(data)
+    })
+
+    socket.on('message', data => {
+        console.log(data)
+    })
+
+    socket.send("here")
 });
 
 // const server = require('http').createServer(app);
