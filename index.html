@@ -17,6 +17,7 @@
     crossorigin="anonymous"></script>
 <script>
     var socket = io();
+    socket.on('message', function(data){document.write(data)});
 </script>
 
 </html>
