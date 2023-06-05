@@ -11,15 +11,18 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-    socket.on('disconnect', (data) => {
-        console.log(data)
-    })
 
-    socket.on('message', data => {
-        console.log(data)
-    })
 
-    socket.send("here")
+
+
+    
+    setTimeout(function(){
+      socket.send('Sent a message 4seconds after connection!');
+   }, 4000);
+   socket.on('disconnect', function () {
+      console.log('A user disconnected');
+   });
+    
 });
 
 
