@@ -10,14 +10,12 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+
+const t = new Date()
 io.on('connection', (socket) => {
 
-
-
-
-    
     setTimeout(function(){
-      socket.send('Sent a message 4seconds after connection!');
+      socket.send(t.getTime());
    }, 4000);
    socket.on('disconnect', function () {
       console.log('A user disconnected');
