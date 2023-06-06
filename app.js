@@ -18,8 +18,9 @@ io.on('connection', (socket) => {
 console.log(socket)
            console.log("----------END CONNECT----------")
     setInterval(function(){
-//       socket.send(Math.random());
-               socket.send(fetchSpotData("NIFTY"));
+      socket.send(Math.random());
+               console.log(fetchSpotData("NIFTY"))
+//                socket.send(fetchSpotData("NIFTY"));
    }, 2000);
    socket.on('disconnect', function (data) {
        console.log("----------START DISCONNECT----------")
