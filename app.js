@@ -13,11 +13,16 @@ const io = new Server(server);
 
 const t = new Date()
 io.on('connection', (socket) => {
-
+           console.log("----------START CONNECT----------")
+console.log(socket)
+           console.log("----------END CONNECT----------")
     setInterval(function(){
       socket.send(Math.random());
    }, 4000);
-   socket.on('disconnect', function () {
+   socket.on('disconnect', function (data) {
+       console.log("----------START DISCONNECT----------")
+       console.log(data)
+       console.log("----------END DISCONNECT----------")
       console.log('A user disconnected');
    });
     
