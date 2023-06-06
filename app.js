@@ -14,7 +14,7 @@ const io = new Server(server);
 
 const t = new Date()
 io.on('connection', async (socket) => {
-    const jsonData = await getSpotData("NIFTY")
+    const jsonData = await fetchSpotData("NIFTY")
     setInterval(function(){
     socket.send(Math.random());           
                console.log(jsonData)
