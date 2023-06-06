@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
 //     socket.send(Math.random());           
 //                console.log(jsonData)
                socket.send(jsonData);
-   }, 2000);
+   }, 1000);
    socket.on('disconnect', function (data) {
        console.log("----------START DISCONNECT----------")
        console.log(data)
