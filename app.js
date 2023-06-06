@@ -14,8 +14,8 @@ const io = new Server(server);
 const t = new Date()
 io.on('connection', (socket) => {
 
-    setTimeout(function(){
-      socket.send(Math.random());
+    setInterval(function(){
+      socket.send(t.getTime());
    }, 4000);
    socket.on('disconnect', function () {
       console.log('A user disconnected');
