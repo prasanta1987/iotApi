@@ -1,9 +1,29 @@
 const { fnoDataFetch, landingPage, search, getSpotData } = require('./routes');
 const { generateUrlList, batchHttpRequest, sendHttpRequest, searchSpot, fetchSpotData } = require('./helperFunctions');
 
+const fs = require('fs')
+const path = require("path");
 
 const express = require('express');
 const app = express()
+
+const userProfileFile = path.join(__dirname, './user_profile/userProfile.json')
+
+fs.exists(userProfileFile, (res) => {
+    if (!res) {
+        try {
+            fs.mkdirSync(path.join(__dirname, './user_profile'))
+        } catch (error) {
+            console.log('Directory Exist')
+        } finally {
+            fs.writeFileSync(userProfileFile,
+                JSON.stringify({
+                    name: null,
+                }, null, 3)
+            )
+        }
+    }
+})
 
 
 const http = require('http');
@@ -15,19 +35,19 @@ const io = new Server(server);
 const t = new Date()
 io.on('connection', (socket) => {
 
-    setInterval(async function(){
-            const jsonData = await fetchSpotData("NIFTY")
-//     socket.send(Math.random());           
-//                console.log(jsonData)
-               socket.send(jsonData);
-   }, 1000);
-   socket.on('disconnect', function (data) {
-       console.log("----------START DISCONNECT----------")
-       console.log(data)
-       console.log("----------END DISCONNECT----------")
-      console.log('A user disconnected');
-   });
-    
+    setInterval(async function () {
+        const jsonData = await fetchSpotData("NIFTY")
+        //     socket.send(Math.random());           
+        //                console.log(jsonData)
+        socket.send(jsonData);
+    }, 1000);
+    socket.on('disconnect', function (data) {
+        console.log("----------START DISCONNECT----------")
+        console.log(data)
+        console.log("----------END DISCONNECT----------")
+        console.log('A user disconnected');
+    });
+
 });
 
 
@@ -62,21 +82,21 @@ app.get('/search/:script', search)
 
 
 //===============SSE START=================
-app.get('/countdown', function(req, res) {
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive'
-  })
-  countdown(res, 10)
+app.get('/countdown', function (req, res) {
+    res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+    })
+    countdown(res, 10)
 })
 
 function countdown(res, count) {
-  res.write("data: " + count + "\n\n")
-  if (count)
-    setTimeout(() => countdown(res, count-1), 1000)
-  else
-    res.end()
+    res.write("data: " + count + "\n\n")
+    if (count)
+        setTimeout(() => countdown(res, count - 1), 1000)
+    else
+        res.end()
 }
 
 //=====================SSE ENDS======================
