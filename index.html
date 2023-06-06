@@ -18,10 +18,8 @@
 <script>
     var socket = io();
     socket.on('message', function(data){
-      
-      document.write(data)
         console.log(data)
-      
+      document.querySelector(".rtd").innerHTML = data
     });
 </script>
 
