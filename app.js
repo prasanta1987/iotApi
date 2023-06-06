@@ -18,7 +18,7 @@ console.log(socket)
            console.log("----------END CONNECT----------")
     setInterval(function(){
       socket.send(Math.random());
-   }, 4000);
+   }, 2000);
    socket.on('disconnect', function (data) {
        console.log("----------START DISCONNECT----------")
        console.log(data)
