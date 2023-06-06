@@ -17,9 +17,9 @@ io.on('connection', (socket) => {
 
     setInterval(async function(){
             const jsonData = await fetchSpotData("NIFTY")
-    socket.send(Math.random());           
-               console.log(jsonData)
-//                socket.send(jsonData);
+//     socket.send(Math.random());           
+//                console.log(jsonData)
+               socket.send(jsonData);
    }, 2000);
    socket.on('disconnect', function (data) {
        console.log("----------START DISCONNECT----------")
