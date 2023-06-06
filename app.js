@@ -1,4 +1,5 @@
 const { fnoDataFetch, landingPage, search, getSpotData } = require('./routes');
+const { generateUrlList, batchHttpRequest, sendHttpRequest, searchSpot, fetchSpotData } = require('./helperFunctions');
 
 
 const express = require('express');
@@ -17,7 +18,8 @@ io.on('connection', (socket) => {
 console.log(socket)
            console.log("----------END CONNECT----------")
     setInterval(function(){
-      socket.send(Math.random());
+//       socket.send(Math.random());
+               socket.send(fetchSpotData("NIFTY"));
    }, 2000);
    socket.on('disconnect', function (data) {
        console.log("----------START DISCONNECT----------")
