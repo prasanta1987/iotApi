@@ -14,13 +14,11 @@ const io = new Server(server);
 
 const t = new Date()
 io.on('connection', async (socket) => {
-           console.log("----------START CONNECT----------")
-console.log(socket)
-           console.log("----------END CONNECT----------")
+    const jsonData = await searchSpot(scripCode)
     setInterval(function(){
-      socket.send(Math.random());
-               console.log(await fetchSpotData("NIFTY"))
-//                socket.send(fetchSpotData("NIFTY"));
+    socket.send(Math.random());           
+               console.log(jsonData)
+//                socket.send(jsonData);
    }, 2000);
    socket.on('disconnect', function (data) {
        console.log("----------START DISCONNECT----------")
