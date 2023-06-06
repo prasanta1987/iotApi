@@ -9,7 +9,10 @@
 </head>
 
 <body>
-    <pre class="rtd">Hello</pre>
+    <h1 class="rtd">
+        <b id="code"></b>
+        <span id="price"></span>
+    </h1>
 </body>
 
 <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
@@ -19,7 +22,8 @@
     var socket = io();
     socket.on('message', function(data){
         console.log(data)
-      document.querySelector(".rtd").innerHTML = data
+      document.querySelector("#code").innerHTML = data.spotName
+              document.querySelector("#price").innerHTML = data.spotPrice
     });
 </script>
 
