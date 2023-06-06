@@ -59,6 +59,27 @@ app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
 
 
+//===============SSE START=================
+app.get('/countdown', function(req, res) {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive'
+  })
+  countdown(res, 10)
+})
+
+function countdown(res, count) {
+  res.write("data: " + count + "\n\n")
+  if (count)
+    setTimeout(() => countdown(res, count-1), 1000)
+  else
+    res.end()
+}
+
+//=====================SSE ENDS======================
+
+
 // app.get('/marketStatus', getCookie, marketStatus)
 // app.get('/historicalData', getCookie, historicalData)
 // app.get('/symbol/:symbol', getCookie, stockData)
