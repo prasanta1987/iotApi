@@ -13,13 +13,13 @@ const io = new Server(server);
 
 
 const t = new Date()
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
            console.log("----------START CONNECT----------")
 console.log(socket)
            console.log("----------END CONNECT----------")
     setInterval(function(){
       socket.send(Math.random());
-               console.log(fetchSpotData("NIFTY"))
+               console.log(await fetchSpotData("NIFTY"))
 //                socket.send(fetchSpotData("NIFTY"));
    }, 2000);
    socket.on('disconnect', function (data) {
