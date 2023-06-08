@@ -1,5 +1,10 @@
 const axios = require("axios").default;
-const { generateUrlList, batchHttpRequest, sendHttpRequest, searchSpot, fetchSpotData } = require('./helperFunctions');
+const { generateUrlList,
+    batchHttpRequest,
+    sendHttpRequest,
+    searchSpot,
+    fetchSpotData,
+    kvWrite } = require('./helperFunctions');
 
 exports.fnoDataFetch = async (req, res) => {
 
@@ -31,4 +36,25 @@ exports.landingPage = (req, res) => {
     sendHttpRequest(req, res, url)
 }
 
+exports.login = (req, res) => {
 
+
+    let userName = req.body.name || false
+    let password = req.body.passwd || false
+
+    console.log(userName)
+    console.log(password)
+
+    res.status(200).json({})
+}
+
+exports.signup = async (req, res) => {
+
+    let userName = req.body.name || false
+    let password = req.body.passwd || false
+
+    const data = await kvWrite(userName, password)
+
+    res.status(200).json({ data })
+
+}

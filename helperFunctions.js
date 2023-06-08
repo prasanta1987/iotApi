@@ -238,6 +238,32 @@ exports.searchSpot = async (param) => {
     return searchDataObj
 }
 
+exports.kvWrite = async (name, passwd) => {
+
+    var config = {
+        method: 'post',
+        url: `${process.env.KV_REST_API_URL}/set/users/`,
+        headers: {
+            "Authorization": process.env.KV_REST_API_TOKEN,
+            "Content-Type": "application/json"
+        },
+        data: JSON.stringify({
+            "name": name,
+            "password": passwd
+        })
+    };
+
+    axios(config)
+        .then(data => {
+            return data.data
+        })
+        .catch(err => {
+            console.log(err)
+            return err
+        })
+
+}
+
 exports.sendHttpRequest = (req, res, url) => {
 
     var config = {
