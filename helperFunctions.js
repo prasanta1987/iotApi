@@ -149,7 +149,6 @@ exports.fetchOptData = async (allUrls) => {
     return finalData
 }
 
-
 exports.fetchFutData = async (scripCode) => {
 
     const futUrl = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=Futures&id=${scripCode}`
@@ -238,45 +237,39 @@ exports.searchSpot = async (param) => {
     return searchDataObj
 }
 
-exports.kvWrite = async (name, passwd) => {
+exports.allCE = async (param) => {
 
-    var config = {
-        method: 'post',
-        url: `${process.env.KV_REST_API_URL}/set/users/`,
-        headers: {
-            "Authorization": process.env.KV_REST_API_TOKEN,
-            "Content-Type": "application/json"
-        },
-        data: JSON.stringify({
-            "name": name,
-            "password": passwd
-        })
-    };
 
-    axios(config)
-        .then(data => {
-            return data.data
-        })
-        .catch(err => {
-            console.log(err)
-            return err
-        })
+    const CEUrl = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=${param}&ExpiryDate=`
+    const PEUrl = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=PE&id=${param}&ExpiryDate=`
+
+    let allCEData = await this.allptionsData(CEUrl)
+    let allPEData = await this.allptionsData(PEUrl)
+
+    console.log(allPEData)
+    return allCEData, allPEData
 
 }
 
-exports.sendHttpRequest = (req, res, url) => {
 
-    var config = {
-        method: 'get',
-        url: url,
-        headers: {
-            'Content-Type': 'application/json',
-            // 'cookie': res.locals.myCookie || ""
-        },
-    };
+exports.allptionsData = async (url) => {
 
-    axios(config)
-        .then(response => { res.status(200).json(response.data) })
-        .catch(error => res.status(501).json(error));
+    let finalDataArray = []
+    let finalDataObj = {}
+    let dataObj = {}
+
+    let response = await axios.get(url);
+    let rawData = response.data.fno_list.item
+    rawData.map(data => {
+        dataObj.expiry = data.fno_exp
+        dataObj.strike = data.strikeprice
+        dataObj.ltp = data.lastvalue
+
+        finalDataArray.push(dataObj)
+    })
+    finalDataObj.allCE = finalDataArray
+
+    return finalDataObj
+
 }
 

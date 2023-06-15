@@ -4,7 +4,7 @@ const { generateUrlList,
     sendHttpRequest,
     searchSpot,
     fetchSpotData,
-    kvWrite } = require('./helperFunctions');
+    allCE } = require('./helperFunctions');
 
 exports.fnoDataFetch = async (req, res) => {
 
@@ -36,6 +36,13 @@ exports.landingPage = (req, res) => {
     sendHttpRequest(req, res, url)
 }
 
+exports.getAllCE = async (req, res) => {
+    const scripCode = req.params.script.toUpperCase();
+    const jsonData = await allCE(scripCode)
+
+    res.status(200).json(jsonData)
+}
+
 exports.login = (req, res) => {
 
 
@@ -53,8 +60,58 @@ exports.signup = async (req, res) => {
     let userName = req.body.name || false
     let password = req.body.passwd || false
 
-    const data = await kvWrite(userName, password)
+    var config = {
+        method: 'post',
+        url: `${process.env.KV_REST_API_URL}/pipeline`,
+        headers: {
+            "Authorization": process.env.KV_REST_API_TOKEN,
+            "Content-Type": "application/json"
+        },
+        data: [
+            ['SET', 'users', JSON.stringify(
+                [
+                    { "name": userName, "passwd": password }
+                ]
+            )],
+            ['SET', 'watchlists', JSON.stringify(
+                [
+                    {
+                        [userName]: ['Stock1', 'Stock2']
+                    }
+                ]
+            )]
+        ]
+    };
+
+    const data = await this.kvWrite(config)
 
     res.status(200).json({ data })
+
+}
+
+exports.kvWrite = async (config) => {
+
+    axios(config)
+        .then(data => {
+            return data.data
+        })
+        .catch(err => {
+            console.log(err)
+            return err
+        })
+
+}
+
+exports.axiosReadOnKv = (config) => {
+
+    axios(config)
+        .then(data => {
+            console.log(data.data)
+            return data.data
+        })
+        .catch(err => {
+            console.log(err)
+            return err
+        })
 
 }

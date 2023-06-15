@@ -10,7 +10,7 @@ const { fnoDataFetch,
     search,
     getSpotData,
     login,
-    signup } = require('./routes');
+    signup, axiosReadOnKv, getAllCE } = require('./routes');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -22,6 +22,7 @@ app.use(session({
     saveUninitialized: true
 }));
 
+// Middlewares Starts Here
 const isLogedIn = (req, res, next) => {
     if (req.session.logedIn) {
         return next()
@@ -30,16 +31,51 @@ const isLogedIn = (req, res, next) => {
     }
 }
 
+const checkUserName = (req, res, next) => {
+
+    let userName = req.body.name || false
+    let password = req.body.passwd || false
+
+    var config = {
+        method: 'post',
+        url: `${process.env.KV_REST_API_URL}/get/users`,
+        headers: {
+            "Authorization": process.env.KV_REST_API_TOKEN,
+            "Content-Type": "application/json"
+        }
+    }
+
+    axios(config)
+        .then(data => {
+            console.log(data.data)
+            return next()
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ "error": "DB Connection Failes" })
+        })
+
+}
+
+const sendDbData = (req, res, next) => {
+    return next()
+}
+
+
+
+// Middlewares Starts Here
+
 app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/index.html'));
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
+app.get('/allCE/:script', getAllCE)
 // app.use(express.static(path.join(__dirname, 'assets')));
 
 // Sign-In Sign-Up Handler
 
-app.post('/login', login)
-app.post('/signup', signup)
+// app.post('/login', login)
+// app.post('/signup', checkUserName, sendDbData, signup)
 
 
 // req.session.logedIn = true
