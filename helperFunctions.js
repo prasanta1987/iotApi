@@ -239,15 +239,16 @@ exports.searchSpot = async (param) => {
 
 exports.allCE = async (param) => {
 
-
+    console.log(param)
     const CEUrl = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=${param}&ExpiryDate=`
     const PEUrl = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=PE&id=${param}&ExpiryDate=`
 
     let allCEData = await this.allptionsData(CEUrl)
     let allPEData = await this.allptionsData(PEUrl)
 
-    console.log(allPEData)
-    return allCEData, allPEData
+    // console.log(allCEData)
+
+    return allCEData
 
 }
 
@@ -260,16 +261,66 @@ exports.allptionsData = async (url) => {
 
     let response = await axios.get(url);
     let rawData = response.data.fno_list.item
-    rawData.map(data => {
-        dataObj.expiry = data.fno_exp
-        dataObj.strike = data.strikeprice
-        dataObj.ltp = data.lastvalue
 
+    rawData.map(data => {
+        let dataObj = {
+            "expiry": data.fno_exp,
+            "strike": data.strikeprice,
+            "ltp": data.lastvalue
+        }
         finalDataArray.push(dataObj)
     })
-    finalDataObj.allCE = finalDataArray
+    console.log(finalDataArray)
+    finalDataObj.all = finalDataArray
 
     return finalDataObj
 
 }
 
+
+exports.batchOptFetch = async () => {
+    let finalObj = {}
+    let dataArr = []
+
+    const optionType = ["CE", "PE"]
+    const strikeArr = ["16650.00", "16700.00", "16750.00", "16800.00", "16850.00", "16900.00", "16950.00", "17000.00", "17050.00", "17100.00", "17150.00", "17200.00", "17250.00", "17300.00", "17350.00", "17400.00", "17450.00", "17500.00", "17550.00", "17600.00", "17650.00", "17700.00", "17750.00", "17800.00", "17850.00", "17900.00", "17950.00", "18000.00", "18050.00", "18100.00", "18150.00", "18200.00", "18250.00", "18300.00", "18350.00", "18400.00", "18450.00", "18500.00", "18550.00", "18600.00", "18650.00", "18700.00", "18750.00", "18800.00", "18850.00", "18900.00", "18950.00", "19000.00", "19050.00", "19100.00", "19150.00", "19200.00", "19250.00", "19300.00", "19350.00", "19400.00", "19450.00", "19500.00", "19550.00", "19600.00", "19650.00", "19700.00", "19750.00", "19800.00", "19850.00", "19900.00", "19950.00", "20000.00", "20050.00", "20100.00", "20150.00", "20200.00", "20250.00"]
+    // const expiries = ["2023-06-22", "2023-06-29"]
+    const expiries = ["2023-06-22", "2023-06-29", "2023-07-06", "2023-07-13", "2023-07-20", "2023-07-27", "2023-08-31"]
+
+    const baseUrls = []
+    optionType.map(cepe => {
+        expiries.map(exp => {
+            strikeArr.map(strike => {
+                let url = `https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/NIFTY?expiry=${exp}&optionType=${cepe}&strikePrice=${strike}`
+                baseUrls.push(url)
+            })
+        })
+    })
+
+    // console.log(baseUrls)
+
+    let allOptRequests = await baseUrls.map(data => axios(data));
+    let allOptResponses = await Promise.all(allOptRequests);
+
+    allOptResponses.map(data => {
+
+        try {
+            let objData = {
+                "strike": data.data.data.Strike_Price,
+                "opType": data.data.data.opttype,
+                "expiry": data.data.data.expirydate,
+                "OpenInt": data.data.data.OpenInt,
+                "ltp": data.data.data.pricecurrent,
+            }
+            dataArr.push(objData)
+        } catch (error) {
+            console.log(error)
+        }
+
+    })
+
+    finalObj.allData = dataArr
+    // console.log(finalObj)
+    return finalObj
+
+}

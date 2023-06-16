@@ -4,13 +4,12 @@ const path = require("path");
 const axios = require("axios").default;
 // const fs = require('fs')
 
-
 const { fnoDataFetch,
     landingPage,
     search,
     getSpotData,
     login,
-    signup, axiosReadOnKv, getAllCE } = require('./routes');
+    signup, axiosReadOnKv, getAllOptData } = require('./routes');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -69,7 +68,7 @@ app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/index.html'));
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
-app.get('/allCE/:script', getAllCE)
+app.get('/allOptData', getAllOptData)
 // app.use(express.static(path.join(__dirname, 'assets')));
 
 // Sign-In Sign-Up Handler

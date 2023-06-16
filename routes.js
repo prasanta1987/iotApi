@@ -4,7 +4,7 @@ const { generateUrlList,
     sendHttpRequest,
     searchSpot,
     fetchSpotData,
-    allCE } = require('./helperFunctions');
+    batchOptFetch } = require('./helperFunctions');
 
 exports.fnoDataFetch = async (req, res) => {
 
@@ -36,9 +36,8 @@ exports.landingPage = (req, res) => {
     sendHttpRequest(req, res, url)
 }
 
-exports.getAllCE = async (req, res) => {
-    const scripCode = req.params.script.toUpperCase();
-    const jsonData = await allCE(scripCode)
+exports.getAllOptData = async (req, res) => {
+    const jsonData = await batchOptFetch()
 
     res.status(200).json(jsonData)
 }
