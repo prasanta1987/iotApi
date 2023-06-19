@@ -26,51 +26,57 @@ fs.exists(userProfileFile, (res) => {
 })
 
 
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
+// const http = require('http');
+// const server = http.createServer(app);
+// const { Server } = require("socket.io");
+// const io = new Server(server);
 
 
-const t = new Date()
-io.on('connection', (socket) => {
+// const t = new Date()
+// io.on('connection', (socket) => {
+
+//     setInterval(async function () {
+//         const jsonData = await fetchSpotData("NIFTY")
+//         //     socket.send(Math.random());           
+//         //                console.log(jsonData)
+//         socket.send(jsonData);
+//     }, 1000);
+//     socket.on('disconnect', function (data) {
+//         console.log("----------START DISCONNECT----------")
+//         console.log(data)
+//         console.log("----------END DISCONNECT----------")
+//         console.log('A user disconnected');
+//     });
+
+// });
+
+
+const server = require('http').createServer(app);
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ server: server });
+
+
+wss.on('connection', function connection(ws) {
+    // console.log('A new client Connected!');
+    // ws.send('Welcome New Client!');
 
     setInterval(async function () {
         const jsonData = await fetchSpotData("NIFTY")
-        //     socket.send(Math.random());           
-        //                console.log(jsonData)
-        socket.send(jsonData);
+        // console.log(jsonData);
+        ws.send(JSON.stringify(jsonData));
     }, 1000);
-    socket.on('disconnect', function (data) {
-        console.log("----------START DISCONNECT----------")
-        console.log(data)
-        console.log("----------END DISCONNECT----------")
-        console.log('A user disconnected');
+
+    ws.on('message', function incoming(message) {
+        console.log('received: %s', message);
+
+        wss.clients.forEach(function each(client) {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+                client.send(message);
+            }
+        });
+
     });
-
 });
-
-
-// const server = require('http').createServer(app);
-// const WebSocket = require('ws');
-// const wss = new WebSocket.Server({ server: server });
-
-
-// wss.on('connection', function connection(ws) {
-//     console.log('A new client Connected!');
-//     ws.send('Welcome New Client!');
-
-//     ws.on('message', function incoming(message) {
-//         console.log('received: %s', message);
-
-//         wss.clients.forEach(function each(client) {
-//             if (client !== ws && client.readyState === WebSocket.OPEN) {
-//                 client.send(message);
-//             }
-//         });
-
-//     });
-// });
 
 
 app.get('/', (req, res) => {
