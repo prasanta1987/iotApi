@@ -20,6 +20,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+app.use(express.static(path.join(__dirname, 'assets')));
 
 // Middlewares Starts Here
 const isLogedIn = (req, res, next) => {
@@ -69,7 +70,7 @@ app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
 app.get('/allOptData', getAllOptData)
-// app.use(express.static(path.join(__dirname, 'assets')));
+
 
 // Sign-In Sign-Up Handler
 
