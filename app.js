@@ -26,7 +26,7 @@ const isLogedIn = (req, res, next) => {
     if (req.session.logedIn) {
         return next()
     } else {
-        res.sendFile(path.join(__dirname, '/login.html'));
+        res.sendFile(path.join(__dirname, '/public/login.html'));
     }
 }
 
@@ -64,12 +64,11 @@ const sendDbData = (req, res, next) => {
 
 // Middlewares Starts Here
 
-app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/index.html'));
+app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
 app.get('/allOptData', getAllOptData)
-// app.use(express.static(path.join(__dirname, 'assets')));
 
 // Sign-In Sign-Up Handler
 
@@ -98,6 +97,13 @@ app.get('/allOptData', getAllOptData)
 //         "Authorization": process.env.KV_REST_API_TOKEN
 //     }
 // };
+// var config = {
+//     method: 'get',
+//     url: `${process.env.KV_REST_API_URL}/get/users/`,
+//     // headers: {
+//     //     "Authorization": process.env.KV_REST_API_TOKEN
+//     // }
+// };
 
 // axios(config)
 //     .then(data => {
@@ -112,4 +118,5 @@ app.get('/allOptData', getAllOptData)
 
 
 
+app.use(express.static(path.join(__dirname, "public")));
 app.listen(port, () => console.log(`Server Running at http://localhost:${port}`))
