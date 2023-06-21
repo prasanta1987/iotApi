@@ -21,18 +21,19 @@
     let server = window.origin.replace("http", "ws")
     const socket = new WebSocket(server);
 
-    // Connection opened
-    // window.location.search.replace("?", "")
-
-
     socket.addEventListener("open", () => {
-        socket.send(window.location.search.replace("?", ""));
+        const scripCode = window.location.search.replace("?", "")
+        socket.send(scripCode);
     });
 
     // Listen for messages
     socket.addEventListener("message", event => {
         // data = event.data;
-        data = JSON.parse(event.data);
+        try {
+            data = JSON.parse(event.data);
+        } catch (error) {
+            data = event.data
+        }
         document.querySelector("#code").innerHTML = data.spotName
         document.querySelector("#price").innerHTML = data.spotPrice
     });

@@ -43,7 +43,8 @@ wss.on('connection', function connection(ws) {
     ws.send('Welcome New Client!');
 
     ws.on('message', msg => {
-        const scripCode = msg.toString()
+
+        const scripCode = (msg.toString() == '') ? "NIFTY" : msg.toString()
 
         setInterval(async function () {
             const jsonData = await fetchSpotData(scripCode.toUpperCase())
