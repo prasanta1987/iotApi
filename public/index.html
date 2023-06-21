@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 </head>
 
 <body>
@@ -18,31 +19,31 @@
 
 <script>
 
-    let server = window.origin.replace("http", "ws")
-    const socket = new WebSocket(server);
+    // let server = window.origin.replace("http", "ws")
+    // const socket = new WebSocket(server);
 
-    // Connection opened
-    // window.location.search.replace("?", "")
+    // // Connection opened
+    // // window.location.search.replace("?", "")
 
 
-    socket.addEventListener("open", () => {
-        socket.send(window.location.search.replace("?", ""));
-    });
+    // socket.addEventListener("open", () => {
+    //     socket.send(window.location.search.replace("?", ""));
+    // });
 
-    // Listen for messages
-    socket.addEventListener("message", event => {
-        // data = event.data;
-        data = JSON.parse(event.data);
+    // // Listen for messages
+    // socket.addEventListener("message", event => {
+    //     // data = event.data;
+    //     data = JSON.parse(event.data);
+    //     document.querySelector("#code").innerHTML = data.spotName
+    //     document.querySelector("#price").innerHTML = data.spotPrice
+    // });
+
+    var socket = io();
+    socket.on('message', function (data) {
+        console.log(data)
         document.querySelector("#code").innerHTML = data.spotName
         document.querySelector("#price").innerHTML = data.spotPrice
     });
-
-    // var socket = io();
-    // socket.on('message', function(data){
-    //     console.log(data)
-    //   document.querySelector("#code").innerHTML = data.spotName
-    //           document.querySelector("#price").innerHTML = data.spotPrice
-    // });
 
 </script>
 
