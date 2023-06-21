@@ -20,7 +20,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-app.use(express.static(path.join(__dirname, 'assets')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Middlewares Starts Here
 const isLogedIn = (req, res, next) => {
