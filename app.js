@@ -49,7 +49,7 @@ wss.on('connection', function connection(ws) {
         setInterval(async function () {
             const jsonData = await fetchSpotData(scripCode.toUpperCase())
             ws.send(JSON.stringify(jsonData));
-        }, 1000);
+        }, 5000);
 
 
         wss.clients.forEach(client => {
