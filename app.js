@@ -118,6 +118,4 @@ app.get('/allOptData', getAllOptData)
 // app.get('/symbol/:symbol', getCookie, stockData)
 
 
-
-app.use(express.static(path.join(__dirname, "public")));
 app.listen(port, () => console.log(`Server Running at http://localhost:${port}`))
