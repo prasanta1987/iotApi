@@ -2,14 +2,12 @@ const express = require('express');
 const session = require('express-session');
 const path = require("path");
 const axios = require("axios").default;
-// const fs = require('fs')
 
 const { fnoDataFetch,
-    landingPage,
     search,
     getSpotData,
     login,
-    signup, axiosReadOnKv, getAllOptData } = require('./routes');
+    signup } = require('./routes');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -20,7 +18,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Middlewares Starts Here
 const isLogedIn = (req, res, next) => {
@@ -31,50 +29,55 @@ const isLogedIn = (req, res, next) => {
     }
 }
 
-const checkUserName = (req, res, next) => {
+const checkUserData = async (req, res, next) => {
 
-    let userName = req.body.name || false
-    let password = req.body.passwd || false
+    let errorObj = {}
+    let userName = req.body.name
 
-    var config = {
-        method: 'post',
-        url: `${process.env.KV_REST_API_URL}/get/users`,
+    let config = {
+        method: 'get',
         headers: {
             "Authorization": process.env.KV_REST_API_TOKEN,
             "Content-Type": "application/json"
         }
     }
+    const data = await axios(`${process.env.KV_REST_API_URL}/get/users`, config)
+    const rawUserData = JSON.parse(data.data.result)
 
-    axios(config)
-        .then(data => {
-            console.log(data.data)
-            return next()
+    try {
+        rawUserData.forEach(userData => {
+            if (userData.name == userName) errorObj.error = "User Name Already Exist"
         })
-        .catch(err => {
-            console.log(err)
-            res.status(500).json({ "error": "DB Connection Failes" })
-        })
+    } catch (error) {
+        res.locals.userList = []
+        return next()
+    }
+
+
+    if (Object.keys(errorObj).length > 0) {
+        res.status(500).json(errorObj)
+    } else {
+        res.locals.userList = rawUserData
+        return next()
+    }
 
 }
+// Middlewares Ends Here
 
-const sendDbData = (req, res, next) => {
-    return next()
-}
-
-
-
-// Middlewares Starts Here
-
-app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/public/index.html'));
+// API Request Starts
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
-app.get('/allOptData', getAllOptData)
+// API Request Ends
+
+
+// Page Navigation
+app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/public/index.html'));
+
 
 // Sign-In Sign-Up Handler
-
-// app.post('/login', login)
-// app.post('/signup', checkUserName, sendDbData, signup)
+app.post('/login', login)
+app.post('/signup', checkUserData, signup)
 
 
 // req.session.logedIn = true
@@ -117,5 +120,5 @@ app.get('/allOptData', getAllOptData)
 // app.get('/historicalData', getCookie, historicalData)
 // app.get('/symbol/:symbol', getCookie, stockData)
 
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.listen(port, () => console.log(`Server Running at http://localhost:${port}`))

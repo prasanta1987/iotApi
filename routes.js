@@ -42,22 +42,54 @@ exports.getAllOptData = async (req, res) => {
     res.status(200).json(jsonData)
 }
 
-exports.login = (req, res) => {
-
+exports.login = async (req, res) => {
 
     let userName = req.body.name || false
     let password = req.body.passwd || false
 
-    console.log(userName)
-    console.log(password)
+    let errorObj = {}
 
-    res.status(200).json({})
+    let config = {
+        method: 'get',
+        url: `${process.env.KV_REST_API_URL}/get/users`,
+        headers: {
+            "Authorization": process.env.KV_REST_API_TOKEN,
+            "Content-Type": "application/json"
+        }
+    }
+
+    const data = await axios(config)
+    let userDatas = JSON.parse(data.data.result)
+
+    userDatas.forEach(userData => {
+        if (userData.name == userName) {
+            if (userData.passwd == password) {
+                req.session.logedIn = true
+                res.status(200).json({ "msg": "Login Successful" })
+            } else {
+                res.status(200).json({ "msg": "Wrong Password" })
+            }
+        } else {
+            res.status(200).json({ "msg": "User Name Not Found" })
+        }
+    })
+
 }
 
 exports.signup = async (req, res) => {
 
+    const userLists = res.locals.userList
+
     let userName = req.body.name || false
     let password = req.body.passwd || false
+
+    let objData = {
+        "name": userName,
+        "passwd": password
+    }
+
+    userLists.push(objData)
+
 
     var config = {
         method: 'post',
@@ -67,15 +99,13 @@ exports.signup = async (req, res) => {
             "Content-Type": "application/json"
         },
         data: [
-            ['SET', 'users', JSON.stringify(
-                [
-                    { "name": userName, "passwd": password }
-                ]
-            )],
+            ['SET', 'users', JSON.stringify(userLists)],
             ['SET', 'watchlists', JSON.stringify(
                 [
                     {
-                        [userName]: ['Stock1', 'Stock2']
+                        [userName]: [
+                            { "scripName": "NIFTY", "buyPrice": 1234.56, "epoc": 12344567890 }
+                        ]
                     }
                 ]
             )]
@@ -90,20 +120,7 @@ exports.signup = async (req, res) => {
 
 exports.kvWrite = async (config) => {
 
-    axios(config)
-        .then(data => {
-            return data.data
-        })
-        .catch(err => {
-            console.log(err)
-            return err
-        })
-
-}
-
-exports.axiosReadOnKv = (config) => {
-
-    axios(config)
+    await axios(config)
         .then(data => {
             console.log(data.data)
             return data.data
