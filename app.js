@@ -34,6 +34,10 @@ const checkUserData = async (req, res, next) => {
     let errorObj = {}
     let userName = req.body.name
 
+    if (userName.length < 3) {
+        errorObj.userNameError = "User Name too Short"
+    }
+
     let config = {
         method: 'get',
         headers: {
