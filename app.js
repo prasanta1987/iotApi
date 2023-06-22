@@ -7,7 +7,7 @@ const { fnoDataFetch,
     search,
     getSpotData,
     login,
-    signup } = require('./routes');
+    signup, signOut } = require('./routes');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -77,6 +77,7 @@ app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/public/index.ht
 
 // Sign-In Sign-Up Handler
 app.post('/login', login)
+app.post('/signOut', signOut)
 app.post('/signup', checkUserData, signup)
 
 

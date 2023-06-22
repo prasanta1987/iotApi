@@ -58,21 +58,28 @@ exports.login = async (req, res) => {
         }
     }
 
-    const data = await axios(config)
-    let userDatas = JSON.parse(data.data.result)
+    try {
+        const data = await axios(config)
+        let userDatas = JSON.parse(data.data.result)
 
-    userDatas.forEach(userData => {
-        if (userData.name == userName) {
-            if (userData.passwd == password) {
-                req.session.logedIn = true
-                res.status(200).json({ "msg": "Login Successful" })
+        userDatas.forEach(userData => {
+            if (userData.name == userName) {
+                if (userData.passwd == password) {
+                    req.session.logedIn = true
+                    res.status(200).json({ "msg": "Login Successful" })
+                } else {
+                    res.status(200).json({ "msg": "Wrong Password" })
+                }
             } else {
-                res.status(200).json({ "msg": "Wrong Password" })
+                res.status(200).json({ "msg": "User Name Not Found" })
             }
-        } else {
-            res.status(200).json({ "msg": "User Name Not Found" })
-        }
-    })
+        })
+
+    } catch (error) {
+        res.status(500).json({ "error": error })
+    }
+
+
 
 }
 
@@ -116,6 +123,12 @@ exports.signup = async (req, res) => {
 
     res.status(200).json({ data })
 
+}
+
+exports.signOut = (req, res) => {
+
+    req.session.logedIn = false
+    res.status(200).json({ "msg": "Successful" })
 }
 
 exports.kvWrite = async (config) => {
