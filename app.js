@@ -68,7 +68,7 @@ const checkUserData = async (req, res, next) => {
 }
 
 const setNoCache = (req,res,next)=>{
-    res.setHeader('Cache-Control', 'no-store')
+    res.setHeader('Cache-Control', 'force-no-store')
     return next()
 }
 // Middlewares Ends Here
