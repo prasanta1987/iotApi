@@ -27,7 +27,7 @@
     <script>
         const singOut = () => {
 
-            fetch('/signOut', { method: 'POST' })
+            fetch('/signOut', { method: 'POST' ,'cache-control', 'no-cache'})
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg == "Successful") window.location = '/'
