@@ -28,7 +28,7 @@
         const singOut = () => {
 
             fetch('/signOut', { method: 'POST' ,
-                              headers: {"cache-control", "no-cache"}
+                              headers: {"cache-control":"no-cache"}
                               })
                 .then(res => res.json())
                 .then(data => {
