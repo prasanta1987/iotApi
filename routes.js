@@ -61,7 +61,7 @@ req.session.logedIn = false
     try {
         const data = await axios(config)
         let userDatas = JSON.parse(data.data.result)
-
+console.log(userDatas)
         userDatas.forEach(userData => {
             if (userData.name == userName) {
                 if (userData.passwd == password) {
