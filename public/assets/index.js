@@ -1,8 +1,6 @@
-const host = 'https://iotapi.vercel.app'
-
 const singOut = () => {
 
-    fetch(`${host}/signOut`, {
+    fetch('/signOut', {
         method: 'POST',
         headers: { "cache-control": "no-cache" }
     })
@@ -27,7 +25,7 @@ const login = () => {
             passwd: password
         })
     }
-    fetch(`${host}/login`, fetchConfig)
+    fetch('/login', fetchConfig)
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -54,7 +52,7 @@ const signUp = () => {
             passwd: password
         })
     }
-    fetch(`${host}/signup`, fetchConfig)
+    fetch('/signup', fetchConfig)
         .then(res => res.json())
         .then(data => console.log(data))
         .catch(err => console.log(err))
