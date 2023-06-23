@@ -66,6 +66,11 @@ const checkUserData = async (req, res, next) => {
     }
 
 }
+
+const setNoCache = (req,res,next)=>{
+    res.setHeader('Cache-Control', 'no-store')
+    return next()
+}
 // Middlewares Ends Here
 
 // API Request Starts
@@ -80,9 +85,9 @@ app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/public/index.ht
 
 
 // Sign-In Sign-Up Handler
-app.post('/login', login)
-app.post('/signOut', signOut)
-app.post('/signup', checkUserData, signup)
+app.post('/login',setNoCache, login)
+app.post('/signOut',setNoCache, signOut)
+app.post('/signup',setNoCache, checkUserData, signup)
 
 
 // req.session.logedIn = true
