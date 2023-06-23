@@ -66,14 +66,15 @@ console.log(userDatas)
             if (userData.name == userName) {
                 if (userData.passwd == password) {
                     req.session.logedIn = true
-                    res.status(200).json({ "msg": "Login Successful" })
-                } else {
-                    res.status(200).json({ "msg": "Wrong Password" })
+                    
                 }
-            } else {
-                res.status(200).json({ "msg": "User Name Not Found" })
             }
         })
+        if(req.session.logedIn == true){
+            res.status(200).json({ "msg": "Login Successful" })
+        } else {
+            res.status(200).json({ "msg": "Login Failed" })
+        }
 
     } catch (error) {
         res.status(500).json({ "error": error })
