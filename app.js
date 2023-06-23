@@ -81,7 +81,7 @@ app.get('/search/:script', search)
 
 
 // Page Navigation
-app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/public/index.html'));
+app.get('/', isLogedIn,setNoCache, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
 
 // Sign-In Sign-Up Handler
