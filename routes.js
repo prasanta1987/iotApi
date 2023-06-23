@@ -43,7 +43,7 @@ exports.getAllOptData = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-
+req.session.logedIn = false
     let userName = req.body.name || false
     let password = req.body.passwd || false
 
