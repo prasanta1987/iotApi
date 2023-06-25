@@ -1,19 +1,38 @@
-const singOut = () => {
+const userName = document.querySelector("#email");
+const password = document.querySelector("#passwd");
+const loginBtn = document.querySelector("#loginbtn");
+const logoutBtn = document.querySelector("#logoutbtn");
+const brandText = document.querySelector("#brand-text");
 
-    fetch('/signOut', {
-        method: 'POST',
-        headers: { "cache-control": "no-cache" }
-    })
+(() => {
+    fetch('/loginStatus', { method: 'POST' })
         .then(res => res.json())
         .then(data => {
-            if (data.msg == "Successful") window.location = '/'
+            console.log(data)
+            if (data.logInStat) {
+                loginBtn.classList.add('d-none')
+                brandText.innerHTML = data.userName
+                brandText.style = "text-transform : capitalize";
+            } else {
+                logoutBtn.classList.add('d-none')
+            }
+        })
+        .catch(err => console.log(err))
+
+})();
+
+const singOut = () => {
+
+    fetch('/signOut', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            if (data.msg == "success") window.location = `/`
         })
         .catch(err => console.log(err))
 }
 
 const login = () => {
-    const userName = document.querySelector("#email").value;
-    const password = document.querySelector("#passwd").value;
 
     const fetchConfig = {
         method: 'POST',
@@ -21,17 +40,15 @@ const login = () => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            name: userName,
-            passwd: password
+            name: userName.value,
+            passwd: password.value
         })
     }
-    fetch('/login', fetchConfig)
+    fetch('/signIn', fetchConfig)
         .then(res => res.json())
         .then(data => {
             console.log(data)
-            if (data.msg = "Login Successful") {
-                window.location = '/index.html'
-            }
+            if (data.msg == "success") window.location = `/`
         })
         .catch(err => console.log(err))
 
@@ -39,8 +56,6 @@ const login = () => {
 }
 
 const signUp = () => {
-    const userName = document.querySelector("#email").value;
-    const password = document.querySelector("#passwd").value;
 
     const fetchConfig = {
         method: 'POST',
@@ -48,8 +63,8 @@ const signUp = () => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            name: userName,
-            passwd: password
+            name: userName.value,
+            passwd: password.value
         })
     }
     fetch('/signup', fetchConfig)
@@ -57,5 +72,8 @@ const signUp = () => {
         .then(data => console.log(data))
         .catch(err => console.log(err))
 
+}
 
+const returnTimeStamp = () => {
+    return new Date().getTime()
 }

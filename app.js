@@ -6,7 +6,7 @@ const axios = require("axios").default;
 const { fnoDataFetch,
     search,
     getSpotData,
-    login,
+    signIn,
     signup, signOut } = require('./routes');
 
 const app = express()
@@ -25,13 +25,11 @@ app.use(session({
 // Middlewares Starts Here
 const isLogedIn = (req, res, next) => {
 
-    // if (req.session.logedIn) {
-    //     return next()
-    // } else {
-    //     // res.sendFile(path.join(__dirname, '/public/login.html'));
-    //     res.status(401).json({ "msg": "Not Authorized" })
-    // }
-    return next()
+    if (req.session.logedIn) {
+        return next()
+    } else {
+        res.sendFile(path.join(__dirname, '/public/login.html'));
+    }
 }
 
 const checkUserData = async (req, res, next) => {
@@ -82,7 +80,7 @@ app.get('/search/:script', search)
 
 
 // Page Navigation
-app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/public/index.html'));
+app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
 
 // Sign-In Sign-Up Handler
@@ -93,9 +91,10 @@ app.post('/loginStatus', (req, res) => {
 
     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 })
-app.post('/login', login)
+
+app.post('/signIn', signIn)
 app.post('/signOut', signOut)
-app.post('/signup', checkUserData, signup)
+app.post('/signUp', checkUserData, signup)
 
 
 // req.session.logedIn = true

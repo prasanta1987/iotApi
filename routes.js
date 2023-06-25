@@ -42,7 +42,7 @@ exports.getAllOptData = async (req, res) => {
     res.status(200).json(jsonData)
 }
 
-exports.login = async (req, res) => {
+exports.signIn = async (req, res) => {
     req.session.logedIn = false
     let userName = req.body.name || false
     let password = req.body.passwd || false
@@ -71,9 +71,9 @@ exports.login = async (req, res) => {
             }
         })
         if (req.session.logedIn == true) {
-            res.status(200).json({ "msg": "Login Successfull" })
+            res.status(200).json({ "msg": "success" })
         } else {
-            res.status(200).json({ "msg": "Login Failed" })
+            res.status(200).json({ "msg": "failed" })
         }
 
     } catch (error) {
@@ -93,7 +93,8 @@ exports.signup = async (req, res) => {
 
     let objData = {
         "name": userName,
-        "passwd": password
+        "passwd": password,
+        "apiKey": Math.random().toString(36).substring(4) + Math.random().toString(16).substring(6)
     }
 
     userLists.push(objData)
@@ -130,7 +131,7 @@ exports.signOut = (req, res) => {
 
     req.session.logedIn = false
     req.session.userName = null
-    res.status(200).json({ "msg": "Successful" })
+    res.status(200).json({ "msg": "success" })
 }
 
 exports.kvWrite = async (config) => {
