@@ -24,6 +24,7 @@ app.use(session({
 
 // Middlewares Starts Here
 const isLogedIn = (req, res, next) => {
+
     // if (req.session.logedIn) {
     //     return next()
     // } else {
@@ -90,7 +91,7 @@ app.post('/loginStatus', (req, res) => {
     if (!req.session.logedIn) req.session.logedIn = false
     if (!req.session.userName) req.session.userName = null
 
-    res.status(200).json({ "logInStat": req.session.logedIn })
+    res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 })
 app.post('/login', login)
 app.post('/signOut', signOut)

@@ -43,7 +43,7 @@ exports.getAllOptData = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-req.session.logedIn = false
+    req.session.logedIn = false
     let userName = req.body.name || false
     let password = req.body.passwd || false
 
@@ -61,17 +61,17 @@ req.session.logedIn = false
     try {
         const data = await axios(config)
         let userDatas = JSON.parse(data.data.result)
-console.log(userDatas)
+        console.log(userDatas)
         userDatas.forEach(userData => {
             if (userData.name == userName) {
                 if (userData.passwd == password) {
                     req.session.logedIn = true
-                    
+                    req.session.userName = userName
                 }
             }
         })
-        if(req.session.logedIn == true){
-            res.status(200).json({ "msg": "Login Successful" })
+        if (req.session.logedIn == true) {
+            res.status(200).json({ "msg": "Login Successfull" })
         } else {
             res.status(200).json({ "msg": "Login Failed" })
         }
@@ -129,6 +129,7 @@ exports.signup = async (req, res) => {
 exports.signOut = (req, res) => {
 
     req.session.logedIn = false
+    req.session.userName = null
     res.status(200).json({ "msg": "Successful" })
 }
 
