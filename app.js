@@ -85,6 +85,9 @@ app.get('/', isLogedIn, (req, res) => res.sendFile(__dirname + '/public/index.ht
 
 // Sign-In Sign-Up Handler
 app.post('/loginStatus', (req, res) => {
+  if(req.session.logedIn.logInStat == true){
+    req.session.logInStat = false
+  }
     res.status(200).json({ "logInStat": req.session.logedIn })
 })
 app.post('/login', login)
