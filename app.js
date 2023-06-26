@@ -86,7 +86,7 @@ app.get('/search/:script', search)
 
 
 // Page Navigation
-app.get('/',useNoCache, (req, res) => {
+app.get('/', useNoCache, (req, res) => {
     // res.setHeader('Cache-Control', 'no-store');
     res.sendFile(__dirname + '/public/index.html');
 });
@@ -102,7 +102,7 @@ app.post('/loginStatus', useNoCache, (req, res) => {
 })
 
 app.post('/signIn', useNoCache, signIn)
-app.post('/signOut',useNoCache, signOut)
+app.post('/signOut', useNoCache, signOut)
 app.post('/signUp', useNoCache, checkUserData, signup)
 
 
