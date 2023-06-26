@@ -25,16 +25,16 @@ app.use(session({
 // Middlewares Starts Here
 
 // const useNoCache = (req, res, next) => {
-//     res.setHeader('Cache-Control', 'no-store,no-cache');
+//     res.setHeader('Cache-Control', 'no-store');
 //     return next();
 // }
 
-const isLogedIn = (req, res, next) => {
+const mainRoute = (req, res, next) => {
 
     if (req.session.logedIn) {
-        return next()
+        res.sendFile(path.join(__dirname, '/public/dashboard.html'));
     } else {
-        res.sendFile(path.join(__dirname, '/public/login.html'));
+        res.sendFile(path.join(__dirname, '/public/index.html'));
     }
 }
 
@@ -76,23 +76,40 @@ const checkUserData = async (req, res, next) => {
 
 }
 
+const apiAuthCheck = (req, res, next) => {
+    console.log(req.headers['user-agent'])
+    // console.log(req.headers)
+    if (req.session.logedIn) {
+        return next()
+    } else {
+        res.status(401).send("Unautorized Access")
+    }
+}
+
 // Middlewares Ends Here
 
 // API Request Starts
+
+// Un-Authenticated
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
+
+// Authenticated
+app.get('/spot/:script/', apiAuthCheck, getSpotData)
+app.get('/fno/:script/:data', apiAuthCheck, fnoDataFetch)
+
 // API Request Ends
 
 
 // Page Navigation
+app.get('/dashboard', mainRoute);
 app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
 
 // Sign-In Sign-Up Handler
 app.post('/loginStatus', (req, res) => {
 
-    res.setHeader('Cache-Control', 'no-store, no-cache');
     if (!req.session.logedIn) req.session.logedIn = false
     if (!req.session.userName) req.session.userName = null
 

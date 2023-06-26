@@ -27,7 +27,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav me-auto mb-0 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
@@ -36,8 +36,10 @@
           </li>
         </ul>
         <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button id="logoutbtn" onclick="singOut()" class="me-2 btn btn-outline-danger" type="button">Logout</button>
+          <input id="stocksearchfield" class="d-none form-control me-2" type="search" placeholder="Search"
+            aria-label="Search">
+          <button id="logoutbtn" onclick="singOut()" class="d-none me-2 btn btn-outline-danger"
+            type="button">Logout</button>
           <button id="loginbtn" type="button" class="btn btn-outline-success" data-bs-toggle="modal"
             data-bs-target="#loginModal">
             Login
@@ -53,7 +55,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" id="loginmodalclose" class="btn-close" data-bs-dismiss="modal"
+            aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form>
