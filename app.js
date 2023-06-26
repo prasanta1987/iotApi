@@ -23,6 +23,12 @@ app.use(session({
 
 
 // Middlewares Starts Here
+
+const useNoCache = (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    return next();
+}
+
 const isLogedIn = (req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
     if (req.session.logedIn) {
@@ -80,24 +86,24 @@ app.get('/search/:script', search)
 
 
 // Page Navigation
-app.get('/', (req, res) => {
-    res.setHeader('Cache-Control', 'no-store');
+app.get('/',useNoCache, (req, res) => {
+    // res.setHeader('Cache-Control', 'no-store');
     res.sendFile(__dirname + '/public/index.html');
 });
 
 
 // Sign-In Sign-Up Handler
-app.post('/loginStatus', (req, res) => {
-    res.setHeader('Cache-Control', 'no-store');
+app.post('/loginStatus', useNoCache, (req, res) => {
+    // res.setHeader('Cache-Control', 'no-store');
     if (!req.session.logedIn) req.session.logedIn = false
     if (!req.session.userName) req.session.userName = null
 
     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 })
 
-app.post('/signIn', signIn)
-app.post('/signOut', signOut)
-app.post('/signUp', checkUserData, signup)
+app.post('/signIn', useNoCache, signIn)
+app.post('/signOut',useNoCache, signOut)
+app.post('/signUp', useNoCache, checkUserData, signup)
 
 
 // req.session.logedIn = true
