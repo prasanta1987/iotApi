@@ -24,7 +24,7 @@ app.use(session({
 
 // Middlewares Starts Here
 const isLogedIn = (req, res, next) => {
-
+    res.setHeader('Cache-Control', 'no-store');
     if (req.session.logedIn) {
         return next()
     } else {
@@ -33,7 +33,7 @@ const isLogedIn = (req, res, next) => {
 }
 
 const checkUserData = async (req, res, next) => {
-
+    res.setHeader('Cache-Control', 'no-store');
     let errorObj = {}
     let userName = req.body.name
 
@@ -80,12 +80,15 @@ app.get('/search/:script', search)
 
 
 // Page Navigation
-app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
+app.get('/', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    res.sendFile(__dirname + '/public/index.html');
+});
 
 
 // Sign-In Sign-Up Handler
 app.post('/loginStatus', (req, res) => {
-
+    res.setHeader('Cache-Control', 'no-store');
     if (!req.session.logedIn) req.session.logedIn = false
     if (!req.session.userName) req.session.userName = null
 
