@@ -24,13 +24,13 @@ app.use(session({
 
 // Middlewares Starts Here
 
-const useNoCache = (req, res, next) => {
-    res.setHeader('Cache-Control', 'no-store');
-    return next();
-}
+// const useNoCache = (req, res, next) => {
+//     res.setHeader('Cache-Control', 'no-store,no-cache');
+//     return next();
+// }
 
 const isLogedIn = (req, res, next) => {
-    res.setHeader('Cache-Control', 'no-store');
+
     if (req.session.logedIn) {
         return next()
     } else {
@@ -39,7 +39,7 @@ const isLogedIn = (req, res, next) => {
 }
 
 const checkUserData = async (req, res, next) => {
-    res.setHeader('Cache-Control', 'no-store');
+
     let errorObj = {}
     let userName = req.body.name
 
@@ -86,65 +86,23 @@ app.get('/search/:script', search)
 
 
 // Page Navigation
-app.get('/', useNoCache, (req, res) => {
-    // res.setHeader('Cache-Control', 'no-store');
-    res.sendFile(__dirname + '/public/index.html');
-});
+app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
 
 // Sign-In Sign-Up Handler
-app.post('/loginStatus', useNoCache, (req, res) => {
-    // res.setHeader('Cache-Control', 'no-store');
+app.post('/loginStatus', (req, res) => {
+
+    res.setHeader('Cache-Control', 'no-store, no-cache');
     if (!req.session.logedIn) req.session.logedIn = false
     if (!req.session.userName) req.session.userName = null
 
     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 })
 
-app.post('/signIn', useNoCache, signIn)
-app.post('/signOut', useNoCache, signOut)
-app.post('/signUp', useNoCache, checkUserData, signup)
+app.post('/signIn', signIn)
+app.post('/signOut', signOut)
+app.post('/signUp', checkUserData, signup)
 
-
-// req.session.logedIn = true
-// console.log(process.env.KV_REST_API_URL);
-// console.log(process.env.KV_REST_API_TOKEN);
-
-// var config = {
-//     method: 'post',
-//     url: `${process.env.KV_REST_API_URL}/set/users/`,
-//     headers: {
-//         "Authorization": process.env.KV_REST_API_TOKEN,
-//         "Content-Type": "application/json"
-//     },
-//     data: { "name": "PKS" }
-// };
-
-// var config = {
-//     method: 'get',
-//     url: `${process.env.KV_REST_API_URL}/get/users/`,
-//     headers: {
-//         "Authorization": process.env.KV_REST_API_TOKEN
-//     }
-// };
-// var config = {
-//     method: 'get',
-//     url: `${process.env.KV_REST_API_URL}/get/users/`,
-//     // headers: {
-//     //     "Authorization": process.env.KV_REST_API_TOKEN
-//     // }
-// };
-
-// axios(config)
-//     .then(data => {
-//         // console.log(data.data)
-//         console.log(JSON.parse(data.data.result))
-//     })
-//     .catch(err => console.log(err))
-
-// app.get('/marketStatus', getCookie, marketStatus)
-// app.get('/historicalData', getCookie, historicalData)
-// app.get('/symbol/:symbol', getCookie, stockData)
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.listen(port, () => console.log(`Server Running at http://localhost:${port}`))

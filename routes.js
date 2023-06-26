@@ -44,7 +44,7 @@ exports.getAllOptData = async (req, res) => {
 
 exports.signIn = async (req, res) => {
     req.session.logedIn = false
-    // res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Cache-Control', 'no-store, no-cache');
     let userName = req.body.name || false
     let password = req.body.passwd || false
 
@@ -86,7 +86,7 @@ exports.signIn = async (req, res) => {
 }
 
 exports.signup = async (req, res) => {
-    // res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Cache-Control', 'no-store, no-cache');
     const userLists = res.locals.userList
 
     let userName = req.body.name || false
@@ -129,7 +129,7 @@ exports.signup = async (req, res) => {
 }
 
 exports.signOut = (req, res) => {
-    // res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Cache-Control', 'no-store, no-cache');
     req.session.logedIn = false
     req.session.userName = null
     res.status(200).json({ "msg": "success" })
