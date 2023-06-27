@@ -109,6 +109,12 @@ app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
 
 // Sign-In Sign-Up Handler
+
+app.post('/signIn', signIn)
+app.post('/signInArduino', signInArduino) //Arduino Specific
+app.post('/signOut', signOut)
+app.post('/signUp', checkUserData, signup)
+
 app.post('/loginStatus', (req, res) => {
 
     if (!req.session.logedIn) req.session.logedIn = false
@@ -116,11 +122,6 @@ app.post('/loginStatus', (req, res) => {
 
     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 })
-
-app.post('/signIn', signIn)
-app.post('/signInArduino', signInArduino) //Arduino Specific
-app.post('/signOut', signOut)
-app.post('/signUp', checkUserData, signup)
 
 
 app.use(express.static(path.join(__dirname, 'public')));

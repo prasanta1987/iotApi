@@ -61,8 +61,6 @@ const login = () => {
             }
         })
         .catch(err => console.log(err))
-
-
 }
 
 const signUp = () => {
@@ -112,12 +110,4 @@ const displaylogInElement = (stat) => {
 
 
 
-}
-
-const displaylogOutElement = () => {
-
-}
-
-const returnTimeStamp = () => {
-    return new Date().getTime()
 }
