@@ -52,8 +52,9 @@ const login = () => {
             document.querySelector('#loginmodalclose').click()
             brandText.innerHTML = userName.value
             brandText.style = "text-transform : capitalize";
-            // if (data.msg == "success") window.location = `/`
+
             if (data.msg == "success") {
+                // if (data.msg == "success") window.location = `/`
                 displaylogInElement("login")
             } else {
                 displaylogInElement("logout")

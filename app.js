@@ -7,7 +7,7 @@ const { fnoDataFetch,
     search,
     getSpotData,
     signIn,
-    signup, signOut } = require('./routes');
+    signup, signOut, mktSnapShot, globalMktData, nseTicker, signInArduino } = require('./routes');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -24,10 +24,10 @@ app.use(session({
 
 // Middlewares Starts Here
 
-// const useNoCache = (req, res, next) => {
-//     res.setHeader('Cache-Control', 'no-store');
-//     return next();
-// }
+const useNoCache = (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    return next();
+}
 
 const mainRoute = (req, res, next) => {
 
@@ -77,8 +77,6 @@ const checkUserData = async (req, res, next) => {
 }
 
 const apiAuthCheck = (req, res, next) => {
-    console.log(req.headers['user-agent'])
-    // console.log(req.headers)
     if (req.session.logedIn) {
         return next()
     } else {
@@ -94,6 +92,9 @@ const apiAuthCheck = (req, res, next) => {
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
+app.get('/marketSnapShot', mktSnapShot)
+app.get('/globalMktData', globalMktData)
+app.get('/nseTicker', nseTicker)
 
 // Authenticated
 app.get('/spot/:script/', apiAuthCheck, getSpotData)
@@ -104,7 +105,7 @@ app.get('/fno/:script/:data', apiAuthCheck, fnoDataFetch)
 
 // Page Navigation
 app.get('/dashboard', mainRoute);
-app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
+app.get('/', useNoCache, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
 
 // Sign-In Sign-Up Handler
@@ -117,6 +118,7 @@ app.post('/loginStatus', (req, res) => {
 })
 
 app.post('/signIn', signIn)
+app.post('/signInArduino', signInArduino) //Arduino Specific
 app.post('/signOut', signOut)
 app.post('/signUp', checkUserData, signup)
 

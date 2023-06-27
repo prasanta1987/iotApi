@@ -36,11 +36,28 @@ exports.landingPage = (req, res) => {
     sendHttpRequest(req, res, url)
 }
 
-exports.getAllOptData = async (req, res) => {
-    const jsonData = await batchOptFetch()
+exports.mktSnapShot = async (req, res) => {
 
-    res.status(200).json(jsonData)
+    const response = await axios.get('https://webapi.niftytrader.in/webapi/symbol/top-gainers-data')
+    delete response.data.result
+    delete response.data.resultMessage
+
+    console.log(response.data)
+    res.status(200).json(response.data)
 }
+
+exports.globalMktData = async (req, res) => {
+
+    const response = await axios.get('https://webapi.niftytrader.in/webapi/usstock/global-market')
+    res.status(200).json(response.data)
+}
+
+exports.nseTicker = async (req, res) => {
+
+    const response = await axios.get('https://webapi.niftytrader.in/webapi/symbol/nifty50-data')
+    res.status(200).json(response.data)
+}
+
 
 exports.signIn = async (req, res) => {
     req.session.logedIn = false
@@ -82,6 +99,46 @@ exports.signIn = async (req, res) => {
 
 
 
+}
+
+exports.signInArduino = async (req, res) => {
+
+    req.session.logedIn = false;
+
+    let userName = req.headers.uname || false;
+    let apiKey = req.headers.code || false;
+
+    console.log(userName, "=>", apiKey)
+    let config = {
+        method: 'get',
+        url: `${process.env.KV_REST_API_URL}/get/users`,
+        headers: {
+            "Authorization": process.env.KV_REST_API_TOKEN,
+            "Content-Type": "application/json"
+        }
+    }
+
+    try {
+        const data = await axios(config)
+        let userDatas = JSON.parse(data.data.result)
+
+        userDatas.forEach(userData => {
+            if (userData.name == userName) {
+                if (userData.apiKey == apiKey) {
+                    req.session.logedIn = true
+                }
+            }
+        })
+
+        if (req.session.logedIn == true) {
+            res.status(200).send("Login Successfull")
+        } else {
+            res.status(200).send("Login Failed")
+        }
+
+    } catch (error) {
+        res.status(500).send("Internal Server Error")
+    }
 }
 
 exports.signup = async (req, res) => {
