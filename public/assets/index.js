@@ -54,7 +54,7 @@ const login = () => {
             brandText.style = "text-transform : capitalize";
 
             if (data.msg == "success") {
-                // if (data.msg == "success") window.location = `/`
+                if (data.msg == "success") window.location = `/dashboard`
                 displaylogInElement("login")
             } else {
                 displaylogInElement("logout")

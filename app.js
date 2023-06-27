@@ -105,7 +105,7 @@ app.get('/fno/:script/:data', apiAuthCheck, fnoDataFetch)
 
 // Page Navigation
 app.get('/dashboard', mainRoute);
-app.get('/', useNoCache, (req, res) => res.sendFile(__dirname + '/public/index.html'));
+app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
 
 // Sign-In Sign-Up Handler
