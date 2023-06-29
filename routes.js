@@ -59,26 +59,53 @@ exports.nseTicker = async (req, res) => {
 }
 
 
+exports.getWatchLists = async (req, res) => {
+
+    const uname = req.headers.uname
+    const watchList = await this.kvRead('watchlists')
+    res.status(200).json(watchList[uname])
+
+}
+
+exports.addToWatchList = async (req, res) => {
+
+    const uname = req.headers.uname
+    const updatedWatchList = req.body.watchList || null
+
+    const allWatchLists = await this.kvRead('watchlists')
+
+
+
+    // var config = {
+    //     method: 'post',
+    //     url: `${process.env.KV_REST_API_URL}/pipeline`,
+    //     headers: {
+    //         "Authorization": process.env.KV_REST_API_TOKEN,
+    //         "Content-Type": "application/json"
+    //     },
+    //     data: [
+    //         ['SET', 'watchlists', JSON.stringify(
+    //             {
+    //                 [userName]: updatedWatchList
+    //             }
+    //         )]
+    //     ]
+    // };
+
+    // const data = await this.kvWrite(config)
+
+    // res.status(200).json({ data })
+    res.status(200).json({})
+
+}
+
 exports.signIn = async (req, res) => {
     req.session.logedIn = false
     let userName = req.body.name || false
     let password = req.body.passwd || false
 
-    let errorObj = {}
-
-    let config = {
-        method: 'get',
-        url: `${process.env.KV_REST_API_URL}/get/users`,
-        headers: {
-            "Authorization": process.env.KV_REST_API_TOKEN,
-            "Content-Type": "application/json"
-        }
-    }
-
+    const userDatas = await this.kvRead("users")
     try {
-        const data = await axios(config)
-        let userDatas = JSON.parse(data.data.result)
-        console.log(userDatas)
         userDatas.forEach(userData => {
             if (userData.name == userName) {
                 if (userData.passwd == password) {
@@ -167,13 +194,11 @@ exports.signup = async (req, res) => {
         data: [
             ['SET', 'users', JSON.stringify(userLists)],
             ['SET', 'watchlists', JSON.stringify(
-                [
-                    {
-                        [userName]: [
-                            { "scripName": "NIFTY", "buyPrice": 1234.56, "epoc": 12344567890 }
-                        ]
-                    }
-                ]
+                {
+                    [userName]: [
+                        { "scripName": "NIFTY", "buyPrice": 1234.56, "epoc": 12344567890 }
+                    ]
+                }
             )]
         ]
     };
@@ -202,5 +227,23 @@ exports.kvWrite = async (config) => {
             console.log(err)
             return err
         })
+
+}
+
+exports.kvRead = async (path) => {
+
+    let config = {
+        method: 'get',
+        url: `${process.env.KV_REST_API_URL}/get/${path}`,
+        headers: {
+            "Authorization": process.env.KV_REST_API_TOKEN,
+            "Content-Type": "application/json"
+        }
+    }
+
+    const data = await axios(config)
+    let parsedData = JSON.parse(data.data.result)
+
+    return parsedData
 
 }

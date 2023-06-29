@@ -3,11 +3,11 @@ const session = require('express-session');
 const path = require("path");
 const axios = require("axios").default;
 
-const { fnoDataFetch,
-    search,
-    getSpotData,
-    signIn,
-    signup, signOut, mktSnapShot, globalMktData, nseTicker, signInArduino } = require('./routes');
+const { fnoDataFetch, search, getSpotData,
+    signIn, signup, signOut,
+    mktSnapShot, globalMktData, nseTicker,
+    signInArduino,
+    getWatchLists } = require('./routes');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -95,6 +95,13 @@ app.get('/search/:script', search)
 app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
+
+// DataBase Commands Starts
+
+app.post('/getWatchList', getWatchLists);
+
+
+// DataBase Commands Ends
 
 // Authenticated
 app.get('/spot/:script/', apiAuthCheck, getSpotData)

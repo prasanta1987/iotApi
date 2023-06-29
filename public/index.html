@@ -83,6 +83,26 @@
 
   <script src="./assets/authHandler.js"></script>
   <script src="./assets/mktSnapShot.js"></script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAVVVvQPkU69o16cw5Wc_2l-k5xF9JnmBc",
+      authDomain: "investobaba.firebaseapp.com",
+      databaseURL: "https://investobaba-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "investobaba",
+      storageBucket: "investobaba.appspot.com",
+      messagingSenderId: "666025054627",
+      appId: "1:666025054627:web:fac7a41d624b915103ca16"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
 </body>
 
 </html>
