@@ -1,8 +1,8 @@
-(() => {
+const getWatchList = (userId) => {
 
     fetch('/getWatchList', {
         method: 'POST', headers: {
-            "uname": "user"
+            "uname": userId
         }
     })
         .then(res => res.json())
@@ -11,4 +11,4 @@
         })
         .catch(err => console.log(err))
 
-})();
+}

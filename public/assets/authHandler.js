@@ -5,6 +5,7 @@ const logoutBtn = document.querySelector("#logoutbtn");
 const brandText = document.querySelector("#brand-text");
 const stockSearchField = document.querySelector("#stocksearchfield");
 
+
 (() => {
     fetch('/loginStatus', { method: 'POST' })
         .then(res => res.json())
@@ -12,7 +13,13 @@ const stockSearchField = document.querySelector("#stocksearchfield");
             console.log(data)
             if (data.logInStat) {
                 displaylogInElement("login")
-                brandText.innerHTML = data.userName
+                let userId = data.userName
+                brandText.innerHTML = userId
+                try {
+                    getWatchList(userId)
+                } catch (error) {
+
+                }
             } else {
                 brandText.innerHTML = "Hello"
                 displaylogInElement("logout")

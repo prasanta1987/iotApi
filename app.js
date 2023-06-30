@@ -4,10 +4,9 @@ const path = require("path");
 const axios = require("axios").default;
 
 const { fnoDataFetch, search, getSpotData,
-    signIn, signup, signOut,
+    signIn, signup, signOut, signInArduino,
     mktSnapShot, globalMktData, nseTicker,
-    signInArduino,
-    getWatchLists } = require('./routes');
+    getWatchLists, getExpiryandStrikes } = require('./routes');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -29,7 +28,7 @@ const useNoCache = (req, res, next) => {
     return next();
 }
 
-const mainRoute = (req, res, next) => {
+const mainRoute = (req, res) => {
 
     if (req.session.logedIn) {
         res.sendFile(path.join(__dirname, '/public/dashboard.html'));
@@ -95,6 +94,7 @@ app.get('/search/:script', search)
 app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
+app.get('/expStrike/:scripCode', getExpiryandStrikes)
 
 // DataBase Commands Starts
 

@@ -2,4 +2,3 @@ node_modules
 .gitignore
 user_profile
 .env.development.local
-fbConfig.js

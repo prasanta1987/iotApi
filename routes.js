@@ -247,3 +247,31 @@ exports.kvRead = async (path) => {
     return parsedData
 
 }
+
+exports.getExpiryandStrikes = async (req, res) => {
+
+    const scripCode = req.params.scripCode.toUpperCase();
+
+    const url = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=${scripCode}&ExpiryDate=`
+
+    const strikeArray = []
+    const expiryArray = []
+    const dataObj = {}
+
+    const response = await axios.get(url)
+    const data = response.data.fno_list.item
+    data.map(data => {
+        strikeArray.push(data.strikeprice)
+        expiryArray.push(data.fno_exp)
+    })
+
+
+    dataObj.expiry = this.removeDuplicates(expiryArray);
+    dataObj.strike = this.removeDuplicates(strikeArray);
+
+    res.status(200).json(dataObj)
+}
+
+exports.removeDuplicates = (arr) => {
+    return [...new Set(arr)];
+}
