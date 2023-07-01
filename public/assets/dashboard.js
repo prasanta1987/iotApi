@@ -35,8 +35,8 @@ instrument.addEventListener('blur', () => {
         .then(data => {
             disabledFields.forEach(ele => ele.disabled = false)
 
-            expiry.innerHTML = ''
-            strikePrice.innerHTML = ''
+            // expiry.innerHTML = ''
+            // strikePrice.innerHTML = ''
 
             data.expiry.forEach(ele => {
                 let opt = document.createElement("option")
@@ -80,4 +80,5 @@ addTrade.addEventListener('click', () => {
     strategy.data = allTrades
 
     console.log(strategy)
+    disabledFields.forEach(ele => ele.selectedIndex = 0)
 })
