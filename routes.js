@@ -272,13 +272,17 @@ exports.getExpiryandStrikes = async (req, res) => {
         const currentExp = exp
 
         let expDataObj = {
-            "expiry": currentExp, "strikes": []
+            "expiry": currentExp, "data": []
         }
 
         data.forEach(str => {
 
             if (str.fno_exp == currentExp) {
-                expDataObj.strikes.push(str.strikeprice)
+                let dataObj = {
+                    "strike": str.strikeprice,
+                    "ltp": str.lastvalue
+                }
+                expDataObj.data.push(dataObj)
             }
 
         })

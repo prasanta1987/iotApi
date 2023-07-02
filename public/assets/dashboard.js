@@ -79,10 +79,11 @@ expiry.addEventListener('change', () => {
 
         if (expiryStrikeLists[i].expiry == currentExpiry) {
 
-            expiryStrikeLists[i].strikes.forEach(strike => {
+            expiryStrikeLists[i].data.forEach(strike => {
 
                 let opt = document.createElement("option")
-                opt.innerText = strike
+                opt.innerText = strike.strike
+                opt.setAttribute('data-ltp', strike.ltp)
                 strikePrice.appendChild(opt)
 
             })
@@ -97,7 +98,13 @@ expiry.addEventListener('change', () => {
 addTrade.addEventListener('click', () => {
 
     const scripCode = instrument.value.toUpperCase()
+    let ltp = parseFloat(strikePrice[strikePrice.selectedIndex].getAttribute('data-ltp'))
+
+
+    // ltp = (Number.isInteger(ltp)) ? ltp : 0
+
     let tradeObj = {}
+
 
     tradeObj.id = t.getTime()
     tradeObj.name = `${scripCode} ${generateDateSulg(expiry.value).nameDate} ${parseInt(strikePrice.value)}${opType.value}`
@@ -105,6 +112,7 @@ addTrade.addEventListener('click', () => {
     tradeObj.strike = strikePrice.value
     tradeObj.expiry = expiry.value
     tradeObj.opType = opType.value
+    tradeObj.ltp = ltp
     tradeObj.tradeType = tradeType.value
 
     allTrades.push(tradeObj)
@@ -122,7 +130,7 @@ addTrade.addEventListener('click', () => {
             <div class="card-header ${(tradeObj.tradeType == 'LONG') ? 'text-warning' : 'text-danger'}"> ${tradeObj.name} </div>
             <div class="card-body">
                 <blockquote class="blockquote mb-0">
-                    <p>Contract Data Here</p>
+                    <p>LTP : ${tradeObj.ltp}</p>
                 </blockquote>
             </div>        
             `
