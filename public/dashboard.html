@@ -47,37 +47,64 @@
     <hr class="text-danger">
 
     <div class="container">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Instrument" id="instrument">
-            <!-- <span class="input-group-text">@</span> -->
+        <div class="col-sm-12">
 
-            <select class="form-select" id="strikePrice">
-                <option selected>Strike Price</option>
-            </select>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Instrument" id="instrument">
+                <!-- <span class="input-group-text">@</span> -->
 
-            <select class="form-select" id="expiry">
-                <option selected>Expiry</option>
-            </select>
+                <select class="form-select" id="expiry">
+                    <option selected>Expiry</option>
+                </select>
+
+                <select class="form-select" id="strikePrice">
+                    <option selected>Strike Price</option>
+                </select>
+
+            </div>
+
+            <div class="input-group mb-3">
+
+                <select class="form-select" id="opType">
+                    <option selected>Option Type</option>
+                    <option>CE</option>
+                    <option>PE</option>
+                </select>
+
+                <select class="form-select" id="tradeType">
+                    <option selected>Trade Type</option>
+                    <option>LONG</option>
+                    <option>SHORT</option>
+                </select>
+
+
+                <!-- <input type="text" class="form-control" placeholder="Trade Price" aria-label="Server"> -->
+                <button class="btn btn-outline-success" type="button" id="addTrade">Add Strategy</button>
+            </div>
+
+        </div>
+        <hr class="text-dark">
+        <div class="col-sm-12">
+            <div class="card-container">
+
+
+                <!-- <div class="card">
+                    <div class="card-header">
+                        Quote
+                    </div>
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>A well-known quote, contained in a blockquote element.</p>
+                            <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source
+                                    Title</cite></footer>
+                        </blockquote>
+                    </div>
+                </div> -->
+
+
+            </div>
         </div>
 
-        <div class="input-group mb-3">
-
-            <select class="form-select" id="opType">
-                <option selected>Option Type</option>
-                <option>CE</option>
-                <option>PE</option>
-            </select>
-
-            <select class="form-select" id="tradeType">
-                <option selected>Trade Type</option>
-                <option>LONG</option>
-                <option>SHORT</option>
-            </select>
-
-
-            <!-- <input type="text" class="form-control" placeholder="Trade Price" aria-label="Server"> -->
-            <button class="btn btn-outline-success" type="button" id="addTrade">Add Strategy</button>
-        </div>
     </div>
 
 

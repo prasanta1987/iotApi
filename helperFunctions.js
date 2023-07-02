@@ -236,3 +236,7 @@ exports.searchSpot = async (param) => {
 
     return searchDataObj
 }
+
+exports.optionDataFetch = async (param) => {
+
+}
