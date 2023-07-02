@@ -254,22 +254,40 @@ exports.getExpiryandStrikes = async (req, res) => {
 
     const url = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=${scripCode}&ExpiryDate=`
 
-    const strikeArray = []
+
+    let expiryStrikeLists = []
+
     const expiryArray = []
     const dataObj = {}
 
     const response = await axios.get(url)
     const data = response.data.fno_list.item
-    data.map(data => {
-        strikeArray.push(data.strikeprice)
-        expiryArray.push(data.fno_exp)
+
+    data.map(data => expiryArray.push(data.fno_exp))
+
+
+    dataObj.expiry = [...new Set(expiryArray)];
+
+    dataObj.expiry.forEach(exp => {
+        const currentExp = exp
+
+        let expDataObj = {
+            "expiry": currentExp, "strikes": []
+        }
+
+        data.forEach(str => {
+
+            if (str.fno_exp == currentExp) {
+                expDataObj.strikes.push(str.strikeprice)
+            }
+
+        })
+
+        expiryStrikeLists.push(expDataObj)
+
     })
 
-
-    dataObj.expiry = this.removeDuplicates(expiryArray);
-    dataObj.strike = this.removeDuplicates(strikeArray);
-
-    res.status(200).json(dataObj)
+    res.status(200).json(expiryStrikeLists)
 }
 
 exports.removeDuplicates = (arr) => {
