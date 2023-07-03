@@ -36,25 +36,25 @@ onAuthStateChanged(auth, (user) => {
 //     // An error happened.
 //   });
 
-document.querySelector('#signInBtn').addEventListener('click', () => {
+// document.querySelector('#signInBtn').addEventListener('click', () => {
 
-    const userNameEle = document.querySelector("#email");
-    const passwordEle = document.querySelector("#passwd");
+//     const userNameEle = document.querySelector("#email");
+//     const passwordEle = document.querySelector("#passwd");
 
-    const email = userNameEle.value;
-    const pass = passwordEle.value;
+//     const email = userNameEle.value;
+//     const pass = passwordEle.value;
 
-    signInWithEmailAndPassword(auth, email, pass)
-        .then((userCredential) => {
-            // Signed in 
-            const user = userCredential.user;
+//     signInWithEmailAndPassword(auth, email, pass)
+//         .then((userCredential) => {
+//             // Signed in
+//             const user = userCredential.user;
 
-            console.log(user)
-            // ...
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-        });
+//             console.log(user)
+//             // ...
+//         })
+//         .catch((error) => {
+//             const errorCode = error.code;
+//             const errorMessage = error.message;
+//         });
 
-})
+// })
