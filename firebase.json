@@ -7,9 +7,8 @@
       "**/node_modules/**"
     ],
     "redirects": [ {
-      "source": "/dashboard",
-      "destination": "/dashboard",
-      "type": 301
+      "source": "**",
+      "function":"app"
     } ]
   }
 }
