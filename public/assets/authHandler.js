@@ -58,15 +58,15 @@ const login = () => {
         .then(res => res.json())
         .then(data => {
             console.log(data)
-            // document.querySelector('#loginmodalclose').click()
-            // brandText.innerHTML = userName.value
-            // brandText.style = "text-transform : capitalize";
+            document.querySelector('#loginmodalclose').click()
+            brandText.innerHTML = userName.value
+            brandText.style = "text-transform : capitalize";
 
             if (data.msg == "success") {
-                if (data.msg == "success") window.location = `/dashboard`
-                // displaylogInElement("login")
+                // if (data.msg == "success") window.location = `/dashboard`
+                displaylogInElement("login")
             } else {
-                // displaylogInElement("logout")
+                displaylogInElement("logout")
             }
         })
         .catch(err => console.log(err))
