@@ -24,7 +24,7 @@ app.use(session({
     store: new session.MemoryStore,
     saveUninitialized: true,
     cookie: {
-        maxAge: Date.now() + (30 * 86400 * 1000)
+        maxAge: (30 * 86400 * 1000)
     }
 }));
 app.use(cors(corsOptions));
