@@ -10,7 +10,7 @@ const HOST = 'https://iotapi.vercel.app';
 (() => {
     fetch(`${HOST}/loginStatus`, { method: 'POST' })
         .then(res => res.json())
-        .then(data => {
+        // .then(data => {
             // console.log(data)
             // if (data.logInStat) {
             //     displaylogInElement("login")
@@ -25,7 +25,7 @@ const HOST = 'https://iotapi.vercel.app';
             //     brandText.innerHTML = "Hello"
             //     displaylogInElement("logout")
             // }
-        })
+        // })
         .catch(err => console.log(err))
 
 })();
@@ -55,19 +55,19 @@ const login = () => {
     }
     fetch(`${HOST}/signIn`, fetchConfig)
         .then(res => res.json())
-        .then(data => {
-            console.log(data)
-            document.querySelector('#loginmodalclose').click()
-            brandText.innerHTML = userName.value
-            brandText.style = "text-transform : capitalize";
+        // .then(data => {
+        //     console.log(data)
+        //     document.querySelector('#loginmodalclose').click()
+        //     brandText.innerHTML = userName.value
+        //     brandText.style = "text-transform : capitalize";
 
-            if (data.msg == "success") {
-                // if (data.msg == "success") window.location = `/dashboard`
-                displaylogInElement("login")
-            } else {
-                displaylogInElement("logout")
-            }
-        })
+        //     if (data.msg == "success") {
+        //         // if (data.msg == "success") window.location = `/dashboard`
+        //         displaylogInElement("login")
+        //     } else {
+        //         displaylogInElement("logout")
+        //     }
+        // })
         .catch(err => console.log(err))
 }
 
