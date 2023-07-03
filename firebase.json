@@ -5,6 +5,10 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "redirects": [ {
+      "source": "/dashboard",
+      "destination": "/dashboard"
+    } ]
   }
 }
