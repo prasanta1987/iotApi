@@ -6,6 +6,8 @@ const { generateUrlList,
     fetchSpotData,
     batchOptFetch } = require('./helperFunctions');
 
+const auth = require('./fbConfig')
+
 exports.fnoDataFetch = async (req, res) => {
 
     const scripCode = req.params.script.toUpperCase();
@@ -126,9 +128,8 @@ exports.signIn = async (req, res) => {
         res.status(500).json({ "error": error })
     }
 
-
-
 }
+
 
 exports.signInArduino = async (req, res) => {
 

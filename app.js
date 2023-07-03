@@ -9,6 +9,8 @@ const { fnoDataFetch, search, getSpotData,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes } = require('./routes');
 
+const { authStateCheck, FBsignIn } = require('./fbConfig');
+
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -129,18 +131,20 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html
 
 // Sign-In Sign-Up Handler
 
-app.post('/signIn', signIn)
+app.post('/signIn', FBsignIn)
+// app.post('/signIn', signIn)
 app.post('/signInArduino', signInArduino) //Arduino Specific
 app.post('/signOut', signOut)
 app.post('/signUp', checkUserData, signup)
 
-app.post('/loginStatus', (req, res) => {
+// app.post('/loginStatus', (req, res) => {
 
-    // if (!req.session.logedIn) req.session.logedIn = false
-    // if (!req.session.userName) req.session.userName = null
+//     // if (!req.session.logedIn) req.session.logedIn = false
+//     // if (!req.session.userName) req.session.userName = null
 
-    res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
-})
+//     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
+// })
+app.post('/loginStatus', authStateCheck)
 
 
 app.use(express.static(path.join(__dirname, 'public')));

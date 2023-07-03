@@ -16,6 +16,50 @@ const database = getDatabase();
 const auth = getAuth();
 const dbRef = ref(getDatabase());
 
+
+exports.FBsignIn = async (req, res) => {
+    req.session.logedIn = false
+    let userName = req.body.name || false
+    let password = req.body.passwd || false
+
+    await signInWithEmailAndPassword(auth, userName, password)
+        .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            res.status(200).json({ "msg": "success" })
+            // ...
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            res.status(200).json({ "msg": "failed" })
+        });
+
+}
+
+exports.authStateCheck = async (req, res) => {
+
+    await onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/auth.user
+            const uid = user.uid;
+
+
+            console.log(uid)
+            res.status(200).json({ "msg": uid })
+            // ...
+        } else {
+            // User is signed out
+            // ...
+            res.status(500).json({ "error": "error" })
+        }
+    });
+
+}
+
+
+
 // createUserWithEmailAndPassword(auth, "prasanta.1987@hotmail.com", "password")
 //   .then((userCredential) => {
 //     // Signed in
