@@ -12,7 +12,7 @@
     },
     {
       "source": "/dashboard",
-      "destination":"/dashboard"
+      "destination":"/dashboard.html"
     } ]
   }
 }
