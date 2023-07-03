@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const cors = require('cors')
 const path = require("path");
 const axios = require("axios").default;
 
@@ -17,6 +18,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+app.use(cors());
 
 
 // Middlewares Starts Here
