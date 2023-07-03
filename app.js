@@ -21,7 +21,6 @@ app.use(express.json());
 app.use(session({
     secret: '@BCD2023',
     resave: true,
-    store: new session.MemoryStore,
     saveUninitialized: true,
     cookie: {
         maxAge: (30 * 86400 * 1000)
