@@ -106,6 +106,7 @@ exports.signIn = async (req, res) => {
 
     const userDatas = await this.kvRead("users")
     try {
+
         userDatas.forEach(userData => {
             if (userData.name == userName) {
                 if (userData.passwd == password) {
@@ -114,9 +115,9 @@ exports.signIn = async (req, res) => {
                 }
             }
         })
+
         if (req.session.logedIn == true) {
-            // res.status(200).json({ "msg": "success" })
-            res.redirect('/dashboard');
+            res.status(200).json({ "msg": "success" })
         } else {
             res.status(200).json({ "msg": "failed" })
         }
@@ -214,8 +215,7 @@ exports.signOut = (req, res) => {
 
     req.session.logedIn = false
     req.session.userName = null
-    // res.status(200).json({ "msg": "success" })
-    response.redirect('/');
+    res.status(200).json({ "msg": "success" })
 }
 
 exports.kvWrite = async (config) => {

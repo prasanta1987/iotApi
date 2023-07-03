@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000
 var corsOptions = {
     origin: 'https://investobaba.web.app',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-  }
+}
 
 app.use(express.json());
 app.use(session({
@@ -29,7 +29,7 @@ app.use(cors(corsOptions));
 // Middlewares Starts Here
 
 const useNoCache = (req, res, next) => {
-   // res.setHeader('Cache-Control', 'must-revalidate');
+    // res.setHeader('Cache-Control', 'must-revalidate');
     // res.setHeader('Cache-Control', 'no-store');
     return next();
 }
@@ -37,9 +37,11 @@ const useNoCache = (req, res, next) => {
 const mainRoute = (req, res) => {
 
     if (req.session.logedIn) {
-        res.sendFile(path.join(__dirname, '/public/dashboard.html'));
+        res.redirect('/dashboard')
+        // res.sendFile(path.join(__dirname, '/public/dashboard.html'));
     } else {
-        res.sendFile(path.join(__dirname, '/public/index.html'));
+        res.redirect('/')
+        // res.sendFile(path.join(__dirname, '/public/index.html'));
     }
 }
 
@@ -117,8 +119,8 @@ app.get('/fno/:script/:data', apiAuthCheck, fnoDataFetch)
 
 
 // Page Navigation
-// app.get('/dashboard', mainRoute);
-app.get('/dashboard',(req,res)=> res.sendFile(path.join(__dirname, '/public/dashboard.html')));
+app.get('/dashboard', mainRoute);
+// app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
 
@@ -134,7 +136,7 @@ app.post('/loginStatus', (req, res) => {
     // if (!req.session.logedIn) req.session.logedIn = false
     // if (!req.session.userName) req.session.userName = null
 
-    res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName})
+    res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 })
 
 
