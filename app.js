@@ -21,7 +21,11 @@ app.use(express.json());
 app.use(session({
     secret: 'SDApp',
     resave: true,
-    saveUninitialized: true
+    store: new session.MemoryStore,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: Date.now() + (30 * 86400 * 1000)
+    }
 }));
 app.use(cors(corsOptions));
 
