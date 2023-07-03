@@ -7,8 +7,12 @@
       "**/node_modules/**"
     ],
     "rewrites": [ {
-      "source": "**",
-      "function":"app"
+      "source": "/",
+      "destination":"/"
+    },
+    {
+      "source": "/dashboard",
+      "destination":"/dashboard"
     } ]
   }
 }
