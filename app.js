@@ -24,7 +24,7 @@ app.use(session({
 // Middlewares Starts Here
 
 const useNoCache = (req, res, next) => {
-    res.setHeader('Cache-Control', 'must-revalidate');
+   // res.setHeader('Cache-Control', 'must-revalidate');
     // res.setHeader('Cache-Control', 'no-store');
     return next();
 }
