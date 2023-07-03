@@ -19,8 +19,8 @@ var corsOptions = {
 
 app.use(express.json());
 app.use(session({
-    secret: 'SDApp',
-    resave: true,
+    secret: '@BCD2023',
+    // resave: true,
     store: new session.MemoryStore,
     saveUninitialized: true,
     cookie: {
