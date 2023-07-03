@@ -5,7 +5,7 @@ const logoutBtn = document.querySelector("#logoutbtn");
 const brandText = document.querySelector("#brand-text");
 const stockSearchField = document.querySelector("#stocksearchfield");
 
-const HOST = 'https://iotapi.vercel.app/';
+const HOST = 'https://iotapi.vercel.app';
 
 (() => {
     fetch(`${HOST}/loginStatus`, { method: 'POST' })
