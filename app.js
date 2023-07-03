@@ -15,9 +15,7 @@ app.use(express.json());
 app.use(session({
     secret: 'SDApp',
     resave: true,
-    saveUninitialized: true,
-    logedIn: false,
-    userName: null
+    saveUninitialized: true
 }));
 
 
