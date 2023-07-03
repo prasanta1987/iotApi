@@ -36,7 +36,7 @@ const singOut = () => {
         .then(res => res.json())
         .then(data => {
             console.log(data)
-            if (data.msg == "success") window.location = `/`
+            // if (data.msg == "success") window.location = `/`
         })
         .catch(err => console.log(err))
 }
@@ -62,7 +62,7 @@ const login = () => {
             brandText.style = "text-transform : capitalize";
 
             if (data.msg == "success") {
-                if (data.msg == "success") window.location = `/dashboard`
+                // if (data.msg == "success") window.location = `/dashboard`
                 displaylogInElement("login")
             } else {
                 displaylogInElement("logout")

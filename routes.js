@@ -115,7 +115,8 @@ exports.signIn = async (req, res) => {
             }
         })
         if (req.session.logedIn == true) {
-            res.status(200).json({ "msg": "success" })
+            // res.status(200).json({ "msg": "success" })
+            response.redirect('/dashboard');
         } else {
             res.status(200).json({ "msg": "failed" })
         }
@@ -213,7 +214,8 @@ exports.signOut = (req, res) => {
 
     req.session.logedIn = false
     req.session.userName = null
-    res.status(200).json({ "msg": "success" })
+    // res.status(200).json({ "msg": "success" })
+    response.redirect('/');
 }
 
 exports.kvWrite = async (config) => {
