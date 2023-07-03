@@ -100,7 +100,7 @@ exports.addToWatchList = async (req, res) => {
 }
 
 exports.signIn = async (req, res) => {
-    // req.session.logedIn = false
+    req.session.logedIn = false
     let userName = req.body.name || false
     let password = req.body.passwd || false
 
