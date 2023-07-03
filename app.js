@@ -123,10 +123,10 @@ app.post('/signUp', checkUserData, signup)
 
 app.post('/loginStatus', (req, res) => {
 
-    if (!req.session.logedIn) req.session.logedIn = false
-    if (!req.session.userName) req.session.userName = null
+    // if (!req.session.logedIn) req.session.logedIn = false
+    // if (!req.session.userName) req.session.userName = null
 
-    res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
+    res.status(200).json({ "logInStat": req.session.logedIn || false, "userName": req.session.userName||null })
 })
 
 
