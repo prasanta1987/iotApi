@@ -45,7 +45,7 @@
       </div>
     </div>
   </nav>
-<h1>Main Page Content Here</h1>
+  <h1>Main Page Content Here</h1>
   <!-- Modal -->
   <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -73,7 +73,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button onclick="login()" type="button" id="loginBtn" class="btn btn-primary">Sign in</button>
+          <button type="button" id="signInBtn" class="btn btn-primary">Sign in</button>
           <button onclick="signUp()" type="button" id="signupBtn" class="btn btn-primary">Sign Up</button>
           <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
         </div>
@@ -83,9 +83,11 @@
 
   <script src="./assets/authHandler.js"></script>
   <script src="./assets/mktSnapShot.js"></script>
+
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -102,7 +104,49 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        const uid = user.uid;
+
+
+        console.log(uid)
+        // ...
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
+
+    document.querySelector('#signInBtn').addEventListener('click', () => {
+
+      const userNameEle = document.querySelector("#email");
+      const passwordEle = document.querySelector("#passwd");
+
+      const email = userNameEle.value;
+      const pass = passwordEle.value;
+
+      signInWithEmailAndPassword(auth, email, pass)
+        .then((userCredential) => {
+          // Signed in 
+          const user = userCredential.user;
+
+          console.log(user)
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
+
+    })
+
   </script>
+
+
 </body>
 
 </html>
