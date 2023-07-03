@@ -11,20 +11,20 @@ const HOST = 'https://iotapi.vercel.app';
     fetch(`${HOST}/loginStatus`, { method: 'POST' })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
-            if (data.logInStat) {
-                displaylogInElement("login")
-                let userId = data.userName
-                brandText.innerHTML = userId
-                try {
-                    getWatchList(userId)
-                } catch (error) {
+            // console.log(data)
+            // if (data.logInStat) {
+            //     displaylogInElement("login")
+            //     let userId = data.userName
+            //     brandText.innerHTML = userId
+            //     try {
+            //         getWatchList(userId)
+            //     } catch (error) {
 
-                }
-            } else {
-                brandText.innerHTML = "Hello"
-                displaylogInElement("logout")
-            }
+            //     }
+            // } else {
+            //     brandText.innerHTML = "Hello"
+            //     displaylogInElement("logout")
+            // }
         })
         .catch(err => console.log(err))
 
@@ -35,7 +35,7 @@ const singOut = () => {
     fetch(`${HOST}/signOut`, { method: 'POST' })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
+            // console.log(data)
             // if (data.msg == "success") window.location = `/`
         })
         .catch(err => console.log(err))
