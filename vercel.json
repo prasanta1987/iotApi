@@ -10,10 +10,6 @@
     {
       "src": "/",
       "dest": "app.js"
-    },
-    {
-      "src": "/dashboard",
-      "dest": "/dashboard"
     }
   ]
 }
