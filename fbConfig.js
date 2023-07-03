@@ -17,42 +17,41 @@ const auth = getAuth();
 const dbRef = ref(getDatabase());
 
 
-exports.FBsignIn = (req, res) => {
-    req.session.logedIn = false
+exports.FBsignIn = async (req, res) => {
+
     let userName = req.body.name || false
     let password = req.body.passwd || false
 
-    signInWithEmailAndPassword(auth, userName, password)
-        .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            res.status(200).json({ "msg": "success" })
-            // ...
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            res.status(200).json({ "msg": "failed" })
-        });
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, userName, password)
+        res.status(200).json({ "msg": "success" })
+
+    } catch (error) {
+
+        res.status(200).json({ "msg": error })
+    }
+    // .then((userCredential) => {
+    //     // Signed in
+    //     const user = userCredential.user;
+    //     res.status(200).json({ "msg": "success" })
+    //     // ...
+    // })
+    // .catch((error) => {
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //     res.status(200).json({ "msg": "failed" })
+    // });
 
 }
 
-exports.authStateCheck = (req, res) => {
+exports.authStateCheck = async (req, res) => {
 
-    onAuthStateChanged(auth, (user) => {
+    await onAuthStateChanged(auth, (user) => {
         if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/auth.user
             const uid = user.uid;
-
-
-            console.log(uid)
-            res.status(200).json({ "msg": uid })
-            // ...
+            res.status(200).json({ "msg": user })
         } else {
-            // User is signed out
-            // ...
-            res.status(500).json({ "error": "error" })
+            res.status(200).json({ "error": "error" })
         }
     });
 
