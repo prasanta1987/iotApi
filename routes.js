@@ -130,7 +130,7 @@ exports.signIn = async (req, res) => {
 
 exports.signInArduino = async (req, res) => {
 
-    // req.session.logedIn = false;
+    req.session.logedIn = false;
 
     let userName = req.headers.uname || false;
     let apiKey = req.headers.code || false;
