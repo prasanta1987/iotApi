@@ -116,7 +116,7 @@ exports.signIn = async (req, res) => {
         })
         if (req.session.logedIn == true) {
             // res.status(200).json({ "msg": "success" })
-            response.redirect('/dashboard');
+            res.redirect('/dashboard');
         } else {
             res.status(200).json({ "msg": "failed" })
         }
