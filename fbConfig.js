@@ -17,12 +17,12 @@ const auth = getAuth();
 const dbRef = ref(getDatabase());
 
 
-exports.FBsignIn = async (req, res) => {
+exports.FBsignIn = (req, res) => {
     req.session.logedIn = false
     let userName = req.body.name || false
     let password = req.body.passwd || false
 
-    await signInWithEmailAndPassword(auth, userName, password)
+    signInWithEmailAndPassword(auth, userName, password)
         .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
@@ -37,9 +37,9 @@ exports.FBsignIn = async (req, res) => {
 
 }
 
-exports.authStateCheck = async (req, res) => {
+exports.authStateCheck = (req, res) => {
 
-    await onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, (user) => {
         if (user) {
             // User is signed in, see docs for a list of available properties
             // https://firebase.google.com/docs/reference/js/auth.user
