@@ -9,7 +9,7 @@ const { fnoDataFetch, search, getSpotData,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes } = require('./routes');
 
-const { FBsignIn, authApiCall, authPageRout, logInStatus } = require('./firebaseFunctions');
+const { FBsignIn, authStateCheck } = require('./firebaseFunctions');
 
 const app = express()
 const port = process.env.PORT || 3161
@@ -108,7 +108,7 @@ const apiAuthCheck = (req, res, next) => {
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
-app.get('/marketSnapShot', authApiCall, mktSnapShot)
+app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
 app.get('/expStrike/:scripCode', getExpiryandStrikes)
@@ -129,8 +129,8 @@ app.get('/fno/:script/:data', apiAuthCheck, fnoDataFetch)
 
 // Page Navigation
 
-app.get('/dashboard', authPageRout);
-// app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
+// app.get('/dashboard', authPageRout);
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
 
@@ -149,7 +149,7 @@ app.post('/signUp', checkUserData, signup)
 
 //     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 // })
-app.post('/loginStatus', logInStatus)
+app.post('/loginStatus', authStateCheck)
 
 
 app.use(express.static(path.join(__dirname, 'public')));

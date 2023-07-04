@@ -1,5 +1,4 @@
 const firebase = require("firebase/app");
-const path = require("path");
 
 const { getDatabase, ref, set, get, child } = require('firebase/database');
 const { getAuth,
@@ -31,100 +30,43 @@ exports.FBsignIn = async (req, res) => {
 
     res.status(200).json({ "msg": error })
   }
-
-
-}
-
-exports.authApiCall = async (req, res, next) => {
-
-  if (await this.currentUserState()) {
-
-    return next()
-
-  } else {
-    res.status(200).json({ "error": "error" })
-
-  }
-}
-
-exports.authPageRout = async (req, res) => {
-
-  if (await this.currentUserState()) {
-
-    res.sendFile(path.join(__dirname, '/public/dashboard.html'));
-
-  } else {
-
-    res.sendFile(path.join(__dirname, '/public/index.html'));
-
-  }
-}
-
-exports.logInStatus = async (req, res) => {
-
-  if (await this.currentUserState()) {
-
-    res.status(200).json({ "msg": "Signed In" })
-
-  } else {
-    res.status(200).json({ "error": "error" })
-
-  }
+  // .then((userCredential) => {
+  //     // Signed in
+  //     const user = userCredential.user;
+  //     res.status(200).json({ "msg": "success" })
+  //     // ...
+  // })
+  // .catch((error) => {
+  //     const errorCode = error.code;
+  //     const errorMessage = error.message;
+  //     res.status(200).json({ "msg": "failed" })
+  // });
 
 }
 
-exports.currentUserState = async () => {
+exports.authStateCheck = async (req, res) => {
 
-  auth.onAuthStateChanged(auth, user => {
-    return user
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      await res.status(200).json({ "msg": user })
+    } else {
+      await res.status(200).json({ "error": "error" })
+    }
   });
 
+  // const user = auth.currentUser;
+
+  // if (user) {
+  //   // User is signed in, see docs for a list of available properties
+  //   // https://firebase.google.com/docs/reference/js/auth.user
+  //   // ...
+
+  //   res.status(200).json({ "msg": user })
+  // } else {
+  //   // No user is signed in.
+  //   res.status(200).json({ "error": "error" })
+  // }
 }
-
-
-
-// if (req.session.logedIn) {
-//     res.redirect('/dashboard')
-// res.sendFile(path.join(__dirname, '/public/dashboard.html'));
-// } else {
-//     res.redirect('/')
-// }
-
-
-
-// .then((userCredential) => {
-//     // Signed in
-//     const user = userCredential.user;
-//     res.status(200).json({ "msg": "success" })
-//     // ...
-// })
-// .catch((error) => {
-//     const errorCode = error.code;
-//     const errorMessage = error.message;
-//     res.status(200).json({ "msg": "failed" })
-// });
-
-
-// if (req.session.logedIn) {
-//     res.redirect('/dashboard')
-//     // res.sendFile(path.join(__dirname, '/public/dashboard.html'));
-// } else {
-//     res.redirect('/')
-//     // res.sendFile(path.join(__dirname, '/public/index.html'));
-// }
-
-
-//  await onAuthStateChanged(auth, (user) => {
-// User is signed in, see docs for a list of available properties
-// https://firebase.google.com/docs/reference/js/auth.user
-// ...
-//     if (user) {
-//          const uid = user.uid;
-//           res.status(200).json({ "msg": user })
-//       } else {
-//        res.status(200).json({ "error": "error" })
-//       }
-//    });
 
 
 
