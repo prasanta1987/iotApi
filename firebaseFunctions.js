@@ -46,26 +46,27 @@ exports.FBsignIn = async (req, res) => {
 
 exports.authStateCheck = async (req, res) => {
 
-  onAuthStateChanged(async (user) => {
-    if (user) {
-      await res.status(200).json({ "msg": user })
-    } else {
-      await res.status(200).json({ "error": "error" })
-    }
-  });
+  //  await onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //          const uid = user.uid;
+  //           res.status(200).json({ "msg": user })
+  //       } else {
+  //        res.status(200).json({ "error": "error" })
+  //       }
+  //    });
 
-  // const user = auth.currentUser;
+  const user = await auth.currentUser;
 
-  // if (user) {
-  //   // User is signed in, see docs for a list of available properties
-  //   // https://firebase.google.com/docs/reference/js/auth.user
-  //   // ...
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+    // ...
 
-  //   res.status(200).json({ "msg": user })
-  // } else {
-  //   // No user is signed in.
-  //   res.status(200).json({ "error": "error" })
-  // }
+    res.status(200).json({ "msg": user })
+  } else {
+    // No user is signed in.
+    res.status(200).json({ "error": "error" })
+  }
 }
 
 
