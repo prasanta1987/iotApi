@@ -16,7 +16,7 @@ let t = new Date();
 
 const getWatchList = (userId) => {
 
-    fetch('/getWatchList', {
+    fetch(`${HOSTNAME}/getWatchList`, {
         method: 'POST', headers: {
             "uname": userId
         }
@@ -35,7 +35,7 @@ instrument.addEventListener('blur', () => {
     disabledFields.forEach(ele => ele.disabled = true)
     addTrade.disabled = true
 
-    fetch(`/expStrike/${scripCode}`)
+    fetch(`${HOSTNAME}/expStrike/${scripCode}`)
         .then(res => res.json())
         .then(data => {
             disabledFields.forEach(ele => ele.disabled = false)
@@ -46,7 +46,7 @@ instrument.addEventListener('blur', () => {
         .catch(err => console.log(err))
 
 
-    fetch(`/all/${scripCode}`)
+    fetch(`${HOSTNAME}/all/${scripCode}`)
         .then(res => res.json())
         .then(data => {
             console.log(data)

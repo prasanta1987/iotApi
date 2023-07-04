@@ -5,8 +5,9 @@ const logoutBtn = document.querySelector("#logoutbtn");
 const brandText = document.querySelector("#brand-text");
 const stockSearchField = document.querySelector("#stocksearchfield");
 
+
 (() => {
-    fetch(`/loginStatus`, { method: 'POST' })
+    fetch(`${HOSTNAME}/loginStatus`, { method: 'POST' })
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -30,7 +31,7 @@ const stockSearchField = document.querySelector("#stocksearchfield");
 
 const singOut = () => {
 
-    fetch(`signOut`, { method: 'POST' })
+    fetch(`${HOSTNAME}/signOut`, { method: 'POST' })
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -51,7 +52,7 @@ const login = () => {
             passwd: password.value
         })
     }
-    fetch(`/signIn`, fetchConfig)
+    fetch(`${HOSTNAME}/signIn`, fetchConfig)
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -81,7 +82,7 @@ const signUp = () => {
             passwd: password.value
         })
     }
-    fetch(`/signup`, fetchConfig)
+    fetch(`${HOSTNAME}/signup`, fetchConfig)
         .then(res => res.json())
         .then(data => console.log(data))
         .catch(err => console.log(err))
