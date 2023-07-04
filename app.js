@@ -23,10 +23,6 @@ app.use(express.json());
 app.use(session({
   secret: '@BCD2023',
   resave: true,
-  saveUninitialized: true,
-   cookie: {
-    maxAge: (30 * 86400 * 1000)
-    }
 }));
 app.use(cors(corsOptions));
 
