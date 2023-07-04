@@ -1,5 +1,4 @@
 const firebase = require("firebase/app");
-const path = require("path");
 
 const { getDatabase, ref, set, get, child } = require('firebase/database');
 const { getAuth,
@@ -70,33 +69,6 @@ exports.authStateCheck = async (req, res) => {
   }
 }
 
-exports.loginStateCheck = (req, res) => {
-
-  const user = auth.currentUser;
-
-  console.log(user)
-
-  if (user) {
-    res.redirect('/dashboard')
-    // res.sendFile(path.join(__dirname, '/public/dashboard.html'));
-
-  } else {
-    res.redirect('/')
-    // res.sendFile(path.join(__dirname, '/public/index.html'));
-
-  }
-
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     const uid = user.uid;
-  //     res.sendFile(path.join(__dirname, '/public/dashboard.html'));
-  //   } else {
-  //     res.sendFile(path.join(__dirname, '/public/index.html'));
-  //   }
-  // });
-
-
-}
 
 
 
