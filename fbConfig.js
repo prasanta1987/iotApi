@@ -73,6 +73,8 @@ exports.loginStateCheck = (req, res) => {
 
   const user = auth.currentUser;
 
+  console.log(user)
+
   if (user) {
 
     res.sendFile(path.join(__dirname, '/public/dashboard.html'));
