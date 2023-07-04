@@ -2,13 +2,13 @@ const firebase = require("firebase/app");
 
 const { getDatabase, ref, set, get, child } = require('firebase/database');
 const { getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged } = require("firebase/auth");
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged } = require("firebase/auth");
 
 const firebaseConfig = {
-    apiKey: process.env.FB_API_KEY,
-    databaseURL: process.env.FB_DB_URL,
+  apiKey: process.env.FB_API_KEY,
+  databaseURL: process.env.FB_DB_URL,
 };
 
 const fbApp = firebase.initializeApp(firebaseConfig);
@@ -19,70 +19,67 @@ const dbRef = ref(getDatabase());
 
 exports.FBsignIn = async (req, res) => {
 
-    let userName = req.body.name || false
-    let password = req.body.passwd || false
+  let userName = req.body.name || false
+  let password = req.body.passwd || false
 
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, userName, password)
-        res.status(200).json({ "msg": "success" })
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, userName, password)
+    res.status(200).json({ "msg": "success" })
 
-    } catch (error) {
+  } catch (error) {
 
-        res.status(200).json({ "msg": error })
-    }
-    // .then((userCredential) => {
-    //     // Signed in
-    //     const user = userCredential.user;
-    //     res.status(200).json({ "msg": "success" })
-    //     // ...
-    // })
-    // .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     res.status(200).json({ "msg": "failed" })
-    // });
+    res.status(200).json({ "msg": error })
+  }
+  // .then((userCredential) => {
+  //     // Signed in
+  //     const user = userCredential.user;
+  //     res.status(200).json({ "msg": "success" })
+  //     // ...
+  // })
+  // .catch((error) => {
+  //     const errorCode = error.code;
+  //     const errorMessage = error.message;
+  //     res.status(200).json({ "msg": "failed" })
+  // });
 
 }
 
 exports.authStateCheck = async (req, res) => {
 
   //  await onAuthStateChanged(auth, (user) => {
-   //     if (user) {
+  //     if (user) {
   //          const uid = user.uid;
- //           res.status(200).json({ "msg": user })
- //       } else {
-    //        res.status(200).json({ "error": "error" })
- //       }
-//    });
-
-const user = await auth.currentUser;
-
-if (user) {
-  // User is signed in, see docs for a list of available properties
-  // https://firebase.google.com/docs/reference/js/auth.user
-  // ...
-  
-  res.status(200).json({ "msg": user })
-} else {
-  // No user is signed in.
-  res.status(200).json({ "error": "error" })
-}
-
-exports.loginStateCheck = async (req,res)=>{
+  //           res.status(200).json({ "msg": user })
+  //       } else {
+  //        res.status(200).json({ "error": "error" })
+  //       }
+  //    });
 
   const user = await auth.currentUser;
 
-  if(user){
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+    // ...
 
-    res.redirect('/dashboard')
+    res.status(200).json({ "msg": user })
   } else {
-    res.redirect('/')
-
+    // No user is signed in.
+    res.status(200).json({ "error": "error" })
   }
-
 }
 
+exports.loginStateCheck = async (req, res) => {
 
+  const user = await auth.currentUser;
+
+  if (user) {
+    res.sendFile(path.join(__dirname, '/public/dashboard.html'));
+
+  } else {
+    res.sendFile(path.join(__dirname, '/public/index.html'));
+
+  }
 
 }
 
