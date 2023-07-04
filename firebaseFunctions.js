@@ -46,7 +46,7 @@ exports.FBsignIn = async (req, res) => {
 
 exports.authStateCheck = async (req, res) => {
 
-  onAuthStateChanged(auth, async (user) => {
+  onAuthStateChanged(async (user) => {
     if (user) {
       await res.status(200).json({ "msg": user })
     } else {
