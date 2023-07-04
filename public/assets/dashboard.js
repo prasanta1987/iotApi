@@ -16,11 +16,7 @@ let t = new Date();
 
 const getWatchList = (userId) => {
 
-    fetch(`${HOSTNAME}/getWatchList`, {
-        method: 'POST', headers: {
-            "uname": userId
-        }
-    })
+    fetch(`${HOSTNAME}/marketSnapShot`)
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -28,6 +24,10 @@ const getWatchList = (userId) => {
         .catch(err => console.log(err))
 
 }
+
+
+getWatchList()
+
 
 instrument.addEventListener('blur', () => {
     let scripCode = instrument.value

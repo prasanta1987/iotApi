@@ -6,7 +6,7 @@ const { generateUrlList,
     fetchSpotData,
     batchOptFetch } = require('./helperFunctions');
 
-const auth = require('./fbConfig')
+const auth = require('./firebaseFunctions')
 
 exports.fnoDataFetch = async (req, res) => {
 
@@ -44,7 +44,6 @@ exports.mktSnapShot = async (req, res) => {
     delete response.data.result
     delete response.data.resultMessage
 
-    console.log(response.data)
     res.status(200).json(response.data)
 }
 

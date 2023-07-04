@@ -9,7 +9,7 @@ const { fnoDataFetch, search, getSpotData,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes } = require('./routes');
 
-const { authStateCheck, FBsignIn } = require('./fbConfig');
+const { FBsignIn, authApiCall, authPageRout, logInStatus } = require('./firebaseFunctions');
 
 const app = express()
 const port = process.env.PORT || 3161
@@ -44,10 +44,6 @@ const useNoCache = (req, res, next) => {
 }
 
 const mainRoute = (req, res) => {
-
-
-
-
 
     // if (req.session.logedIn) {
     //     res.redirect('/dashboard')
@@ -112,7 +108,7 @@ const apiAuthCheck = (req, res, next) => {
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/search/:script', search)
-app.get('/marketSnapShot', mktSnapShot)
+app.get('/marketSnapShot', authApiCall, mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
 app.get('/expStrike/:scripCode', getExpiryandStrikes)
@@ -133,7 +129,8 @@ app.get('/fno/:script/:data', apiAuthCheck, fnoDataFetch)
 
 // Page Navigation
 
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
+app.get('/dashboard', authPageRout);
+// app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
 
@@ -152,7 +149,7 @@ app.post('/signUp', checkUserData, signup)
 
 //     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 // })
-app.post('/loginStatus', authStateCheck)
+app.post('/loginStatus', logInStatus)
 
 
 app.use(express.static(path.join(__dirname, 'public')));
