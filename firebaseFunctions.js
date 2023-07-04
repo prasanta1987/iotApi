@@ -73,20 +73,15 @@ exports.logInStatus = async (req, res) => {
 
 }
 
-// exports.currentUserState = async () => {
-//   return auth.currentUser;
-// }
-
-
 exports.currentUserState = async () => {
-  return new Promise((resolve, reject) => {
-    try {
-      resolve(auth.currentUser);
-    } catch (err) {
-      reject(err)
-    }
+
+  auth.onAuthStateChanged(auth, user => {
+    return user
   });
+
 }
+
+
 
 // if (req.session.logedIn) {
 //     res.redirect('/dashboard')
