@@ -78,15 +78,14 @@ exports.logInStatus = async (req, res) => {
 // }
 
 
-exports.currentUserState = () => {
+exports.currentUserState = async () => {
   return new Promise((resolve, reject) => {
     try {
       onAuthStateChanged(auth, user => {
-        console.log('userChecked:', user)
         resolve(user);
       });
-    } catch {
-      reject(null)
+    } catch (err) {
+      reject(err)
     }
   });
 }
