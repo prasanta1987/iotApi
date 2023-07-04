@@ -81,9 +81,7 @@ exports.logInStatus = async (req, res) => {
 exports.currentUserState = async () => {
   return new Promise((resolve, reject) => {
     try {
-      onAuthStateChanged(auth, user => {
-        resolve(user);
-      });
+      resolve(auth.currentUser);
     } catch (err) {
       reject(err)
     }
