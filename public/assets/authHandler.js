@@ -5,13 +5,8 @@ const logoutBtn = document.querySelector("#logoutbtn");
 const brandText = document.querySelector("#brand-text");
 const stockSearchField = document.querySelector("#stocksearchfield");
 
-const HOST = '';
-// const HOST = 'https://iotapi.vercel.app';
-
-
-
 (() => {
-    fetch(`${HOST}/loginStatus`, { method: 'POST' })
+    fetch(`/loginStatus`, { method: 'POST' })
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -35,7 +30,7 @@ const HOST = '';
 
 const singOut = () => {
 
-    fetch(`${HOST}/signOut`, { method: 'POST' })
+    fetch(`signOut`, { method: 'POST' })
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -56,7 +51,7 @@ const login = () => {
             passwd: password.value
         })
     }
-    fetch(`${HOST}/signIn`, fetchConfig)
+    fetch(`/signIn`, fetchConfig)
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -86,7 +81,7 @@ const signUp = () => {
             passwd: password.value
         })
     }
-    fetch(`${HOST}/signup`, fetchConfig)
+    fetch(`/signup`, fetchConfig)
         .then(res => res.json())
         .then(data => console.log(data))
         .catch(err => console.log(err))
