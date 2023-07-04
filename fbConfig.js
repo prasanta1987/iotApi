@@ -71,14 +71,26 @@ exports.authStateCheck = async (req, res) => {
 
 exports.loginStateCheck = (req, res) => {
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const uid = user.uid;
-      res.sendFile(path.join(__dirname, '/public/dashboard.html'));
-    } else {
-      res.sendFile(path.join(__dirname, '/public/index.html'));
-    }
-  });
+  const user = auth.currentUser;
+
+  if (user) {
+
+    res.sendFile(path.join(__dirname, '/public/dashboard.html'));
+
+  } else {
+    
+    res.sendFile(path.join(__dirname, '/public/index.html'));
+
+  }
+
+  // onAuthStateChanged(auth, (user) => {
+  //   if (user) {
+  //     const uid = user.uid;
+  //     res.sendFile(path.join(__dirname, '/public/dashboard.html'));
+  //   } else {
+  //     res.sendFile(path.join(__dirname, '/public/index.html'));
+  //   }
+  // });
 
 
 }
