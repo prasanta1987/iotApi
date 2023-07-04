@@ -55,7 +55,7 @@ exports.authStateCheck = async (req, res) => {
  //       }
 //    });
 
-const user = auth.currentUser;
+const user = await auth.currentUser;
 
 if (user) {
   // User is signed in, see docs for a list of available properties
