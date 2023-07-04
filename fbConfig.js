@@ -74,9 +74,9 @@ exports.loginStateCheck = async (req,res)=>{
 
   if(user){
 
-    res.redirect('/dashboard')
+    // res.redirect('/dashboard')
   } else {
-    res.redirect('/')
+    // res.redirect('/')
 
   }
 
