@@ -20,14 +20,17 @@ var corsOptions = {
 }
 
 app.use(express.json());
-// app.use(session({
-//     secret: '@BCD2023',
-//     resave: true,
-//     saveUninitialized: true,
-//     cookie: {
-//         maxAge: (30 * 86400 * 1000)
-//     }
-// }));
+app.use(session({
+  secret: '@BCD2023',
+  resave: true,
+  saveUninitialized: true,
+   cookie: {
+     secure : true,
+     httpOnly : false,
+     sameSite : 'none',
+       maxAge: (30 * 86400 * 1000)
+    }
+}));
 app.use(cors(corsOptions));
 
 
