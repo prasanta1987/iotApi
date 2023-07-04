@@ -77,12 +77,12 @@ exports.loginStateCheck = (req, res) => {
   console.log(user)
 
   if (user) {
-
-    res.sendFile(path.join(__dirname, '/public/dashboard.html'));
+    res.redirect('/dashboard')
+    // res.sendFile(path.join(__dirname, '/public/dashboard.html'));
 
   } else {
-    
-    res.sendFile(path.join(__dirname, '/public/index.html'));
+    res.redirect('/')
+    // res.sendFile(path.join(__dirname, '/public/index.html'));
 
   }
 
