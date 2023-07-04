@@ -9,7 +9,7 @@ const { fnoDataFetch, search, getSpotData,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes } = require('./routes');
 
-const { authStateCheck, FBsignIn } = require('./fbConfig');
+const { authStateCheck, FBsignIn, loginStateCheck } = require('./fbConfig');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -44,13 +44,17 @@ const useNoCache = (req, res, next) => {
 
 const mainRoute = (req, res) => {
 
-    if (req.session.logedIn) {
-        res.redirect('/dashboard')
-        // res.sendFile(path.join(__dirname, '/public/dashboard.html'));
-    } else {
-        res.redirect('/')
-        // res.sendFile(path.join(__dirname, '/public/index.html'));
-    }
+
+
+
+
+    // if (req.session.logedIn) {
+    //     res.redirect('/dashboard')
+    //     // res.sendFile(path.join(__dirname, '/public/dashboard.html'));
+    // } else {
+    //     res.redirect('/')
+    //     // res.sendFile(path.join(__dirname, '/public/index.html'));
+    // }
 }
 
 const checkUserData = async (req, res, next) => {
@@ -127,8 +131,8 @@ app.get('/fno/:script/:data', apiAuthCheck, fnoDataFetch)
 
 
 // Page Navigation
-// app.get('/dashboard', mainRoute);
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
+app.get('/dashboard', loginStateCheck);
+// app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
 

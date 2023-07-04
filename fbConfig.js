@@ -68,6 +68,20 @@ if (user) {
   res.status(200).json({ "error": "error" })
 }
 
+exports.loginStateCheck = async (req,res)=>{
+
+  const user = await auth.currentUser;
+
+  if(user){
+
+    res.redirect('/dashboard')
+  } else {
+    res.redirect('/')
+
+  }
+
+}
+
 
 
 }
