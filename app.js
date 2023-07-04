@@ -25,10 +25,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
    cookie: {
-     secure : true,
-     httpOnly : false,
-     sameSite : 'none',
-       maxAge: (30 * 86400 * 1000)
+    maxAge: (30 * 86400 * 1000)
     }
 }));
 app.use(cors(corsOptions));
