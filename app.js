@@ -20,10 +20,10 @@ var corsOptions = {
 }
 
 app.use(express.json());
-app.use(session({
-  secret: '@BCD2023',
-  resave: true,
-}));
+// app.use(session({
+//   secret: '@BCD2023',
+//   resave: true,
+// }));
 app.use(cors(corsOptions));
 
 
