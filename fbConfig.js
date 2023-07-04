@@ -69,17 +69,17 @@ exports.authStateCheck = async (req, res) => {
   }
 }
 
-exports.loginStateCheck = async (req, res) => {
+exports.loginStateCheck = (req, res) => {
 
-  const user = await auth.currentUser;
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      res.sendFile(path.join(__dirname, '/public/dashboard.html'));
+    } else {
+      res.sendFile(path.join(__dirname, '/public/index.html'));
+    }
+  });
 
-  if (user) {
-    res.sendFile(path.join(__dirname, '/public/dashboard.html'));
-
-  } else {
-    res.sendFile(path.join(__dirname, '/public/index.html'));
-
-  }
 
 }
 
