@@ -9,7 +9,7 @@ const { fnoDataFetch, search, getSpotData,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes } = require('./routes');
 
-const { authStateCheck, FBsignIn, loginStateCheck } = require('./fbConfig');
+const { authStateCheck, FBsignIn } = require('./fbConfig');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -20,10 +20,17 @@ var corsOptions = {
 }
 
 app.use(express.json());
-// app.use(session({
-//   secret: '@BCD2023',
-//   resave: true,
-// }));
+app.use(session({
+  secret: '@BCD2023',
+  resave: true,
+  saveUninitialized: true,
+   cookie: {
+     secure : true,
+     httpOnly : false,
+     sameSite : 'none',
+       maxAge: (30 * 86400 * 1000)
+    }
+}));
 app.use(cors(corsOptions));
 
 
@@ -40,7 +47,7 @@ const mainRoute = (req, res) => {
 
 
 
-
+    
     // if (req.session.logedIn) {
     //     res.redirect('/dashboard')
     //     // res.sendFile(path.join(__dirname, '/public/dashboard.html'));
@@ -124,8 +131,8 @@ app.get('/fno/:script/:data', apiAuthCheck, fnoDataFetch)
 
 
 // Page Navigation
-app.get('/dashboard', loginStateCheck);
-// app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
+// app.get('/dashboard', mainRoute);
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
 
