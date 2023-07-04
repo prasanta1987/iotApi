@@ -1,3 +1,3 @@
 
-const HOSTNAME = 'https://iotapi.vercel.app';
-// const HOSTNAME = '';
+// const HOSTNAME = 'https://iotapi.vercel.app';
+const HOSTNAME = '';
