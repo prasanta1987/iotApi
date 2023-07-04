@@ -8,6 +8,8 @@ const stockSearchField = document.querySelector("#stocksearchfield");
 const HOST = '';
 // const HOST = 'https://iotapi.vercel.app';
 
+
+
 (() => {
     fetch(`${HOST}/loginStatus`, { method: 'POST' })
         .then(res => res.json())
