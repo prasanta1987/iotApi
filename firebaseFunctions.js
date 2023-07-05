@@ -44,6 +44,24 @@ exports.FBsignIn = async (req, res) => {
 
 }
 
+
+exports.FBsignInArduino = async (req, res) => {
+
+  let userName = req.headers.uname || false;
+  let apiKey = req.headers.code || false;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, userName, password)
+
+    res.status(200).send("Login Successfull")
+
+  } catch (error) {
+
+    res.status(200).send("Login Failed")
+  }
+
+}
+
 exports.authStateCheck = async (req, res) => {
 
   //  await onAuthStateChanged(auth, (user) => {
@@ -69,7 +87,7 @@ exports.authStateCheck = async (req, res) => {
   }
 }
 
-exports.chckLogin = async (req,res)=>{
+exports.chckLogin = async (req, res) => {
   let user = await this.checkAuthStatus()
   // console.log(user)
   // return user
@@ -84,14 +102,14 @@ exports.chckLogin = async (req,res)=>{
 
 exports.checkAuthStatus = () => {
   return new Promise((resolve, reject) => {
-      try {
-        auth.onAuthStateChanged(user => {
-             resolve(user);
-         });
-      } catch {
-        reject('api failed')
-      }
-    });
+    try {
+      auth.onAuthStateChanged(user => {
+        resolve(user);
+      });
+    } catch {
+      reject('api failed')
+    }
+  });
 }
 
 

@@ -3,13 +3,14 @@ const session = require('express-session');
 const cors = require('cors')
 const path = require("path");
 const axios = require("axios").default;
+require('dotenv').config()
 
 const { fnoDataFetch, search, getSpotData,
     signIn, signup, signOut, signInArduino,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes } = require('./routes');
 
-const { FBsignIn, authStateCheck,chckLogin } = require('./firebaseFunctions');
+const { FBsignIn, authStateCheck, chckLogin, FBsignInArduino } = require('./firebaseFunctions');
 
 const app = express()
 const port = process.env.PORT || 3161
@@ -138,7 +139,7 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html
 
 app.post('/signIn', FBsignIn)
 // app.post('/signIn', signIn)
-app.post('/signInArduino', signInArduino) //Arduino Specific
+app.get('/signInArduino', FBsignInArduino) //Arduino Specific
 app.post('/signOut', signOut)
 app.post('/signUp', checkUserData, signup)
 
