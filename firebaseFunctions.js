@@ -48,7 +48,7 @@ exports.FBsignIn = async (req, res) => {
 exports.FBsignInArduino = async (req, res) => {
 
   let userName = req.headers.uname || false;
-  let apiKey = req.headers.code || false;
+  let password = req.headers.code || false;
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, userName, password)
