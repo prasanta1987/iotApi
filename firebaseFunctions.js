@@ -87,6 +87,18 @@ exports.authStateCheck = async (req, res) => {
   }
 }
 
+exports.authApiCall = async (req, res, next) => {
+
+  const user = await auth.currentUser;
+
+  if (user) {
+    return next()
+  } else {
+    // No user is signed in.
+    res.status(401).send("Unautorized Access")
+  }
+}
+
 exports.chckLogin = async (req, res) => {
   let user = await this.checkAuthStatus()
   // console.log(user)

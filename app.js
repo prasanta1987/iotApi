@@ -10,7 +10,7 @@ const { fnoDataFetch, search, getSpotData,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes } = require('./routes');
 
-const { FBsignIn, authStateCheck, chckLogin, FBsignInArduino } = require('./firebaseFunctions');
+const { FBsignIn, authStateCheck, chckLogin, FBsignInArduino, authApiCall } = require('./firebaseFunctions');
 
 const app = express()
 const port = process.env.PORT || 3161
@@ -122,8 +122,8 @@ app.post('/getWatchList', getWatchLists);
 // DataBase Commands Ends
 
 // Authenticated
-app.get('/spot/:script/', apiAuthCheck, getSpotData)
-app.get('/fno/:script/:data', apiAuthCheck, fnoDataFetch)
+app.get('/spot/:script/', authApiCall, getSpotData)
+app.get('/fno/:script/:data', authApiCall, fnoDataFetch)
 
 // API Request Ends
 
