@@ -24,6 +24,8 @@
     "express": "^4.17.1",
     "express-session": "^1.17.3",
     "firebase": "^9.23.0",
+    "jsonwebtoken": "^9.0.1",
+    "jwks-rsa": "^3.0.1",
     "url": "^0.11.0"
   }
 }
