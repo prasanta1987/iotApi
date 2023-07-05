@@ -53,11 +53,16 @@ exports.FBsignInArduino = async (req, res) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, userName, password)
 
-    res.status(200).send("Login Successfull")
+    if (userCredential) {
+      res.status(200).send("Login Successfull")
+    } else {
+      res.status(401).send("Login Failed")
+    }
+
 
   } catch (error) {
 
-    res.status(401).send("Login Failed")
+    res.status(500).send("Login Failed")
   }
 
 }
