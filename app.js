@@ -139,7 +139,7 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html
 
 app.post('/signIn', FBsignIn)
 // app.post('/signIn', signIn)
-app.get('/signInArduino', FBsignInArduino) //Arduino Specific
+app.post('/signInArduino', FBsignInArduino) //Arduino Specific
 app.post('/signOut', signOut)
 app.post('/signUp', checkUserData, signup)
 
