@@ -69,7 +69,30 @@ exports.authStateCheck = async (req, res) => {
   }
 }
 
+exports.chckLogin = async (req,res)=>{
+  let user = await this.checkAuthStatus()
+  // console.log(user)
+  // return user
 
+  if (user) {
+    res.status(200).json({ "msg": user })
+  } else {
+    res.status(200).json({ "error": "error" })
+  }
+
+}
+
+exports.checkAuthStatus = () => {
+  return new Promise((resolve, reject) => {
+      try {
+        auth.onAuthStateChanged(user => {
+             resolve(user);
+         });
+      } catch {
+        reject('api failed')
+      }
+    });
+}
 
 
 // createUserWithEmailAndPassword(auth, "prasanta.1987@hotmail.com", "password")

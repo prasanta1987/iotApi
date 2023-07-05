@@ -9,7 +9,7 @@ const { fnoDataFetch, search, getSpotData,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes } = require('./routes');
 
-const { FBsignIn, authStateCheck } = require('./firebaseFunctions');
+const { FBsignIn, authStateCheck,chckLogin } = require('./firebaseFunctions');
 
 const app = express()
 const port = process.env.PORT || 3161
@@ -149,7 +149,8 @@ app.post('/signUp', checkUserData, signup)
 
 //     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 // })
-app.post('/loginStatus', authStateCheck)
+app.post('/loginStatus', chckLogin)
+// app.post('/loginStatus', authStateCheck)
 
 
 app.use(express.static(path.join(__dirname, 'public')));
