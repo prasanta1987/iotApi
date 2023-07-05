@@ -57,7 +57,7 @@ exports.FBsignInArduino = async (req, res) => {
 
   } catch (error) {
 
-    res.status(200).send("Login Failed")
+    res.status(410).send("Login Failed")
   }
 
 }
