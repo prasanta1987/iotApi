@@ -3,6 +3,7 @@ const session = require('express-session');
 const cors = require('cors')
 const path = require("path");
 const axios = require("axios").default;
+const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
 const { fnoDataFetch, search, getSpotData,
@@ -102,6 +103,22 @@ const apiAuthCheck = (req, res, next) => {
     }
 }
 
+const verifyIdToken = (req, res, next) => {
+
+    const userIdToken = req.headers.usertoken || null
+
+    const resulData = jwt.decode(userIdToken, { complete: true });
+
+    if (resulData) {
+        return next()
+    } else {
+        res.status(401).json({ 'Msg': 'Unauthorized' })
+    }
+
+}
+
+
+
 // Middlewares Ends Here
 
 // API Request Starts
@@ -113,7 +130,7 @@ app.get('/search/:script', search)
 app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
-app.get('/expStrike/:scripCode', getExpiryandStrikes)
+app.get('/expStrike/:scripCode', verifyIdToken, getExpiryandStrikes)
 
 // DataBase Commands Starts
 
