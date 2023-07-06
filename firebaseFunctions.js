@@ -7,7 +7,7 @@ const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImY5N2U3ZWVlY2YwMWM4MDhiZjRhYjkzOTczN
 
 const authData = jwt.decode(token, { complete: true });
 
-console.log(authData)
+// console.log(authData)
 
 // jwt.verify(token, authData.signature, function (err, decoded) {
 //   if (err) {

@@ -16,7 +16,11 @@ let t = new Date();
 
 const getWatchList = (userId) => {
 
-    fetch(`${HOSTNAME}/marketSnapShot`)
+    fetch('/getWatchList', {
+        method: 'POST', headers: {
+            "uname": userId
+        }
+    })
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -25,17 +29,13 @@ const getWatchList = (userId) => {
 
 }
 
-
-getWatchList()
-
-
 instrument.addEventListener('blur', () => {
     let scripCode = instrument.value
 
     disabledFields.forEach(ele => ele.disabled = true)
     addTrade.disabled = true
 
-    fetch(`${HOSTNAME}/expStrike/${scripCode}`)
+    fetch(`/expStrike/${scripCode}`)
         .then(res => res.json())
         .then(data => {
             disabledFields.forEach(ele => ele.disabled = false)
@@ -46,7 +46,7 @@ instrument.addEventListener('blur', () => {
         .catch(err => console.log(err))
 
 
-    fetch(`${HOSTNAME}/all/${scripCode}`)
+    fetch(`/all/${scripCode}`)
         .then(res => res.json())
         .then(data => {
             console.log(data)

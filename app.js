@@ -33,7 +33,8 @@ app.use(session({
         maxAge: (30 * 86400 * 1000)
     }
 }));
-app.use(cors(corsOptions));
+app.use(cors());
+// app.use(cors(corsOptions));
 
 
 // Middlewares Starts Here
@@ -131,7 +132,7 @@ app.get('/fno/:script/:data', authApiCall, fnoDataFetch)
 // Page Navigation
 
 // app.get('/dashboard', authPageRout);
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '/public/dashboard.html')));
+app.get('/portfolio', (req, res) => res.sendFile(path.join(__dirname, '/public/portfolio.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
 
@@ -139,9 +140,14 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html
 
 app.post('/signIn', FBsignIn)
 // app.post('/signIn', signIn)
-app.post('/signInArduino', FBsignInArduino) //Arduino Specific
 app.post('/signOut', signOut)
 app.post('/signUp', checkUserData, signup)
+
+
+// Arduino Specific Routes
+app.post('/signInArduino', FBsignInArduino) //Arduino Specific
+
+// Arduino Specific Routes
 
 // app.post('/loginStatus', (req, res) => {
 

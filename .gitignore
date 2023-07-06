@@ -3,3 +3,4 @@ node_modules
 user_profile
 .env.development.local
 .env
+public1

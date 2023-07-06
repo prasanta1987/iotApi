@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap Libraries -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
@@ -13,15 +14,19 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="./assets/index.css">
-  <script src="./assets/hosts.js"></script>
+  <!-- Bootstrap Libraries -->
+
+  <!-- Custome Files -->
+  <link rel="stylesheet" href="./assets/css/index.css">
+  <script type="module" src="./assets/js/common.js"></script>
+  <!-- Custome Files -->
   <title>Document</title>
 </head>
 
 <body>
 
   <nav class="navbar navbar-expand-sm bg-light">
-    <div class="container-fluid">
+    <div class="container">
       <a id="brand-text" class="text-capitalize navbar-brand" href="#">Hello</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,14 +35,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-0 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/dashboard">Dashboard</a>
+            <a class="nav-link active" aria-current="page" href="/portfolio">Portfolio</a>
           </li>
         </ul>
         <form class="d-flex" role="search">
           <input id="stocksearchfield" class="d-none form-control me-2" type="search" placeholder="Search"
             aria-label="Search">
-          <button id="logoutbtn" onclick="singOut()" class="d-none me-2 btn btn-outline-danger"
-            type="button">Logout</button>
+          <button id="logoutbtn" class="d-none me-2 btn btn-outline-danger" type="button">Logout</button>
           <button id="loginbtn" type="button" class="btn btn-outline-success" data-bs-toggle="modal"
             data-bs-target="#loginModal">
             Login
@@ -46,7 +50,9 @@
       </div>
     </div>
   </nav>
-  <h1>Main Page Content Here</h1>
+  <div class="container">
+    <h1>Main Page Content Here</h1>
+  </div>
   <!-- Modal -->
   <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -74,78 +80,16 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button onclick="login()" type="button" id="signInBtn" class="btn btn-primary">Sign in</button>
-          <button onclick="signUp()" type="button" id="signupBtn" class="btn btn-primary">Sign Up</button>
+          <button type="button" id="signInBtn" class="btn btn-primary">Sign in</button>
+          <button type="button" id="signupBtn" class="btn btn-primary">Sign Up</button>
           <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
         </div>
       </div>
     </div>
   </div>
 
-  <script src="./assets/authHandler.js"></script>
-  <script src="./assets/mktSnapShot.js"></script>
-  <!-- <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import {
-      getAuth, signOut,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAVVVvQPkU69o16cw5Wc_2l-k5xF9JnmBc",
-      authDomain: "investobaba.firebaseapp.com",
-      databaseURL: "https://investobaba-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "investobaba",
-      storageBucket: "investobaba.appspot.com",
-      messagingSenderId: "666025054627",
-      appId: "1:666025054627:web:fac7a41d624b915103ca16"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid;
-        console.log(uid)
-      } else {
-        console.log("Not Signed In")
-      }
-    });
-
-// signOut(auth).then(() => {
-//     // Sign-out successful.
-//   }).catch((error) => {
-//     // An error happened.
-//   });
-
-// document.querySelector('#signInBtn').addEventListener('click', () => {
-
-//     const userNameEle = document.querySelector("#email");
-//     const passwordEle = document.querySelector("#passwd");
-
-//     const email = userNameEle.value;
-//     const pass = passwordEle.value;
-
-//     signInWithEmailAndPassword(auth, email, pass)
-//         .then((userCredential) => {
-//             // Signed in
-//             const user = userCredential.user;
-
-//             console.log(user)
-//             // ...
-//         })
-//         .catch((error) => {
-//             const errorCode = error.code;
-//             const errorMessage = error.message;
-//         });
-
-// })
-  </script> -->
-
+  <script type="module" src="./assets/js/authHandler.js"></script>
+  <!-- <script src="./assets/js/mktSnapShot.js"></script> -->
 
 </body>
 
