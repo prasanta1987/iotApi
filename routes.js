@@ -1,10 +1,6 @@
 const axios = require("axios").default;
-const { generateUrlList,
-    batchHttpRequest,
-    sendHttpRequest,
-    searchSpot,
-    fetchSpotData,
-    batchOptFetch } = require('./helperFunctions');
+const { generateUrlList, batchHttpRequest, sendHttpRequest,
+    searchSpot, fetchSpotData, fetchFutData } = require('./helperFunctions');
 
 const auth = require('./firebaseFunctions')
 
@@ -15,6 +11,35 @@ exports.fnoDataFetch = async (req, res) => {
     const jsonData = await batchHttpRequest(urlLists, scripCode)
     res.status(200).json(jsonData)
 
+}
+
+exports.getSpotFut = async (req, res) => {
+    const scripCode = req.params.script.toUpperCase();
+
+    const spotData = await fetchSpotData(scripCode)
+    let futData = await fetchFutData(scripCode)
+
+    futData = futData.slice(0, 1)
+
+    futData.map(x => {
+        spotData.futExpiry = x.futExpiry
+        spotData.futLtp = x.futLtp
+        spotData.futChange = x.futChange
+    })
+
+
+    delete spotData.adv
+    delete spotData.decl
+    delete spotData.dayLow
+    delete spotData.dayHigh
+
+    Object.keys(spotData).map(x => {
+
+        if (x != "spotName" && x != "futExpiry") spotData[x] = parseFloat(spotData[x])
+
+    })
+
+    res.status(200).json(spotData)
 }
 
 exports.search = async (req, res) => {

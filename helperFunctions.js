@@ -160,7 +160,8 @@ exports.fetchFutData = async (scripCode) => {
 
         let objData = {
             "futExpiry": data.expiry_date_d.substring(0, 6),
-            "futLtp": data.lastprice
+            "futLtp": data.lastprice,
+            "futChange": data.change
         }
 
         futArrayData.push(objData)
@@ -235,8 +236,4 @@ exports.searchSpot = async (param) => {
     searchDataObj.searchResult = dataArray
 
     return searchDataObj
-}
-
-exports.optionDataFetch = async (param) => {
-
 }
