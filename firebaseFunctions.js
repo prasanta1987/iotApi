@@ -162,43 +162,50 @@ exports.authApiCall = async (req, res, next) => {
   }
 }
 
-exports.chckLogin = async (req, res) => {
-  let user = await this.checkAuthStatus()
-  // console.log(user)
-  // return user
+exports.chckLogin = async (req, res, next) => {
 
-  if (user) {
-    res.status(200).json({ "msg": user })
-  } else {
-    res.status(200).json({ "error": "error" })
+  try {
+    const user = await auth.currentUser.getIdToken();
+    return next()
+  } catch (error) {
+    res.redirect('/')
   }
+  // let user = await this.checkAuthStatus()
+  // // console.log(user)
+  // // return user
+
+  // if (user) {
+  //   res.status(200).json({ "msg": user })
+  // } else {
+  //   res.status(200).json({ "error": "error" })
+  // }
 
 }
 
-exports.checkAuthStatus = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      auth.onAuthStateChanged(user => {
-        resolve(user);
-      });
-    } catch {
-      reject('api failed')
-    }
-  });
-}
+// exports.checkAuthStatus = () => {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       auth.onAuthStateChanged(user => {
+//         resolve(user);
+//       });
+//     } catch {
+//       reject('api failed')
+//     }
+//   });
+// }
 
 
-exports.decodingJWT = (token) => {
+// exports.decodingJWT = (token) => {
 
-  if (token !== null || token !== undefined) {
-    const base64String = token.split(".")[1];
-    const decodedValue = JSON.parse(Buffer.from(base64String, "base64").toString("ascii"));
-    console.log(decodedValue);
-    return decodedValue;
-  }
+//   if (token !== null || token !== undefined) {
+//     const base64String = token.split(".")[1];
+//     const decodedValue = JSON.parse(Buffer.from(base64String, "base64").toString("ascii"));
+//     console.log(decodedValue);
+//     return decodedValue;
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
 
 // createUserWithEmailAndPassword(auth, "prasanta.1987@hotmail.com", "password")

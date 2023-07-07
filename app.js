@@ -149,7 +149,7 @@ app.get('/fno/:script/:data', authApiCall, fnoDataFetch)
 // Page Navigation
 
 // app.get('/dashboard', authPageRout);
-app.get('/portfolio', (req, res) => res.sendFile(path.join(__dirname, '/public/portfolio.html')));
+app.get('/portfolio', chckLogin, (req, res) => res.sendFile(path.join(__dirname, '/public/portfolio.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
 
