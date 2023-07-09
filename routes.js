@@ -27,7 +27,6 @@ exports.getSpotFut = async (req, res) => {
         spotData.futChange = x.futChange
     })
 
-
     delete spotData.adv
     delete spotData.decl
     delete spotData.dayLow
@@ -36,15 +35,19 @@ exports.getSpotFut = async (req, res) => {
 
     Object.keys(spotData).map(x => {
 
-        if (x != "spotName" && x != "futExpiry") spotData[x] = parseFloat(spotData[x])
+        if (x != "spotName" && x != "futExpiry" && x != "mktStatus") spotData[x] = parseFloat(spotData[x])
 
     })
 
     let futExpDate = this.timeStamapToMCDate((new Date(`${spotData.futExpiry} ${new Date().getFullYear()}`)).getTime())
 
-    const mktData = await getMarketLot(scripCode, futExpDate)
-    spotData.lotSize = mktData.mktLot
-    spotData.mktStatus = mktData.mktStatus
+    try {
+        const mktData = await getMarketLot(scripCode, futExpDate)
+        spotData.mktLot = mktData.mktLot
+
+    } catch (error) {
+
+    }
 
     res.status(200).json(spotData)
 }

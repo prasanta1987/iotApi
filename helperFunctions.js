@@ -176,12 +176,9 @@ exports.getMarketLot = async (scripCode, exp) => {
     const futUrl = `https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesfuture/${scripCode}?expiry=${exp}`
 
     let futData = await axios.get(futUrl);
+    let objData = {}
 
-
-    let objData = {
-        "mktLot": futData.data.data.MarketLot,
-        "mktStatus": futData.data.data.market_state
-    }
+    if (futData.data.data.MarketLot) objData.mktLot = futData.data.data.MarketLot;
 
     return objData
 
@@ -205,16 +202,19 @@ exports.fetchSpotData = async (param) => {
 
 
     let soptDataRequest = await axios.get(baseUrl);
+
     try {
         objData = {
             "spotName": soptDataRequest.data.data.company,
             "spotPrice": soptDataRequest.data.data.pricecurrent,
             "spotChng": soptDataRequest.data.data.pricechange,
             "spotChngPct": soptDataRequest.data.data.pricepercentchange,
+            "mktStatus": soptDataRequest.data.data.market_state,
             "dayHigh": soptDataRequest.data.data.HP || soptDataRequest.data.data.HIGH,
             "dayLow": soptDataRequest.data.data.LP || soptDataRequest.data.data.LOW,
         }
 
+        if (soptDataRequest.data.data.MKT_LOT) objData.mktLot = soptDataRequest.data.data.MKT_LOT
         if (soptDataRequest.data.data.decl) {
             objData.decl = new String(soptDataRequest.data.data.decl)
             objData.adv = new String(soptDataRequest.data.data.adv)
