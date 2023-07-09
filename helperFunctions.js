@@ -171,6 +171,22 @@ exports.fetchFutData = async (scripCode) => {
 
 }
 
+exports.getMarketLot = async (scripCode, exp) => {
+
+    const futUrl = `https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesfuture/${scripCode}?expiry=${exp}`
+
+    let futData = await axios.get(futUrl);
+
+
+    let objData = {
+        "mktLot": futData.data.data.MarketLot,
+        "mktStatus": futData.data.data.market_state
+    }
+
+    return objData
+
+}
+
 exports.fetchSpotData = async (param) => {
 
     let baseUrl

@@ -9,8 +9,7 @@ require('dotenv').config()
 const { fnoDataFetch, search, getSpotData,
     signIn, signup, signOut, signInArduino,
     mktSnapShot, globalMktData, nseTicker,
-    getWatchLists, getExpiryandStrikes, getSpotFut,
-    getFutureDataWithdate } = require('./routes');
+    getWatchLists, getExpiryandStrikes, getSpotFut } = require('./routes');
 
 const { FBsignIn, authStateCheck, chckLogin, FBsignInArduino, authApiCall } = require('./firebaseFunctions');
 
@@ -24,17 +23,6 @@ var corsOptions = {
 }
 
 app.use(express.json());
-app.use(session({
-    secret: '@BCD2023',
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-        secure: true,
-        httpOnly: false,
-        sameSite: 'none',
-        maxAge: (30 * 86400 * 1000)
-    }
-}));
 app.use(cors());
 // app.use(cors(corsOptions));
 
@@ -136,8 +124,8 @@ app.get('/nseTicker', nseTicker)
 
 
 app.get('/expStrike/:scripCode/:opType', verifyIdToken, getExpiryandStrikes)
-app.get('/spotFut/:script', verifyIdToken, getSpotFut)
-app.get('/getFutureData/:scripcode/:expiry', getFutureDataWithdate)
+app.get('/spotFut/:script', getSpotFut)
+// app.get('/getFutureData/:scripcode/:expiry', getFutureDataWithdate)
 
 // DataBase Commands Starts
 
@@ -156,7 +144,6 @@ app.get('/fno/:script/:data', authApiCall, fnoDataFetch)
 // Page Navigation
 
 // app.get('/dashboard', authPageRout);
-app.get('/portfolio', chckLogin, (req, res) => res.sendFile(path.join(__dirname, '/public/portfolio.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
 
@@ -180,7 +167,7 @@ app.post('/signInArduino', FBsignInArduino) //Arduino Specific
 
 //     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
 // })
-app.post('/loginStatus', chckLogin)
+// app.post('/loginStatus', chckLogin)
 // app.post('/loginStatus', authStateCheck)
 
 

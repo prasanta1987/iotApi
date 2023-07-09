@@ -1,6 +1,6 @@
 const axios = require("axios").default;
 const { generateUrlList, batchHttpRequest, sendHttpRequest,
-    searchSpot, fetchSpotData, fetchFutData } = require('./helperFunctions');
+    searchSpot, fetchSpotData, fetchFutData, getMarketLot } = require('./helperFunctions');
 
 const auth = require('./firebaseFunctions')
 
@@ -40,8 +40,31 @@ exports.getSpotFut = async (req, res) => {
 
     })
 
+    let futExpDate = this.timeStamapToMCDate((new Date(`${spotData.futExpiry} ${new Date().getFullYear()}`)).getTime())
+
+    const mktData = await getMarketLot(scripCode, futExpDate)
+    spotData.lotSize = mktData.mktLot
+    spotData.mktStatus = mktData.mktStatus
+
     res.status(200).json(spotData)
 }
+
+exports.timeStamapToMCDate = (ts) => {
+
+    let rawDate = new Date(ts)
+    let fullYear = rawDate.getFullYear()
+    let month = parseInt(rawDate.getMonth()) + 1;
+    let date = parseInt(rawDate.getDate())
+
+    month = (month < 10) ? `0${month}` : month;
+    date = (date < 10) ? `0${date}` : date;
+
+    const mcDate = `${fullYear}-${month}-${date}`
+
+    return mcDate
+
+}
+
 
 exports.search = async (req, res) => {
 
@@ -321,27 +344,6 @@ exports.getExpiryandStrikes = async (req, res) => {
     })
 
     res.status(200).json(expiryStrikeLists)
-}
-
-exports.getFutureDataWithdate = async (req, res) => {
-
-    let scripCode = req.params.scripcode.toUpperCase()
-    let exp = req.params.expiry.toUpperCase()
-
-    const futUrl = `https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesfuture/${scripCode}?expiry=${exp}`
-
-    let futData = await axios.get(futUrl);
-
-
-    let objData = {
-        "mktLot": futData.data.data.MarketLot,
-        "mtkStatus": futData.data.data.market_state
-    }
-
-    console.log(objData)
-
-    res.status(200).json(objData)
-
 }
 
 exports.removeDuplicates = (arr) => {
