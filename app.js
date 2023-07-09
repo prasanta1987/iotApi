@@ -9,7 +9,8 @@ require('dotenv').config()
 const { fnoDataFetch, search, getSpotData,
     signIn, signup, signOut, signInArduino,
     mktSnapShot, globalMktData, nseTicker,
-    getWatchLists, getExpiryandStrikes, getSpotFut } = require('./routes');
+    getWatchLists, getExpiryandStrikes, getSpotFut,
+    getFutureDataWithdate } = require('./routes');
 
 const { FBsignIn, authStateCheck, chckLogin, FBsignInArduino, authApiCall } = require('./firebaseFunctions');
 
@@ -136,6 +137,7 @@ app.get('/nseTicker', nseTicker)
 
 app.get('/expStrike/:scripCode/:opType', verifyIdToken, getExpiryandStrikes)
 app.get('/spotFut/:script', verifyIdToken, getSpotFut)
+app.get('/getFutureData/:scripcode/:expiry', getFutureDataWithdate)
 
 // DataBase Commands Starts
 

@@ -323,6 +323,27 @@ exports.getExpiryandStrikes = async (req, res) => {
     res.status(200).json(expiryStrikeLists)
 }
 
+exports.getFutureDataWithdate = async (req, res) => {
+
+    let scripCode = req.params.scripcode.toUpperCase()
+    let exp = req.params.expiry.toUpperCase()
+
+    const futUrl = `https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesfuture/${scripCode}?expiry=${exp}`
+
+    let futData = await axios.get(futUrl);
+
+
+    let objData = {
+        "mktLot": futData.data.data.MarketLot,
+        "mtkStatus": futData.data.data.market_state
+    }
+
+    console.log(objData)
+
+    res.status(200).json(objData)
+
+}
+
 exports.removeDuplicates = (arr) => {
     return [...new Set(arr)];
 }

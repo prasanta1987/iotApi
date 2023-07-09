@@ -214,6 +214,7 @@ exports.fetchSpotData = async (param) => {
 
 }
 
+
 exports.searchSpot = async (param) => {
 
     let searchDataObj = {}
