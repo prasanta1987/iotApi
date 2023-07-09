@@ -32,6 +32,7 @@ exports.getSpotFut = async (req, res) => {
     delete spotData.decl
     delete spotData.dayLow
     delete spotData.dayHigh
+    delete spotData.spotChngPct
 
     Object.keys(spotData).map(x => {
 
@@ -278,8 +279,9 @@ exports.kvRead = async (path) => {
 exports.getExpiryandStrikes = async (req, res) => {
 
     const scripCode = req.params.scripCode.toUpperCase();
+    const opType = req.params.opType.toUpperCase();
 
-    const url = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=${scripCode}&ExpiryDate=`
+    const url = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${opType}&id=${scripCode}&ExpiryDate=`
 
 
     let expiryStrikeLists = []

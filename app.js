@@ -105,7 +105,8 @@ const apiAuthCheck = (req, res, next) => {
 
 const verifyIdToken = (req, res, next) => {
 
-    const userIdToken = req.headers.usertoken || null
+    let userIdToken = req.headers.authorization || null;
+    userIdToken = (userIdToken) && userIdToken.split(" ")[1];
 
     const resulData = jwt.decode(userIdToken, { complete: true });
 
@@ -130,10 +131,11 @@ app.get('/search/:script', search)
 app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
-app.get('/expStrike/:scripCode', verifyIdToken, getExpiryandStrikes)
 
 
-app.get('/spotFut/:script', getSpotFut)
+
+app.get('/expStrike/:scripCode/:opType', verifyIdToken, getExpiryandStrikes)
+app.get('/spotFut/:script', verifyIdToken, getSpotFut)
 
 // DataBase Commands Starts
 
