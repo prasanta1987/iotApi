@@ -124,7 +124,7 @@ app.get('/nseTicker', nseTicker)
 
 
 app.get('/expStrike/:scripCode/:opType', verifyIdToken, getExpiryandStrikes)
-app.get('/spotFut/:script', getSpotFut)
+app.get('/spotFut/:script', verifyIdToken, getSpotFut)
 // app.get('/getFutureData/:scripcode/:expiry', getFutureDataWithdate)
 
 // DataBase Commands Starts
