@@ -59,6 +59,10 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     finalDataObj.spotChngPct = spotDataObj.spotChngPct
     finalDataObj.spotHigh = spotDataObj.dayHigh
     finalDataObj.spotLow = spotDataObj.dayLow
+    if(spotDataObj.adv){
+      finalDataObj.adv = spotDataObj.adv
+      finalDataObj.decl = spotDataObj.decl
+    }
 
     const vixData = await this.fetchSpotData("INDVIX")
 
