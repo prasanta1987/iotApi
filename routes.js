@@ -6,7 +6,10 @@ const auth = require('./firebaseFunctions')
 
 exports.fnoDataFetch = async (req, res) => {
 
-    const scripCode = req.params.script.toUpperCase();
+    const code = req.params.script.toUpperCase();
+    const scripCode = await searchSpot(code)
+
+
     const urlLists = generateUrlList(req.params.data.toUpperCase(), scripCode)
     const jsonData = await batchHttpRequest(urlLists, scripCode)
     res.status(200).json(jsonData)
@@ -14,8 +17,10 @@ exports.fnoDataFetch = async (req, res) => {
 }
 
 exports.getSpotFut = async (req, res) => {
-    const scripCode = req.params.script.toUpperCase();
 
+    const code = req.params.script.toUpperCase();
+
+    const scripCode = await searchSpot(code)
     const spotData = await fetchSpotData(scripCode)
     let futData = await fetchFutData(scripCode)
 
@@ -79,7 +84,10 @@ exports.search = async (req, res) => {
 
 exports.getSpotData = async (req, res) => {
 
-    const scripCode = req.params.script.toUpperCase();
+    const code = req.params.script.toUpperCase();
+
+    const scripCode = await searchSpot(code)
+    console.log(scripCode)
     const jsonData = await fetchSpotData(scripCode)
 
     res.status(200).json(jsonData)
@@ -304,7 +312,9 @@ exports.kvRead = async (path) => {
 
 exports.getExpiryandStrikes = async (req, res) => {
 
-    const scripCode = req.params.scripCode.toUpperCase();
+    const code = req.params.scripCode.toUpperCase();
+    const scripCode = await searchSpot(code)
+
     const opType = req.params.opType.toUpperCase();
 
     const url = `https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${opType}&id=${scripCode}&ExpiryDate=`

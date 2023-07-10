@@ -65,39 +65,8 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     finalDataObj.vixCmp = vixData.spotPrice
     finalDataObj.vixChng = vixData.spotChng
     finalDataObj.vixPerChng = vixData.spotChngPct
-
-
-    // const optDataObj = await this.fetchOptData(allUrls);
-
-    // optDataObj.map(response => {
-    //     let urlParts = url.parse(response.config.url, true)
-    //     let queryData = urlParts.query
-
-
-    //     try {
-
-    //         let objData = {
-    //             "expiry": response.data.fno_list.item[0].exp_date.substring(0, 6),
-    //             "strikePrice": parseInt(response.data.fno_list.item[0].strikeprice).toString(),
-    //             "ltp": response.data.fno_list.item[0].lastprice,
-    //             "tr_lot": queryData.tr_lot,
-    //             "ce_pe": queryData.ce_pe
-    //         }
-
-    //         finalData.push(objData)
-    //         finalDataObj.mktLot = response.data.fno_list.item[0].fno_details.mkt_lot;
-
-    //     } catch (error) {
-    //         console.log("ERROR = >", error)
-    //         indexList.push(index)
-    //         finalDataObj.urlError = `URL -> ${indexList.join()} Error`;
-    //     }
-
-
-    // })
-
-    // finalDataObj.optData = finalData
-
+    finalDataObj.vixDayHigh = vixData.dayHigh
+    finalDataObj.vixDayLow = vixData.dayLow
 
     finalDataObj.optData = await this.fetchOptData(allUrls)
     finalDataObj.futData = await this.fetchFutData(scripCode)
@@ -198,8 +167,8 @@ exports.fetchSpotData = async (param) => {
         baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN";
     } else {
         baseUrl = "https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode;
-    }
 
+    }
 
     let soptDataRequest = await axios.get(baseUrl);
 
@@ -233,24 +202,54 @@ exports.fetchSpotData = async (param) => {
 
 exports.searchSpot = async (param) => {
 
-    let searchDataObj = {}
-    let dataArray = []
+    param = param.toUpperCase()
 
-    const url = `https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`
+    if (param == "NIFTY") {
+        return "NIFTY"
+    } else if (param == "BANKNIFTY") {
+        return "BANKNIFTY"
+    } else if (param == "INDVIX") {
+        return "INDVIX"
+    } else {
+        const url = `https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`
+        let searchData = await axios.get(url)
+        let searchRes = searchData.data[0].sc_id
+        return searchRes
+    }
 
-    let searchData = await axios.get(url)
 
-    searchData.data.map(data => {
-
-        console.log(data)
-        let objData = {
-            "id": data.sc_id,
-            "Name": data.stock_name
-        }
-
-        dataArray.push(objData)
-    })
-    searchDataObj.searchResult = dataArray
-
-    return searchDataObj
 }
+// exports.searchSpot = async (param) => {
+
+//     param = param.toUpperCase()
+
+//     if (param == "NIFTY") {
+//         return "NIFTY"
+//     } else if (param == "BANK NIFTY") {
+//         return "BANK NIFTY"
+//     } else if (param == "INDVIX") {
+//         return "INDVIX"
+//     } else {
+//         let searchDataObj = {}
+//         let dataArray = []
+
+//         const url = `https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`
+
+//         let searchData = await axios.get(url)
+
+//         searchData.data.map(data => {
+
+//             let objData = {
+//                 "id": data.sc_id,
+//                 "Name": data.stock_name
+//             }
+
+//             dataArray.push(objData)
+//         })
+//         searchDataObj.searchResult = dataArray
+
+//         return searchDataObj
+//     }
+
+
+// }
