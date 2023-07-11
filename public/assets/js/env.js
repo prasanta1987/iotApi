@@ -15,10 +15,12 @@ const signUpBtnEle = document.querySelector('#signupBtn')
 
 // DOM Elements
 
+let HOST = ''
+
 if (window.location.host == 'investobaba.web.app') {
-    const HOST = 'https://iotapi.vercel.app'
+    HOST = 'https://iotapi.vercel.app'
 } else {
-    const HOST = 'http://localhost:3000'
+    HOST = 'http://localhost:3000'
 }
 
 export {
