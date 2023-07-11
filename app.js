@@ -9,7 +9,8 @@ require('dotenv').config()
 const { fnoDataFetch, search, getSpotData,
     signIn, signup, signOut, signInArduino,
     mktSnapShot, globalMktData, nseTicker,
-    getWatchLists, getExpiryandStrikes, getSpotFut } = require('./routes');
+    getWatchLists, getExpiryandStrikes, getSpotFut,
+    getTechnicalData } = require('./routes');
 
 const { FBsignIn, authStateCheck, chckLogin, FBsignInArduino, authApiCall } = require('./firebaseFunctions');
 
@@ -116,6 +117,7 @@ const verifyIdToken = (req, res, next) => {
 // Un-Authenticated
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
+app.get('/technicals/:scripCode/', getTechnicalData)
 app.get('/search/:script', search)
 app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
@@ -145,6 +147,7 @@ app.get('/fno/:script/:data', authApiCall, fnoDataFetch)
 
 // app.get('/dashboard', authPageRout);
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
+app.get('/strategy', (req, res) => res.sendFile(path.join(__dirname, '/public/strategy.html')));
 
 
 // Sign-In Sign-Up Handler

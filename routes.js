@@ -4,6 +4,34 @@ const { generateUrlList, batchHttpRequest, sendHttpRequest,
 
 const auth = require('./firebaseFunctions')
 
+exports.getTechnicalData = async (req, res) => {
+
+    const scripCode = req.params.scripCode.toUpperCase()
+    const urlList = [
+        `https://intradayscreener.com/api/CandlestickAnalysis/Indicators/${scripCode}/5`,
+        `https://intradayscreener.com/api/CandlestickAnalysis/Indicators/${scripCode}/15`,
+        `https://intradayscreener.com/api/CandlestickAnalysis/Indicators/${scripCode}/60`,
+        `https://intradayscreener.com/api/CandlestickAnalysis/Indicators/${scripCode}/daily`
+    ]
+
+    let allRequests = await urlList.map(url => axios(url));
+    let allResponses = await Promise.all(allRequests);
+
+    let objData = {}
+    let arrayData = []
+
+    allResponses.map(data => {
+        arrayData.push(data.data)
+    })
+
+    objData.min5data = arrayData[0]
+    objData.min15data = arrayData[1]
+    objData.min60data = arrayData[2]
+    objData.dailydata = arrayData[3]
+
+    res.status(200).json(objData)
+}
+
 exports.fnoDataFetch = async (req, res) => {
 
     const code = req.params.script.toUpperCase();
