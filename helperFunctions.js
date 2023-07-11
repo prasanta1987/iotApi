@@ -59,9 +59,9 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     finalDataObj.spotChngPct = spotDataObj.spotChngPct
     finalDataObj.spotHigh = spotDataObj.dayHigh
     finalDataObj.spotLow = spotDataObj.dayLow
-    if(spotDataObj.adv){
-      finalDataObj.adv = spotDataObj.adv
-      finalDataObj.decl = spotDataObj.decl
+    if (spotDataObj.adv) {
+        finalDataObj.adv = spotDataObj.adv
+        finalDataObj.decl = spotDataObj.decl
     }
 
     const vixData = await this.fetchSpotData("INDVIX")
@@ -163,9 +163,9 @@ exports.fetchSpotData = async (param) => {
     let objData = {}
     let scripCode = param.toUpperCase()
 
-    if (scripCode == "NIFTY") {
+    if (scripCode == "NIFTY" || scripCode == "NIFTY 50") {
         baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX";
-    } else if (scripCode == "BANKNIFTY") {
+    } else if (scripCode == "BANKNIFTY" || scripCode == "BANK NIFTY") {
         baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx";
     } else if (scripCode == "INDVIX") {
         baseUrl = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN";
