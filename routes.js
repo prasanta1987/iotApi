@@ -6,7 +6,15 @@ const auth = require('./firebaseFunctions')
 
 exports.getTechnicalData = async (req, res) => {
 
-    const scripCode = req.params.scripCode.toUpperCase()
+    let scripCode = req.params.scripCode.toUpperCase()
+
+    if (scripCode == "NIFTY") {
+        scripCode = "NIFTY 50"
+    } else if (scripCode == "BANKNIFTY") {
+        scripCode = "NIFTY BANK"
+    }
+
+
     const urlList = [
         `https://intradayscreener.com/api/CandlestickAnalysis/Indicators/${scripCode}/5`,
         `https://intradayscreener.com/api/CandlestickAnalysis/Indicators/${scripCode}/15`,
@@ -21,6 +29,7 @@ exports.getTechnicalData = async (req, res) => {
     let arrayData = []
 
     allResponses.map(data => {
+        console.log(data)
         arrayData.push(data.data)
     })
 

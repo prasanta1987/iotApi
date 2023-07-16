@@ -1,7 +1,176 @@
-const firebase = require("firebase/app");
 const jwt = require('jsonwebtoken');
-const jwksClient = require('jwks-rsa');
 const axios = require('axios').default
+
+// require('dotenv').config()
+
+// const admin = require('firebase-admin');
+
+
+// const serviceAccount = {
+//   "type": process.env.FB_ADM_type,
+//   "project_id": process.env.FB_ADM_project_id,
+//   "private_key_id": process.env.FB_ADM_private_key_id,
+//   "private_key": process.env.FB_ADM_private_key,
+//   "client_email": process.env.FB_ADM_client_email,
+//   "client_id": process.env.FB_ADM_client_id,
+//   "auth_uri": process.env.FB_ADM_auth_uri,
+//   "token_uri": process.env.FB_ADM_token_uri,
+//   "auth_provider_x509_cert_url": process.env.FB_ADM_auth_provider_x509_cert_url,
+//   "client_x509_cert_url": process.env.FB_ADM_client_x509_cert_url,
+//   "universe_domain": process.env.FB_ADM_universe_domain
+// }
+
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: process.env.FB_DB_URL
+// });
+
+
+
+// var db = admin.database();
+
+// admin.auth().getUserByEmail('prasanta.1987@hotmail.com')
+//   .then(data => {
+//     console.log(data)
+//   })
+//   .catch(err => {
+//     console.log(err)
+//   })
+
+
+
+const firebase = require("firebase/app");
+const { getDatabase, ref, set, get, child } = require('firebase/database');
+const { getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged } = require("firebase/auth");
+
+const firebaseConfig = {
+  apiKey: process.env.FB_API_KEY,
+  databaseURL: process.env.FB_DB_URL,
+};
+
+const fbApp = firebase.initializeApp(firebaseConfig);
+const database = getDatabase();
+const auth = getAuth();
+const dbRef = ref(getDatabase());
+
+
+exports.FBsignIn = async (req, res) => {
+
+  let userName = req.body.name || false
+  let password = req.body.passwd || false
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, userName, password)
+    res.status(200).json({ "msg": "success" })
+
+  } catch (error) {
+
+    res.status(200).json({ "msg": error })
+  }
+
+}
+
+
+
+
+exports.FBsignInArduino = async (req, res) => {
+
+  let userName = req.headers.uname || false;
+  let password = req.headers.code || false;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, userName, password)
+
+    res.status(200).send("Login Successfull")
+
+  } catch (error) {
+
+    res.status(401).send("Login Failed")
+  }
+
+}
+
+exports.authStateCheck = async (req, res) => {
+
+  const user = await auth.currentUser;
+
+  if (user) {
+    res.status(200).json({ "msg": user })
+  } else {
+    res.status(200).json({ "error": "error" })
+  }
+}
+
+exports.authApiCall = async (req, res, next) => {
+
+  const user = await auth.currentUser;
+
+  if (user) {
+    return next()
+  } else {
+    res.status(401).send("Unautorized Access")
+  }
+}
+
+exports.chckLogin = async (req, res, next) => {
+
+  try {
+    const user = await auth.currentUser.getIdToken();
+    return next()
+  } catch (error) {
+    res.redirect('/')
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImY5N2U3ZWVlY2YwMWM4MDhiZjRhYjkzOTczNDBiZmIyOTgyZTg0NzUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaW52ZXN0b2JhYmEiLCJhdWQiOiJpbnZlc3RvYmFiYSIsImF1dGhfdGltZSI6MTY4ODU4MjEwMSwidXNlcl9pZCI6IlI4TWh0NzFBNmtaVGdsa0hqenJNamlpVk1QMTIiLCJzdWIiOiJSOE1odDcxQTZrWlRnbGtIanpyTWppaVZNUDEyIiwiaWF0IjoxNjg4NTgyMTAxLCJleHAiOjE2ODg1ODU3MDEsImVtYWlsIjoicHJhc2FudGEuMTk4N0Bob3RtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwcmFzYW50YS4xOTg3QGhvdG1haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.l5F8qjC1r8c9DQ9ZBUg643EeTUUDqSBeJzVRn77H84CqM3Q9miYYr_moX_7KbrBfbhNQw6PbaqDStxtPTnrC6ti4nnUMYnwqsX5cRJczTTfBpO5AEOM974SWN2wWdIZP-2x8Dk7X525UX9znK3vBrDDl7cpmm9T0pPX8TOWDSdL32bza38CyaLTa6GkoRf31qcqB12_gMNj2LuYyfguapiQwTNhj-6VMlU6DZ5ektww-Ewh21qXpuTLhnnJakGvNCUY1xsJgV8b3Prv4ntUf4BReIRQTto7Zi6M90n552uD7aNkQ0X-wADezLUE_hIBphnyl1nTYDmjfPYFDrdjxzA";
 
@@ -62,125 +231,8 @@ const axios = require('axios').default
 // })();
 
 
+// 
 
-const { getDatabase, ref, set, get, child } = require('firebase/database');
-const { getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged } = require("firebase/auth");
-
-const firebaseConfig = {
-  apiKey: process.env.FB_API_KEY,
-  databaseURL: process.env.FB_DB_URL,
-};
-
-const fbApp = firebase.initializeApp(firebaseConfig);
-const database = getDatabase();
-const auth = getAuth();
-const dbRef = ref(getDatabase());
-
-
-exports.FBsignIn = async (req, res) => {
-
-  let userName = req.body.name || false
-  let password = req.body.passwd || false
-
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, userName, password)
-    res.status(200).json({ "msg": "success" })
-
-  } catch (error) {
-
-    res.status(200).json({ "msg": error })
-  }
-  // .then((userCredential) => {
-  //     // Signed in
-  //     const user = userCredential.user;
-  //     res.status(200).json({ "msg": "success" })
-  //     // ...
-  // })
-  // .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     res.status(200).json({ "msg": "failed" })
-  // });
-
-}
-
-
-exports.FBsignInArduino = async (req, res) => {
-
-  let userName = req.headers.uname || false;
-  let password = req.headers.code || false;
-
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, userName, password)
-
-    res.status(200).send("Login Successfull")
-
-  } catch (error) {
-
-    res.status(401).send("Login Failed")
-  }
-
-}
-
-exports.authStateCheck = async (req, res) => {
-
-  //  await onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //          const uid = user.uid;
-  //           res.status(200).json({ "msg": user })
-  //       } else {
-  //        res.status(200).json({ "error": "error" })
-  //       }
-  //    });
-
-  const user = await auth.currentUser;
-
-  if (user) {
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/auth.user
-    // ...
-
-    res.status(200).json({ "msg": user })
-  } else {
-    // No user is signed in.
-    res.status(200).json({ "error": "error" })
-  }
-}
-
-exports.authApiCall = async (req, res, next) => {
-
-  const user = await auth.currentUser;
-
-  if (user) {
-    return next()
-  } else {
-    // No user is signed in.
-    res.status(401).send("Unautorized Access")
-  }
-}
-
-exports.chckLogin = async (req, res, next) => {
-
-  try {
-    const user = await auth.currentUser.getIdToken();
-    return next()
-  } catch (error) {
-    res.redirect('/')
-  }
-  // let user = await this.checkAuthStatus()
-  // // console.log(user)
-  // // return user
-
-  // if (user) {
-  //   res.status(200).json({ "msg": user })
-  // } else {
-  //   res.status(200).json({ "error": "error" })
-  // }
-
-}
 
 // exports.checkAuthStatus = () => {
 //   return new Promise((resolve, reject) => {
