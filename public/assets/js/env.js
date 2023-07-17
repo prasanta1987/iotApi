@@ -19,6 +19,8 @@ let HOST = ''
 
 if (window.location.host == 'investobaba.web.app') {
     HOST = 'https://iotapi.vercel.app'
+} else if(window.location.host == 'amused-hare-long-johns.cyclic.app'){
+    HOST = 'https://amused-hare-long-johns.cyclic.app'
 } else {
     HOST = 'http://localhost:3000'
 }
