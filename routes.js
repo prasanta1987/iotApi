@@ -124,7 +124,6 @@ exports.getSpotData = async (req, res) => {
     const code = req.params.script.toUpperCase();
 
     const scripCode = await searchSpot(code)
-    console.log(scripCode)
     const jsonData = await fetchSpotData(scripCode)
 
     res.status(200).json(jsonData)
@@ -197,123 +196,123 @@ exports.addToWatchList = async (req, res) => {
 
 }
 
-exports.signIn = async (req, res) => {
-    req.session.logedIn = false
-    let userName = req.body.name || false
-    let password = req.body.passwd || false
+// exports.signIn = async (req, res) => {
+//     req.session.logedIn = false
+//     let userName = req.body.name || false
+//     let password = req.body.passwd || false
 
-    const userDatas = await this.kvRead("users")
-    try {
+//     const userDatas = await this.kvRead("users")
+//     try {
 
-        userDatas.forEach(userData => {
-            if (userData.name == userName) {
-                if (userData.passwd == password) {
-                    req.session.logedIn = true
-                    req.session.userName = userName
-                }
-            }
-        })
+//         userDatas.forEach(userData => {
+//             if (userData.name == userName) {
+//                 if (userData.passwd == password) {
+//                     req.session.logedIn = true
+//                     req.session.userName = userName
+//                 }
+//             }
+//         })
 
-        if (req.session.logedIn == true) {
-            res.status(200).json({ "msg": "success" })
-        } else {
-            res.status(200).json({ "msg": "failed" })
-        }
+//         if (req.session.logedIn == true) {
+//             res.status(200).json({ "msg": "success" })
+//         } else {
+//             res.status(200).json({ "msg": "failed" })
+//         }
 
-    } catch (error) {
-        res.status(500).json({ "error": error })
-    }
+//     } catch (error) {
+//         res.status(500).json({ "error": error })
+//     }
 
-}
-
-
-exports.signInArduino = async (req, res) => {
-
-    req.session.logedIn = false;
-
-    let userName = req.headers.uname || false;
-    let apiKey = req.headers.code || false;
-
-    console.log(userName, "=>", apiKey)
-    let config = {
-        method: 'get',
-        url: `${process.env.KV_REST_API_URL}/get/users`,
-        headers: {
-            "Authorization": process.env.KV_REST_API_TOKEN,
-            "Content-Type": "application/json"
-        }
-    }
-
-    try {
-        const data = await axios(config)
-        let userDatas = JSON.parse(data.data.result)
-
-        userDatas.forEach(userData => {
-            if (userData.name == userName) {
-                if (userData.apiKey == apiKey) {
-                    req.session.logedIn = true
-                }
-            }
-        })
-
-        if (req.session.logedIn == true) {
-            res.status(200).send("Login Successfull")
-        } else {
-            res.status(200).send("Login Failed")
-        }
-
-    } catch (error) {
-        res.status(500).send("Internal Server Error")
-    }
-}
-
-exports.signup = async (req, res) => {
-
-    const userLists = res.locals.userList
-
-    let userName = req.body.name || false
-    let password = req.body.passwd || false
-
-    let objData = {
-        "name": userName,
-        "passwd": password,
-        "apiKey": Math.random().toString(36).substring(4) + Math.random().toString(16).substring(6)
-    }
-
-    userLists.push(objData)
+// }
 
 
-    var config = {
-        method: 'post',
-        url: `${process.env.KV_REST_API_URL}/pipeline`,
-        headers: {
-            "Authorization": process.env.KV_REST_API_TOKEN,
-            "Content-Type": "application/json"
-        },
-        data: [
-            ['SET', 'users', JSON.stringify(userLists)],
-            ['SET', 'watchlists', JSON.stringify(
-                {
-                    [userName]: [
-                        { "scripName": "NIFTY", "buyPrice": 1234.56, "epoc": 12344567890 }
-                    ]
-                }
-            )]
-        ]
-    };
+// exports.signInArduino = async (req, res) => {
 
-    const data = await this.kvWrite(config)
+//     req.session.logedIn = false;
 
-    res.status(200).json({ data })
+//     let userName = req.headers.uname || false;
+//     let apiKey = req.headers.code || false;
 
-}
+//     console.log(userName, "=>", apiKey)
+//     let config = {
+//         method: 'get',
+//         url: `${process.env.KV_REST_API_URL}/get/users`,
+//         headers: {
+//             "Authorization": process.env.KV_REST_API_TOKEN,
+//             "Content-Type": "application/json"
+//         }
+//     }
 
-exports.signOut = (req, res) => {
+//     try {
+//         const data = await axios(config)
+//         let userDatas = JSON.parse(data.data.result)
 
-    req.session.logedIn = false
-    req.session.userName = null
-    res.status(200).json({ "msg": "success" })
-}
+//         userDatas.forEach(userData => {
+//             if (userData.name == userName) {
+//                 if (userData.apiKey == apiKey) {
+//                     req.session.logedIn = true
+//                 }
+//             }
+//         })
+
+//         if (req.session.logedIn == true) {
+//             res.status(200).send("Login Successfull")
+//         } else {
+//             res.status(200).send("Login Failed")
+//         }
+
+//     } catch (error) {
+//         res.status(500).send("Internal Server Error")
+//     }
+// }
+
+// exports.signup = async (req, res) => {
+
+//     const userLists = res.locals.userList
+
+//     let userName = req.body.name || false
+//     let password = req.body.passwd || false
+
+//     let objData = {
+//         "name": userName,
+//         "passwd": password,
+//         "apiKey": Math.random().toString(36).substring(4) + Math.random().toString(16).substring(6)
+//     }
+
+//     userLists.push(objData)
+
+
+//     var config = {
+//         method: 'post',
+//         url: `${process.env.KV_REST_API_URL}/pipeline`,
+//         headers: {
+//             "Authorization": process.env.KV_REST_API_TOKEN,
+//             "Content-Type": "application/json"
+//         },
+//         data: [
+//             ['SET', 'users', JSON.stringify(userLists)],
+//             ['SET', 'watchlists', JSON.stringify(
+//                 {
+//                     [userName]: [
+//                         { "scripName": "NIFTY", "buyPrice": 1234.56, "epoc": 12344567890 }
+//                     ]
+//                 }
+//             )]
+//         ]
+//     };
+
+//     const data = await this.kvWrite(config)
+
+//     res.status(200).json({ data })
+
+// }
+
+// exports.signOut = (req, res) => {
+
+//     req.session.logedIn = false
+//     req.session.userName = null
+//     res.status(200).json({ "msg": "success" })
+// }
 
 exports.kvWrite = async (config) => {
 
