@@ -126,7 +126,7 @@ exports.arduinoAskCred = async (req, res) => {
 
 exports.arduinoSignInRout = async (req, res) => {
 
-  let userEmail = req.headers.__uname || false;
+  let userEmail = req.headers.__email || false;
   let userUid = req.headers.__uid || false;
 
   const userData = await admin.auth().getUserByEmail(userEmail);
