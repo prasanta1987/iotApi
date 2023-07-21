@@ -14,7 +14,8 @@ const { fnoDataFetch, search, getSpotData,
 
 const { FBsignIn, authStateCheck, chckLogin,
     FBsignInArduino, authApiCall,
-    arduinoSignInRout, arduinoAskCred } = require('./firebaseFunctions');
+    arduinoSignInRout, arduinoAskCred,
+    arduinoDelKeyValue, authArduino } = require('./firebaseFunctions');
 
 // R8Mht71A6kZTglkHjzrMjiiVMP12
 
@@ -80,13 +81,14 @@ app.get('/nseTicker', nseTicker)
 // Authenticated
 app.get('/expStrike/:scripCode/:opType', verifyIdToken, getExpiryandStrikes)
 app.get('/spotFut/:script', verifyIdToken, getSpotFut)
+app.post('/authArduinoDevice', authArduino)
 // app.get('/getFutureData/:scripcode/:expiry', getFutureDataWithdate)
 
 // Arduino Specific Routes
 app.post('/signInArduino', arduinoSignInRout)
 app.post('/addArduinoDevice', arduinoAskCred)
+app.post('/deleteDeviceKey', arduinoDelKeyValue)
 app.get('/spotArduino/:script/', apiAuthCheck, getSpotData)
-
 // app.post('/getWatchList', getWatchLists);
 
 

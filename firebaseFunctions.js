@@ -43,6 +43,41 @@ var deviceAddRef = db.ref("devices");
 //   console.log(snapshot.val())
 // })
 
+exports.authArduino = async (req, res) => {
+
+  let devOtp = req.headers.__dev || false;
+  let email = req.headers.__email || false;
+  let uid = req.headers.__uid || false;
+
+  try {
+
+    await deviceAddRef.child(devOtp).update({
+      email: email,
+      uid: uid
+    });
+
+    res.status(200).json({ "msg": "Success" })
+  } catch (error) {
+    res.status(500).json({ "msg": "Error" })
+  }
+
+
+
+}
+
+exports.arduinoDelKeyValue = async (req, res) => {
+
+  try {
+    let devOtp = req.headers.__dev || false;
+    await deviceAddRef.child(devOtp).set(null);
+
+    res.status(200).json({ "msg": "Success" })
+  } catch (error) {
+    res.status(500).json({ "msg": "Error" })
+  }
+
+
+}
 
 exports.arduinoAskCred = async (req, res) => {
 
@@ -55,23 +90,35 @@ exports.arduinoAskCred = async (req, res) => {
 
   const dataSnap = await dataSnapShot.val()
 
-  console.log(devOtp)
+  console.log(dataSnap)
 
   if (dataSnap == null) {
 
     const usersRef = deviceAddRef.child(devOtp);
 
-    usersRef.set({
+    await usersRef.set({
       email: false,
       uid: false
     });
 
+    res.status(200).json({ "msg": "Credential Requested" })
 
+  } else {
+
+    if (dataSnap.email == false && dataSnap.uid == false) {
+
+      res.status(200).json({ "msg": "Waiting for Credential" })
+
+    } else {
+
+      res.status(200).json(dataSnap)
+
+    }
 
   }
 
 
-  res.status(200).json(dataSnap)
+
 
 }
 
@@ -79,8 +126,8 @@ exports.arduinoAskCred = async (req, res) => {
 
 exports.arduinoSignInRout = async (req, res) => {
 
-  let userEmail = req.headers.uname || false;
-  let userUid = req.headers.code || false;
+  let userEmail = req.headers.__uname || false;
+  let userUid = req.headers.__uid || false;
 
   const userData = await admin.auth().getUserByEmail(userEmail);
   const uid = userData.uid
