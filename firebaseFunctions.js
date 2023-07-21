@@ -134,9 +134,9 @@ exports.arduinoSignInRout = async (req, res) => {
 
   if (userUid == uid) {
     req.session.logedIn = true
-    res.status(200).send('Login Successful');
+    res.status(200).json({ 'msg': 'Login Successful' });
   } else {
-    res.status(401).send('Un-Authorized');
+    res.status(401).json({ 'msg': 'Login Failed' });
   }
 }
 
