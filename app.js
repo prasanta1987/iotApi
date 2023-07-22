@@ -93,7 +93,7 @@ app.post('/signOutArduino', (req, res) => {
 })
 app.post('/addArduinoDevice', arduinoAskCred)
 app.post('/deleteDeviceKey', arduinoDelKeyValue)
-app.get('/getArduinoData/:uid', getSpotData)
+app.get('/getArduinoData/:uid', mktSnapShot)
 // app.post('/getWatchList', getWatchLists);
 
 
