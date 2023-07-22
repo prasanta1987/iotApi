@@ -28,14 +28,15 @@ var corsOptions = {
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-app.use(express.json());
-app.use(cors());
-// app.use(cors(corsOptions));
 app.use(session({
     secret: 'IMPK3161',
     resave: true,
     saveUninitialized: true
 }));
+app.use(express.json());
+app.use(cors());
+// app.use(cors(corsOptions));
+
 
 // Middlewares Starts Here
 
@@ -86,9 +87,13 @@ app.post('/authArduinoDevice', authArduino)
 
 // Arduino Specific Routes
 app.post('/signInArduino', arduinoSignInRout)
+app.post('/signOutArduino', (req, res) => {
+    req.session.logedIn = false
+    res.status(200).json({ "msg": "Signed Out" })
+})
 app.post('/addArduinoDevice', arduinoAskCred)
 app.post('/deleteDeviceKey', arduinoDelKeyValue)
-app.get('/spotArduino/:script/', apiAuthCheck, getSpotData)
+app.get('/getArduinoData', apiAuthCheck, getSpotData)
 // app.post('/getWatchList', getWatchLists);
 
 

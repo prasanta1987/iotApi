@@ -116,10 +116,6 @@ exports.arduinoAskCred = async (req, res) => {
     }
 
   }
-
-
-
-
 }
 
 
@@ -129,6 +125,8 @@ exports.arduinoSignInRout = async (req, res) => {
   let userEmail = req.headers.__email || false;
   let userUid = req.headers.__uid || false;
 
+  console.log(userEmail, userUid)
+
   const userData = await admin.auth().getUserByEmail(userEmail);
   const uid = userData.uid
 
@@ -136,6 +134,7 @@ exports.arduinoSignInRout = async (req, res) => {
     req.session.logedIn = true
     res.status(200).json({ 'msg': 'Login Successful' });
   } else {
+    req.session.logedIn = false
     res.status(401).json({ 'msg': 'Login Failed' });
   }
 }
