@@ -95,7 +95,7 @@ app.get('/spotArduino/:script/', apiAuthCheck, getSpotData)
 // DataBase Commands Ends
 
 // Authenticated
-// app.get('/spot/:script/', authApiCall, getSpotData)
+app.get('/spot/:script/', apiAuthCheck, getSpotData)
 // app.get('/fno/:script/:data', authApiCall, fnoDataFetch)
 
 // API Request Ends
