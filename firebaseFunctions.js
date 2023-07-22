@@ -143,7 +143,7 @@ exports.arduinoDevData = async (req, res) => {
 
     const userUID = req.params.userUID || null;
 
-    const dataSnapShot = await deviceAddRef.child(userUID).once('value', snapShot => {
+    const dataSnapShot = await db.ref(userUID).once('value', snapShot => {
       return snapShot
     })
 
