@@ -93,14 +93,14 @@ app.post('/signOutArduino', (req, res) => {
 })
 app.post('/addArduinoDevice', arduinoAskCred)
 app.post('/deleteDeviceKey', arduinoDelKeyValue)
-app.get('/getArduinoData', apiAuthCheck, getSpotData)
+app.get('/getArduinoData/:uid', getSpotData)
 // app.post('/getWatchList', getWatchLists);
 
 
 // DataBase Commands Ends
 
 // Authenticated
-app.get('/spot/:script/', apiAuthCheck, getSpotData)
+// app.get('/spot/:script/', apiAuthCheck, getSpotData)
 // app.get('/fno/:script/:data', authApiCall, fnoDataFetch)
 
 // API Request Ends
