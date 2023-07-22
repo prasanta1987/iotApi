@@ -118,8 +118,6 @@ exports.arduinoAskCred = async (req, res) => {
   }
 }
 
-
-
 exports.arduinoSignInRout = async (req, res) => {
 
   let userEmail = req.headers.__email || false;
@@ -139,6 +137,25 @@ exports.arduinoSignInRout = async (req, res) => {
   }
 }
 
+exports.arduinoDevData = async (req, res) => {
+
+  try {
+
+    const userUID = req.params.userUID || null;
+
+    const dataSnapShot = await deviceAddRef.child(userUID).once('value', snapShot => {
+      return snapShot
+    })
+
+    const dataSnap = await dataSnapShot.val()
+
+    res.status(200).json(dataSnap)
+  } catch (error) {
+    res.status(500).json({ "msg": "Error" })
+  }
+
+
+}
 // Client Library Below
 
 // const firebase = require("firebase/app");

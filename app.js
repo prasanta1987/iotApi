@@ -15,7 +15,7 @@ const { fnoDataFetch, search, getSpotData,
 const { FBsignIn, authStateCheck, chckLogin,
     FBsignInArduino, authApiCall,
     arduinoSignInRout, arduinoAskCred,
-    arduinoDelKeyValue, authArduino } = require('./firebaseFunctions');
+    arduinoDelKeyValue, authArduino, arduinoDevData } = require('./firebaseFunctions');
 
 // R8Mht71A6kZTglkHjzrMjiiVMP12
 
@@ -93,7 +93,7 @@ app.post('/signOutArduino', (req, res) => {
 })
 app.post('/addArduinoDevice', arduinoAskCred)
 app.post('/deleteDeviceKey', arduinoDelKeyValue)
-app.get('/getArduinoData/:uid', mktSnapShot)
+app.get('/getArduinoData/:userUID', arduinoDevData)
 // app.post('/getWatchList', getWatchLists);
 
 
