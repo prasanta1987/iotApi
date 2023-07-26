@@ -287,9 +287,12 @@ exports.genSpotDatas = async (ids) => {
 
     allOptResponses.map(response => {
         const data = response.data.data
+        // console.log(data.NSEID)
+
         if (data != null) {
             let dataObj = {
                 spotName: data.company,
+                nseId: data.NSEID || data.company,
                 open: data.OPN || data.OPEN,
                 cmp: data.pricecurrent,
                 prevClose: data.priceprevclose,
