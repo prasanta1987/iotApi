@@ -287,10 +287,10 @@ exports.genSpotDatas = async (ids) => {
 
     allOptResponses.map(response => {
         const data = response.data.data
-        console.log("==>", data)
         if (data != null) {
             let dataObj = {
                 spotName: data.company,
+                open: data.OPN || data.OPEN,
                 cmp: data.pricecurrent,
                 prevClose: data.priceprevclose,
                 dayHigh: data.HIGH || data.HP,

@@ -25,7 +25,6 @@ exports.batchSpotData = async (req, res) => {
     let allIds = await getMcIds(spotMcIdsUrls)
     let allData = await genSpotDatas(allIds)
 
-    console.log(allData)
     res.send(allData)
 
 }
