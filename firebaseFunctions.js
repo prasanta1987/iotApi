@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const axios = require('axios').default
+const { multipleApiCalls } = require('./helperFunctions')
+const { monthsName, exceptionsScripCode } = require('./constants')
 
 require('dotenv').config()
 
@@ -151,27 +153,77 @@ exports.arduinoDevData = async (req, res) => {
     let spotUrlArrs = [];
     let futUrlArrs = [];
 
-    const url = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/NIFTY?expiry=2023-06-29&optionType=CE&strikePrice=18000.00";
-
     const dataSnap = await dataSnapShot.val()
     const strategies = dataSnap.strategies.data;
 
     strategies.map(strategy => {
       if (strategy.instrumentType.toUpperCase() == "OPTION") {
-        let url = `https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/NIFTY?expiry=2023-06-29&optionType=CE&strikePrice=18000.00`
+        if (exceptionsScripCode.includes(strategy.name)) {
+          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/${strategy.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
+        } else {
+          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/nse/equityfuture/RI?expiry=${strategy.expiry}`)
+        }
       }
     })
 
+    console.log(optUrlArrs)
+
+    const allOptionData = await multipleApiCalls(optUrlArrs)
+
+    let opCurrentStat = []
+    allOptionData.forEach(data => {
+
+      let dataObj = {
+        slug: this.dateToMcSlug(data.data.company,
+          data.data.expirydate,
+          parseInt(data.data.Strike_Price),
+          data.data.opttype),
+        cmp: data.data.pricecurrent
+      }
+      opCurrentStat.push(dataObj)
+    })
+
+    let optStrData = []
+    opCurrentStat.forEach(strategy => {
+      dataSnap.strategies.data.forEach(str => {
+
+        if (strategy.slug == str.slug) {
+          let objData = {
+            slug: strategy.slug,
+            cmp: strategy.cmp,
+            ltp: str.ltp.toString(),
+            direction: str.direction,
+            lotQty: str.lotQty.toString(),
+            lotSize: str.lotSize.toString()
+          }
+          optStrData.push(objData)
+
+        }
+
+      })
+
+    })
+
+    console.log(optStrData)
 
     res.status(200).json(dataSnap)
 
 
   } catch (error) {
 
-    res.status(500).json({ "msg": "Error" })
+    res.status(500).json({ "msg": error })
 
   }
 
+
+}
+
+exports.dateToMcSlug = (symbol, expiry, strike, type) => {
+
+  let d = new Date(expiry)
+  let mcDatString = `${d.getDate()}${monthsName[d.getMonth()]}${d.getFullYear().toString().substring(2)}`
+
+  return symbol + mcDatString + strike + type
 
 }
 

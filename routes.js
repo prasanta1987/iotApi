@@ -1,29 +1,16 @@
 const axios = require("axios").default;
 const { generateUrlList, batchHttpRequest, sendHttpRequest,
     searchSpot, fetchSpotData, fetchFutData, getMarketLot,
-    genUrlList, getMcIds, genSpotDatas } = require('./helperFunctions');
+    genUrlList, getMcIds, genSpotDatas, filterSpotIds } = require('./helperFunctions');
 
-const { exceptionsScripCode } = require('./exceptionScriptCode');
 
 const auth = require('./firebaseFunctions')
 
 exports.batchSpotData = async (req, res) => {
 
     const spotList = req.params.scripts.toUpperCase().split(",")
-    spotMcIdsUrls = []
 
-    spotList.forEach(spotName => {
-
-        if (exceptionsScripCode.includes(spotName)) {
-            spotMcIdsUrls.push(spotName)
-        } else {
-            let data = genUrlList(spotName)
-            spotMcIdsUrls.push(data)
-        }
-    })
-
-    let allIds = await getMcIds(spotMcIdsUrls)
-    let allData = await genSpotDatas(allIds)
+    let allData = await filterSpotIds(spotList)
 
     res.send(allData)
 
@@ -102,7 +89,7 @@ exports.getSpotFut = async (req, res) => {
 
     Object.keys(spotData).map(x => {
 
-        if (x != "spotName" && x != "futExpiry" && x != "mktStatus") spotData[x] = parseFloat(spotData[x])
+        if (x != "MCID" && x != "spotName" && x != "futExpiry" && x != "mktStatus") spotData[x] = parseFloat(spotData[x])
 
     })
 
@@ -154,10 +141,7 @@ exports.getSpotData = async (req, res) => {
     res.status(200).json(jsonData)
 }
 
-exports.landingPage = (req, res) => {
-    const url = 'https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=CE&id=NIFTY'
-    sendHttpRequest(req, res, url)
-}
+
 
 exports.mktSnapShot = async (req, res) => {
 
@@ -180,196 +164,6 @@ exports.nseTicker = async (req, res) => {
     res.status(200).json(response.data)
 }
 
-
-exports.getWatchLists = async (req, res) => {
-
-    const uname = req.headers.uname
-    const watchList = await this.kvRead('watchlists')
-    res.status(200).json(watchList[uname])
-
-}
-
-exports.addToWatchList = async (req, res) => {
-
-    const uname = req.headers.uname
-    const updatedWatchList = req.body.watchList || null
-
-    const allWatchLists = await this.kvRead('watchlists')
-
-
-
-    // var config = {
-    //     method: 'post',
-    //     url: `${process.env.KV_REST_API_URL}/pipeline`,
-    //     headers: {
-    //         "Authorization": process.env.KV_REST_API_TOKEN,
-    //         "Content-Type": "application/json"
-    //     },
-    //     data: [
-    //         ['SET', 'watchlists', JSON.stringify(
-    //             {
-    //                 [userName]: updatedWatchList
-    //             }
-    //         )]
-    //     ]
-    // };
-
-    // const data = await this.kvWrite(config)
-
-    // res.status(200).json({ data })
-    res.status(200).json({})
-
-}
-
-// exports.signIn = async (req, res) => {
-//     req.session.logedIn = false
-//     let userName = req.body.name || false
-//     let password = req.body.passwd || false
-
-//     const userDatas = await this.kvRead("users")
-//     try {
-
-//         userDatas.forEach(userData => {
-//             if (userData.name == userName) {
-//                 if (userData.passwd == password) {
-//                     req.session.logedIn = true
-//                     req.session.userName = userName
-//                 }
-//             }
-//         })
-
-//         if (req.session.logedIn == true) {
-//             res.status(200).json({ "msg": "success" })
-//         } else {
-//             res.status(200).json({ "msg": "failed" })
-//         }
-
-//     } catch (error) {
-//         res.status(500).json({ "error": error })
-//     }
-
-// }
-
-
-// exports.signInArduino = async (req, res) => {
-
-//     req.session.logedIn = false;
-
-//     let userName = req.headers.uname || false;
-//     let apiKey = req.headers.code || false;
-
-//     console.log(userName, "=>", apiKey)
-//     let config = {
-//         method: 'get',
-//         url: `${process.env.KV_REST_API_URL}/get/users`,
-//         headers: {
-//             "Authorization": process.env.KV_REST_API_TOKEN,
-//             "Content-Type": "application/json"
-//         }
-//     }
-
-//     try {
-//         const data = await axios(config)
-//         let userDatas = JSON.parse(data.data.result)
-
-//         userDatas.forEach(userData => {
-//             if (userData.name == userName) {
-//                 if (userData.apiKey == apiKey) {
-//                     req.session.logedIn = true
-//                 }
-//             }
-//         })
-
-//         if (req.session.logedIn == true) {
-//             res.status(200).send("Login Successfull")
-//         } else {
-//             res.status(200).send("Login Failed")
-//         }
-
-//     } catch (error) {
-//         res.status(500).send("Internal Server Error")
-//     }
-// }
-
-// exports.signup = async (req, res) => {
-
-//     const userLists = res.locals.userList
-
-//     let userName = req.body.name || false
-//     let password = req.body.passwd || false
-
-//     let objData = {
-//         "name": userName,
-//         "passwd": password,
-//         "apiKey": Math.random().toString(36).substring(4) + Math.random().toString(16).substring(6)
-//     }
-
-//     userLists.push(objData)
-
-
-//     var config = {
-//         method: 'post',
-//         url: `${process.env.KV_REST_API_URL}/pipeline`,
-//         headers: {
-//             "Authorization": process.env.KV_REST_API_TOKEN,
-//             "Content-Type": "application/json"
-//         },
-//         data: [
-//             ['SET', 'users', JSON.stringify(userLists)],
-//             ['SET', 'watchlists', JSON.stringify(
-//                 {
-//                     [userName]: [
-//                         { "scripName": "NIFTY", "buyPrice": 1234.56, "epoc": 12344567890 }
-//                     ]
-//                 }
-//             )]
-//         ]
-//     };
-
-//     const data = await this.kvWrite(config)
-
-//     res.status(200).json({ data })
-
-// }
-
-// exports.signOut = (req, res) => {
-
-//     req.session.logedIn = false
-//     req.session.userName = null
-//     res.status(200).json({ "msg": "success" })
-// }
-
-exports.kvWrite = async (config) => {
-
-    await axios(config)
-        .then(data => {
-            console.log(data.data)
-            return data.data
-        })
-        .catch(err => {
-            console.log(err)
-            return err
-        })
-
-}
-
-exports.kvRead = async (path) => {
-
-    let config = {
-        method: 'get',
-        url: `${process.env.KV_REST_API_URL}/get/${path}`,
-        headers: {
-            "Authorization": process.env.KV_REST_API_TOKEN,
-            "Content-Type": "application/json"
-        }
-    }
-
-    const data = await axios(config)
-    let parsedData = JSON.parse(data.data.result)
-
-    return parsedData
-
-}
 
 exports.getExpiryandStrikes = async (req, res) => {
 

@@ -1,6 +1,6 @@
 const axios = require("axios").default;
 const url = require('url')
-const { exceptionsScripCode } = require('./exceptionScriptCode');
+const { exceptionsScripCode } = require('./constants');
 
 let finalDataObj = {}
 
@@ -186,6 +186,7 @@ exports.fetchSpotData = async (param) => {
             "mktStatus": soptDataRequest.data.data.market_state,
             "dayHigh": soptDataRequest.data.data.HP || soptDataRequest.data.data.HIGH,
             "dayLow": soptDataRequest.data.data.LP || soptDataRequest.data.data.LOW,
+            "MCID": scripCode
         }
 
         if (soptDataRequest.data.data.MKT_LOT) objData.mktLot = soptDataRequest.data.data.MKT_LOT
@@ -226,6 +227,82 @@ exports.searchSpot = async (param) => {
 }
 
 
+
+
+// for Batch SPOT Data cum Search 
+exports.filterSpotIds = async (spotList) => {
+
+    spotMcIdsUrls = []
+    spotList.forEach(spotName => {
+
+        if (exceptionsScripCode.includes(spotName)) {
+            spotMcIdsUrls.push(spotName)
+        } else {
+            let data = this.genUrlList(spotName)
+            spotMcIdsUrls.push(data)
+        }
+    })
+
+
+    let spotMcIds = []
+    let filteredUrls = []
+
+    spotMcIdsUrls.forEach(url => {
+        if (!exceptionsScripCode.includes(url)) {
+            filteredUrls.push(url)
+        } else {
+            spotMcIds.push(url)
+        }
+    })
+
+    let allMcIdsResponse = await this.multipleApiCalls(filteredUrls)
+    allMcIdsResponse.map(response => spotMcIds.push(response[0].sc_id))
+
+
+    let spotUrls = []
+    let datas = []
+
+    spotMcIds.forEach(scripCode => {
+        if (scripCode == "NIFTY" || scripCode == "NIFTY 50") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX");
+        } else if (scripCode == "BANKNIFTY" || scripCode == "BANK NIFTY") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx");
+        } else if (scripCode == "INDVIX") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN");
+        } else {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode);
+        }
+    })
+
+
+    let allOptSpotResponses = await this.multipleApiCalls(spotUrls)
+
+
+    allOptSpotResponses.map(response => {
+        const data = response.data
+
+        if (data != null) {
+            let dataObj = {
+                spotName: data.company,
+                nseId: data.NSEID || data.company,
+                open: data.OPN || data.OPEN,
+                cmp: data.pricecurrent,
+                dayHigh: data.HIGH || data.HP,
+                dayLow: data.LOW || data.LP,
+                prevClose: data.priceprevclose,
+                spotChng: data.pricechange,
+                spotChngPct: data.pricepercentchange,
+            }
+
+            datas.push(dataObj)
+        }
+
+    })
+
+    return datas
+
+}
+
 exports.genUrlList = (param) => {
 
     param = param.toUpperCase()
@@ -241,72 +318,18 @@ exports.genUrlList = (param) => {
     }
 }
 
-exports.getMcIds = async (urls) => {
 
-    let spotMcIds = []
-    let filteredUrls = []
+exports.multipleApiCalls = async (allUrls) => {
 
-    urls.forEach(url => {
-        if (!exceptionsScripCode.includes(url)) {
-            filteredUrls.push(url)
-        } else {
-            spotMcIds.push(url)
-        }
-    })
+    let allData = []
+    let allRequests = await allUrls.map(data => axios(data));
+    let allResponses = await Promise.all(allRequests);
 
-    let allOptRequests = await filteredUrls.map(data => axios(data));
-    let allOptResponses = await Promise.all(allOptRequests);
-
-    allOptResponses.map(response => {
-        spotMcIds.push(response.data[0].sc_id)
-    })
-
-    return spotMcIds
-}
-
-exports.genSpotDatas = async (ids) => {
-
-    let spotUrls = []
-    let datas = []
-
-    ids.forEach(scripCode => {
-        if (scripCode == "NIFTY" || scripCode == "NIFTY 50") {
-            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX");
-        } else if (scripCode == "BANKNIFTY" || scripCode == "BANK NIFTY") {
-            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx");
-        } else if (scripCode == "INDVIX") {
-            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN");
-        } else {
-            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode);
-        }
-    })
-
-
-    let allOptRequests = await spotUrls.map(data => axios(data));
-    let allOptResponses = await Promise.all(allOptRequests);
-
-    allOptResponses.map(response => {
-        const data = response.data.data
-        // console.log(data.NSEID)
-
-        if (data != null) {
-            let dataObj = {
-                spotName: data.company,
-                nseId: data.NSEID || data.company,
-                open: data.OPN || data.OPEN,
-                cmp: data.pricecurrent,
-                prevClose: data.priceprevclose,
-                dayHigh: data.HIGH || data.HP,
-                dayLow: data.LOW || data.LP
-            }
-            datas.push(dataObj)
-        }
-
-    })
-
-    return datas
+    allResponses.forEach(data => allData.push(data.data))
+    return allData
 
 }
+
 // exports.searchSpot = async (param) => {
 
 //     param = param.toUpperCase()

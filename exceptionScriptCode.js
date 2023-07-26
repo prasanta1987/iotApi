@@ -1,1 +1,0 @@
-exports.exceptionsScripCode = ["NIFTY", "NIFTY 50", "BANKNIFTY", "BANK NIFTY", "INDVIX"];
