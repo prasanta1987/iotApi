@@ -1,8 +1,34 @@
 const axios = require("axios").default;
 const { generateUrlList, batchHttpRequest, sendHttpRequest,
-    searchSpot, fetchSpotData, fetchFutData, getMarketLot } = require('./helperFunctions');
+    searchSpot, fetchSpotData, fetchFutData, getMarketLot,
+    genUrlList, getMcIds, genSpotDatas } = require('./helperFunctions');
+
+const { exceptionsScripCode } = require('./exceptionScriptCode');
 
 const auth = require('./firebaseFunctions')
+
+exports.batchSpotData = async (req, res) => {
+
+    const spotList = req.params.scripts.toUpperCase().split(",")
+    spotMcIdsUrls = []
+
+    spotList.forEach(spotName => {
+
+        if (exceptionsScripCode.includes(spotName)) {
+            spotMcIdsUrls.push(spotName)
+        } else {
+            let data = genUrlList(spotName)
+            spotMcIdsUrls.push(data)
+        }
+    })
+
+    let allIds = await getMcIds(spotMcIdsUrls)
+    let allData = await genSpotDatas(allIds)
+
+    console.log(allData)
+    res.send(allData)
+
+}
 
 exports.getTechnicalData = async (req, res) => {
 

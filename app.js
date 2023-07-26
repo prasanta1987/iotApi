@@ -10,14 +10,13 @@ const { fnoDataFetch, search, getSpotData,
     signInArduino,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes, getSpotFut,
-    getTechnicalData } = require('./routes');
+    getTechnicalData, batchSpotData } = require('./routes');
 
 const { FBsignIn, authStateCheck, chckLogin,
     FBsignInArduino, authApiCall,
     arduinoSignInRout, arduinoAskCred,
     arduinoDelKeyValue, authArduino, arduinoDevData } = require('./firebaseFunctions');
 
-// R8Mht71A6kZTglkHjzrMjiiVMP12
 
 const app = express()
 const port = process.env.PORT || 3161
@@ -73,7 +72,12 @@ const verifyIdToken = (req, res, next) => {
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/technicals/:scripCode/', getTechnicalData)
-app.get('/search/:script', search)
+app.get('/spots/:scripts', batchSpotData)
+
+
+app.get('/search/:script', search) //Will be Depricated
+
+// Front-End Specific Routes
 app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
@@ -97,18 +101,14 @@ app.get('/getArduinoData/:userUID', arduinoDevData)
 // app.post('/getWatchList', getWatchLists);
 
 
-// DataBase Commands Ends
-
 // Authenticated
-// app.get('/spot/:script/', apiAuthCheck, getSpotData)
-// app.get('/fno/:script/:data', authApiCall, fnoDataFetch)
+
+
 
 // API Request Ends
 
 
 // Page Navigation
-
-// app.get('/dashboard', authPageRout);
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 app.get('/strategy', (req, res) => res.sendFile(path.join(__dirname, '/public/strategy.html')));
 

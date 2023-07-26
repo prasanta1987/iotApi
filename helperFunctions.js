@@ -1,5 +1,6 @@
 const axios = require("axios").default;
 const url = require('url')
+const { exceptionsScripCode } = require('./exceptionScriptCode');
 
 let finalDataObj = {}
 
@@ -221,6 +222,86 @@ exports.searchSpot = async (param) => {
         return searchRes
     }
 
+
+}
+
+
+exports.genUrlList = (param) => {
+
+    param = param.toUpperCase()
+
+    if (param == "NIFTY") {
+        return "NIFTY"
+    } else if (param == "BANKNIFTY") {
+        return "BANKNIFTY"
+    } else if (param == "INDVIX") {
+        return "INDVIX"
+    } else {
+        return `https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`
+    }
+}
+
+exports.getMcIds = async (urls) => {
+
+    let spotMcIds = []
+    let filteredUrls = []
+
+    urls.forEach(url => {
+        if (!exceptionsScripCode.includes(url)) {
+            filteredUrls.push(url)
+        } else {
+            spotMcIds.push(url)
+        }
+    })
+
+    let allOptRequests = await filteredUrls.map(data => axios(data));
+    let allOptResponses = await Promise.all(allOptRequests);
+
+    allOptResponses.map(response => {
+        spotMcIds.push(response.data[0].sc_id)
+    })
+
+    return spotMcIds
+}
+
+exports.genSpotDatas = async (ids) => {
+
+    let spotUrls = []
+    let datas = []
+
+    ids.forEach(scripCode => {
+        if (scripCode == "NIFTY" || scripCode == "NIFTY 50") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX");
+        } else if (scripCode == "BANKNIFTY" || scripCode == "BANK NIFTY") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx");
+        } else if (scripCode == "INDVIX") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN");
+        } else {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode);
+        }
+    })
+
+
+    let allOptRequests = await spotUrls.map(data => axios(data));
+    let allOptResponses = await Promise.all(allOptRequests);
+
+    allOptResponses.map(response => {
+        const data = response.data.data
+        console.log("==>", data)
+        if (data != null) {
+            let dataObj = {
+                spotName: data.company,
+                cmp: data.pricecurrent,
+                prevClose: data.priceprevclose,
+                dayHigh: data.HIGH || data.HP,
+                dayLow: data.LOW || data.LP
+            }
+            datas.push(dataObj)
+        }
+
+    })
+
+    return datas
 
 }
 // exports.searchSpot = async (param) => {

@@ -147,15 +147,35 @@ exports.arduinoDevData = async (req, res) => {
       return snapShot
     })
 
+    let optUrlArrs = [];
+    let spotUrlArrs = [];
+    let futUrlArrs = [];
+
+    const url = "https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/NIFTY?expiry=2023-06-29&optionType=CE&strikePrice=18000.00";
+
     const dataSnap = await dataSnapShot.val()
+    const strategies = dataSnap.strategies.data;
+
+    strategies.map(strategy => {
+      if (strategy.instrumentType.toUpperCase() == "OPTION") {
+        let url = `https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/NIFTY?expiry=2023-06-29&optionType=CE&strikePrice=18000.00`
+      }
+    })
+
 
     res.status(200).json(dataSnap)
+
+
   } catch (error) {
+
     res.status(500).json({ "msg": "Error" })
+
   }
 
 
 }
+
+
 // Client Library Below
 
 // const firebase = require("firebase/app");
