@@ -158,15 +158,15 @@ exports.arduinoDevData = async (req, res) => {
 
     strategies.map(strategy => {
       if (strategy.instrumentType.toUpperCase() == "OPTION") {
-        if (exceptionsScripCode.includes(strategy.name)) {
-          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/${strategy.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
+        if (exceptionsScripCode.includes(dataSnap.strategies.spotName)) {
+          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
         } else {
-          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/nse/equityfuture/RI?expiry=${strategy.expiry}`)
+          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/nse/equityoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
         }
       }
     })
 
-    console.log(optUrlArrs)
+    // console.log(optUrlArrs)
 
     const allOptionData = await multipleApiCalls(optUrlArrs)
 
@@ -174,7 +174,7 @@ exports.arduinoDevData = async (req, res) => {
     allOptionData.forEach(data => {
 
       let dataObj = {
-        slug: this.dateToMcSlug(data.data.company,
+        slug: this.dateToMcSlug(data.data.sc_id || data.data.Symbol,
           data.data.expirydate,
           parseInt(data.data.Strike_Price),
           data.data.opttype),
@@ -183,19 +183,20 @@ exports.arduinoDevData = async (req, res) => {
       opCurrentStat.push(dataObj)
     })
 
+
     let optStrData = []
+
     opCurrentStat.forEach(strategy => {
       dataSnap.strategies.data.forEach(str => {
-
         if (strategy.slug == str.slug) {
           let objData = {
             slug: strategy.slug,
             cmp: strategy.cmp,
             ltp: str.ltp.toString(),
-            direction: str.direction,
-            lotQty: str.lotQty.toString(),
-            lotSize: str.lotSize.toString()
+            lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
+            // pnl: this.calcPnL(str.ltp, strategy.cmp, str.direction, str.loSize, str.loyQty)
           }
+
           optStrData.push(objData)
 
         }
@@ -216,6 +217,21 @@ exports.arduinoDevData = async (req, res) => {
   }
 
 
+}
+
+exports.calcPnL = (__ltp, __cmp, __direction, __lotSize, __lotQty) => {
+
+  let cmp = parseFloat(__cmp);
+  let ltp = parseFloat(__ltp)
+  let lotSize = parseInt(__lotSize)
+  let lotQty = parseInt(__lotQty)
+
+  console.log(cmp)
+
+  let pnl = (direction == "LONG") ? ((cmp - ltp) * lotSize) * lotQty : ((cmp - ltp) * lotSize) * lotQty
+
+  console.log(pnl)
+  return pnl
 }
 
 exports.dateToMcSlug = (symbol, expiry, strike, type) => {
