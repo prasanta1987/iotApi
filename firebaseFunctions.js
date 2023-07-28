@@ -166,8 +166,6 @@ exports.arduinoDevData = async (req, res) => {
       }
     })
 
-    // console.log(optUrlArrs)
-
     const allOptionData = await multipleApiCalls(optUrlArrs)
 
     let opCurrentStat = []
@@ -207,7 +205,13 @@ exports.arduinoDevData = async (req, res) => {
 
     console.log(optStrData)
 
-    res.status(200).json(dataSnap)
+    if (dataSnap.dispMode == "CLOCK") {
+
+      res.status(200).json({ time: await this.getTime() })
+
+    } else {
+      res.status(200).json(optStrData)
+    }
 
 
   } catch (error) {
@@ -219,6 +223,22 @@ exports.arduinoDevData = async (req, res) => {
 
 }
 
+
+exports.getTime = async () => {
+  const res = await axios.get("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+  const time = await res.data.datetime
+
+  console.log(time)
+
+  const t = new Date(time)
+  let hour = t.getHours()
+  let min = t.getMinutes()
+
+  hour = (hour < 10) && `0${hour}`
+  min = (min < 10) && `0${min}`
+
+  return `${hour}:${min}`
+}
 exports.calcPnL = (__ltp, __cmp, __direction, __lotSize, __lotQty) => {
 
   let cmp = parseFloat(__cmp);
