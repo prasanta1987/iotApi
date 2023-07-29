@@ -197,7 +197,7 @@ exports.arduinoDevData = async (req, res) => {
           let objData = {
             slug: slug,
             cmp: strategy.cmp,
-            ltp: str.ltp.toString(),
+            // ltp: str.ltp.toString(),
             lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
             pnl: this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
           }
@@ -218,6 +218,8 @@ exports.arduinoDevData = async (req, res) => {
     optStrDataObj.data = optStrData
     optStrDataObj.spotName = spotRes[0].spotName
     optStrDataObj.cmp = spotRes[0].cmp
+    optStrDataObj.chng = spotRes[0].spotChng
+    optStrDataObj.chngPct = spotRes[0].spotChngPct
 
 
     if (dispMode == "STRATEGY") {
