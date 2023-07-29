@@ -155,6 +155,7 @@ exports.arduinoDevData = async (req, res) => {
 
     const dataSnap = await dataSnapShot.val()
     const strategies = dataSnap.strategies.data;
+    const dispMode = dataSnap.strategies.dispMode
 
     strategies.map(strategy => {
       if (strategy.instrumentType.toUpperCase() == "OPTION") {
@@ -203,14 +204,19 @@ exports.arduinoDevData = async (req, res) => {
 
     })
 
+    optStrData.dispMode = dispMode
     console.log(optStrData)
+
 
     if (dataSnap.dispMode == "STRATEGY") {
 
       res.status(200).json(optStrData)
 
     } else {
-      res.status(200).json({ time: "10:20" })
+      res.status(200).json({
+        dispMode: dispMode,
+        time: await this.getTime()
+      })
     }
 
 
