@@ -234,8 +234,8 @@ exports.getTime = async () => {
   let hour = t.getHours()
   let min = t.getMinutes()
 
-  hour = (hour < 10) && `0${hour}`
-  min = (min < 10) && `0${min}`
+  hour = (hour > 12) ? hour - 12 : hour
+  min = (min < 10) ? `0${min}` : min
 
   return `${hour}:${min}`
 }
