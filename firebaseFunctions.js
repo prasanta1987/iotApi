@@ -156,6 +156,7 @@ exports.arduinoDevData = async (req, res) => {
     const dataSnap = await dataSnapShot.val()
     const strategies = dataSnap.strategies.data;
     const dispMode = dataSnap.dispMode
+    const ULAsset = dataSnap.strategies.spotName
 
     strategies.map(strategy => {
       if (strategy.instrumentType.toUpperCase() == "OPTION") {
@@ -189,8 +190,12 @@ exports.arduinoDevData = async (req, res) => {
     opCurrentStat.forEach(strategy => {
       dataSnap.strategies.data.forEach(str => {
         if (strategy.slug == str.slug) {
+
+          let rawSlug = strategy.slug.replace(ULAsset, "")
+          let slug = rawSlug.slice(0, 7) + " " + rawSlug.slice(7)
+
           let objData = {
-            slug: strategy.slug,
+            slug: slug,
             cmp: strategy.cmp,
             ltp: str.ltp.toString(),
             lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
@@ -217,7 +222,7 @@ exports.arduinoDevData = async (req, res) => {
     } else {
       res.status(200).json({
         dispMode: dispMode,
-        time: await this.getTime()
+        // time: await this.getTime()
       })
     }
 
@@ -247,6 +252,8 @@ exports.getTime = async () => {
 
   return `${hour}:${min}`
 }
+
+
 exports.calcPnL = (__ltp, __cmp, __direction, __lotSize, __lotQty) => {
 
   let cmp = parseFloat(__cmp);
