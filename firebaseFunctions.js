@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const axios = require('axios').default
-const { multipleApiCalls } = require('./helperFunctions')
+const { multipleApiCalls, filterSpotIds } = require('./helperFunctions')
 const { monthsName, exceptionsScripCode } = require('./constants')
 
 require('dotenv').config()
@@ -199,7 +199,7 @@ exports.arduinoDevData = async (req, res) => {
             cmp: strategy.cmp,
             ltp: str.ltp.toString(),
             lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
-            // pnl: this.calcPnL(str.ltp, strategy.cmp, str.direction, str.loSize, str.loyQty)
+            pnl: this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
           }
 
           optStrData.push(objData)
@@ -210,8 +210,14 @@ exports.arduinoDevData = async (req, res) => {
 
     })
 
+
+    const spotRes = await filterSpotIds([ULAsset])
+    console.log(spotRes)
+
     optStrDataObj.dispMode = dispMode
     optStrDataObj.data = optStrData
+    optStrDataObj.spotName = spotRes[0].spotName
+    optStrDataObj.cmp = spotRes[0].cmp
 
 
     if (dispMode == "STRATEGY") {
@@ -254,16 +260,29 @@ exports.getTime = async () => {
 }
 
 
-exports.calcPnL = (__ltp, __cmp, __direction, __lotSize, __lotQty) => {
+exports.calcPnL = (insType, __ltp, __cmp, __direction, __lotQty, __lotSize) => {
 
   let cmp = parseFloat(__cmp);
   let ltp = parseFloat(__ltp)
-  let lotSize = parseInt(__lotSize)
   let lotQty = parseInt(__lotQty)
+  let lotSize = parseInt(__lotSize) || 0
 
-  console.log(cmp)
+  console.log(cmp, ltp, lotSize, lotQty)
+  let pnl = 0;
 
-  let pnl = (direction == "LONG") ? ((cmp - ltp) * lotSize) * lotQty : ((cmp - ltp) * lotSize) * lotQty
+  if (insType == "OPTION") {
+
+    pnl = (__direction == "LONG")
+      ? ((cmp - ltp) * lotSize * lotQty).toFixed(2)
+      : ((ltp - cmp) * lotSize * lotQty).toFixed(2)
+
+  } else if (insType == "SPOT") {
+
+    pnl = (__direction == "LONG")
+      ? ((cmp - ltp) * lotQty).toFixed(2)
+      : ((ltp - cmp) * lotQty).toFixed(2)
+
+  }
 
   console.log(pnl)
   return pnl
