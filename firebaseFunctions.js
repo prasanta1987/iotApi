@@ -155,7 +155,7 @@ exports.arduinoDevData = async (req, res) => {
 
     const dataSnap = await dataSnapShot.val()
     const strategies = dataSnap.strategies.data;
-    const dispMode = dataSnap.strategies.dispMode
+    const dispMode = dataSnap.dispMode
 
     strategies.map(strategy => {
       if (strategy.instrumentType.toUpperCase() == "OPTION") {
@@ -184,6 +184,7 @@ exports.arduinoDevData = async (req, res) => {
 
 
     let optStrData = []
+    let optStrDataObj = {}
 
     opCurrentStat.forEach(strategy => {
       dataSnap.strategies.data.forEach(str => {
@@ -204,13 +205,14 @@ exports.arduinoDevData = async (req, res) => {
 
     })
 
-    optStrData.dispMode = dispMode
-    console.log(optStrData)
+    optStrDataObj.dispMode = dispMode
+    optStrDataObj.data = optStrData
 
 
-    if (dataSnap.dispMode == "STRATEGY") {
+    if (dispMode == "STRATEGY") {
 
-      res.status(200).json(optStrData)
+      console.log(optStrDataObj)
+      res.status(200).json(optStrDataObj)
 
     } else {
       res.status(200).json({
@@ -232,7 +234,7 @@ exports.arduinoDevData = async (req, res) => {
 
 exports.getTime = async () => {
   const res = await axios.get("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
-  const time = await res.data.datetime
+  const time = await res.data.utc_datetime
 
   console.log(time)
 
