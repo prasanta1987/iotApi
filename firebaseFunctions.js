@@ -205,12 +205,12 @@ exports.arduinoDevData = async (req, res) => {
 
     console.log(optStrData)
 
-    if (dataSnap.dispMode == "CLOCK") {
+    if (dataSnap.dispMode == "STRATEGY") {
 
-      res.status(200).json({ time: await this.getTime() })
+      res.status(200).json(optStrData)
 
     } else {
-      res.status(200).json(optStrData)
+      res.status(200).json({ time: "10:20" })
     }
 
 
