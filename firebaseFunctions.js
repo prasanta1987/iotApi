@@ -247,9 +247,9 @@ exports.arduinoDevData = async (req, res) => {
 
 exports.getTime = async () => {
   const res = await axios.get("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
-  const time = await res.data.utc_datetime
+  const time = await res.data.datetime
 
-  console.log(time)
+  console.log("==>", time)
 
   const t = new Date(time)
   let hour = t.getHours()
