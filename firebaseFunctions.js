@@ -253,6 +253,12 @@ exports.getTime = async (timeZone = "Asia/Kolkata") => {
   const amPM = time.slice(-3).trim()
   time = time.replace(amPM, "").trim()
 
+  let hour = time.split(":")[0]
+  let min = time.split(":")[1]
+
+  hour = (parseInt(hour) < 10) ? `0${hour}` : hour
+  time = hour + ":" + min
+
   const myDate = date.toLocaleDateString('en-us', { timeZone: timeZone, dateStyle: "full" })
 
   return { time: time, amPM: amPM, date: myDate }
