@@ -246,14 +246,16 @@ exports.arduinoDevData = async (req, res) => {
 
 
 exports.getTime = async () => {
-  const res = await axios.get("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
-  const time = await res.data.datetime
+  // const res = await axios.get("http://worldtimeapi.org/api/timezone/Africa/Casablanca");
+  // const res = await axios.get("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+  // const time = await res.data.datetime
+  const timeZone = "Asia/Kolkata";
 
-  console.log("==>", time)
+  const t = new Date()
+  // const t = new Date(time)
 
-  const t = new Date(time)
-  let hour = t.getHours()
-  let min = t.getMinutes()
+  let hour = t.getHours('en-US', { timeZone: timeZone })
+  let min = t.getMinutes('en-US', { timeZone: timeZone })
 
   hour = (hour > 12) ? hour - 12 : hour
   min = (min < 10) ? `0${min}` : min
