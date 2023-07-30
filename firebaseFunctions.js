@@ -247,15 +247,15 @@ exports.arduinoDevData = async (req, res) => {
 
 exports.getTime = async (timeZone = "Asia/Kolkata") => {
 
-
-  let time = new Date().toLocaleTimeString('en-us', { timeZone: timeZone, timeStyle: 'short' })
+  let date = new Date()
+  let time = date.toLocaleTimeString('en-us', { timeZone: timeZone, timeStyle: 'short' })
 
   const amPM = time.slice(-3).trim()
   time = time.replace(amPM, "").trim()
 
-  console.log("====>", amPM)
+  const myDate = date.toLocaleDateString('en-us', { timeZone: timeZone, dateStyle: "full" })
 
-  return { time: time, amPM: amPM }
+  return { time: time, amPM: amPM, date: myDate }
 }
 
 
