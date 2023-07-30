@@ -230,7 +230,7 @@ exports.arduinoDevData = async (req, res) => {
     } else {
       res.status(200).json({
         dispMode: dispMode,
-        data: await this.getTime()
+        time: await this.getTime()
       })
     }
 
