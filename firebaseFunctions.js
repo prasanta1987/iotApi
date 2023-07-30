@@ -245,22 +245,17 @@ exports.arduinoDevData = async (req, res) => {
 }
 
 
-exports.getTime = async () => {
-  const timeZone = "Asia/Kolkata";
+exports.getTime = async (timeZone = "Asia/Kolkata") => {
 
-  const t = new Date()
 
-  const time = t.toLocaleTimeString('en-us', { timeStyle: 'short', timeZone: timeZone })
+  let time = new Date().toLocaleTimeString('en-us', { timeZone: timeZone, timeStyle: 'short' })
 
-  // let hour = t.getHours('en-US', { timeZone: timeZone })
-  // let min = t.getMinutes('en-US', { timeZone: timeZone })
+  const amPM = time.slice(-3).trim()
+  time = time.replace(amPM, "").trim()
 
-  // hour = (hour > 12) ? hour - 12 : hour
-  // min = (min < 10) ? `0${min}` : min
+  console.log("====>", amPM)
 
-  // return `${hour}:${min}`
-
-  return time
+  return { time: time, amPM: amPM }
 }
 
 
