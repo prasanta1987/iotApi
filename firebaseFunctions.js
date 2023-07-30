@@ -212,15 +212,20 @@ exports.arduinoDevData = async (req, res) => {
 
 
     const spotRes = await filterSpotIds([ULAsset])
-    console.log(spotRes)
+
+    let totalPNL = 0;
+    optStrData.map(pnl => totalPNL += parseFloat(pnl.pnl))
 
     optStrDataObj.dispMode = dispMode
     optStrDataObj.data = optStrData
     optStrDataObj.spotName = spotRes[0].spotName
     optStrDataObj.cmp = spotRes[0].cmp
-    optStrDataObj.chng = spotRes[0].spotChng
-    optStrDataObj.chngPct = spotRes[0].spotChngPct
+    optStrDataObj.chng = parseFloat(spotRes[0].spotChng).toString()
+    optStrDataObj.chngPct = parseFloat(spotRes[0].spotChngPct).toFixed(2) + ' %'
+    optStrDataObj.ttlPNL = totalPNL.toFixed(2)
 
+
+    console.log(optStrDataObj)
 
     if (dispMode == "STRATEGY") {
 
