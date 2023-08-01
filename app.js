@@ -124,6 +124,7 @@ app.get('/pic', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/pics/2.jpg'))
 })
 
+
 // Arduino Specific Routes
 // app.post('/signInArduino', FBsignInArduino) //Arduino Specific
 
