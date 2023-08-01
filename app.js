@@ -121,7 +121,7 @@ app.get('/strategy', (req, res) => res.sendFile(path.join(__dirname, '/public/st
 // app.post('/signUp', checkUserData, signup)
 
 app.get('/pic', (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/pics/2.jpg'))
+    res.sendFile(path.join(__dirname, '/public/pics/22.jpg'))
 })
 
 
