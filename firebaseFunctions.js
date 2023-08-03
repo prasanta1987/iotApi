@@ -275,9 +275,9 @@ exports.getPicUrl = async (req, res) => {
   let time = ((await this.getTime()).time).replace(":", "%3a")
   let amPM = (await this.getTime()).amPM
 
-  let currentImageUrl = `${photoUrls[randomNumber]}/tr:w-320,l-text,ly-180,pa-5,w-320,bg-00000050,i-${time},fs-32,co-FFFFFF,ia-left,l-end:l-text,lx-85,ly-190,pa-5,i-${amPM},fs-16,co-FFFFFF,l-end`
+  let currentImageUrl = `${photoUrls[randomNumber]}/tr:w-320,h-240,l-text,ly-207,pa-5,w-320,bg-00000060,i-${time},fs-32,co-FFFFFF,ia-left,l-end:l-text,lx-85,ly-207,i-${amPM},fs-16,co-FFFFFF,l-end`
 
-  res.redirect(currentImageUrl)
+  res.status(200).json({ url: currentImageUrl })
 
 }
 
