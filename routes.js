@@ -41,7 +41,6 @@ exports.getTechnicalData = async (req, res) => {
     let arrayData = []
 
     allResponses.map(data => {
-        console.log(data)
         arrayData.push(data.data)
     })
 
@@ -49,6 +48,10 @@ exports.getTechnicalData = async (req, res) => {
     objData.min15data = arrayData[1]
     objData.min60data = arrayData[2]
     objData.dailydata = arrayData[3]
+
+    let allData = await filterSpotIds([scripCode]);
+
+    objData.soptdata = allData[0]
 
     res.status(200).json(objData)
 }
