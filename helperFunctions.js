@@ -292,8 +292,8 @@ exports.filterSpotIds = async (spotList) => {
                 prevClose: data.priceprevclose,
                 spotChng: data.pricechange,
                 spotChngPct: data.pricepercentchange,
-                adv: data.adv,
-                decl: data.decl
+                adv: data.adv.toString(),
+                decl: data.decl.toString()
             }
 
             datas.push(dataObj)
