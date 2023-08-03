@@ -15,7 +15,7 @@ const { fnoDataFetch, search, getSpotData,
 const { FBsignIn, authStateCheck, chckLogin,
     FBsignInArduino, authApiCall,
     arduinoSignInRout, arduinoAskCred,
-    arduinoDelKeyValue, authArduino, arduinoDevData } = require('./firebaseFunctions');
+    arduinoDelKeyValue, authArduino, arduinoDevData, getPicUrl } = require('./firebaseFunctions');
 
 
 const app = express()
@@ -98,6 +98,7 @@ app.post('/signOutArduino', (req, res) => {
 app.post('/addArduinoDevice', arduinoAskCred)
 app.post('/deleteDeviceKey', arduinoDelKeyValue)
 app.get('/getArduinoData/:userUID', arduinoDevData)
+app.get('/pic', getPicUrl)
 // app.post('/getWatchList', getWatchLists);
 
 
@@ -120,9 +121,9 @@ app.get('/strategy', (req, res) => res.sendFile(path.join(__dirname, '/public/st
 // app.post('/signOut', signOut)
 // app.post('/signUp', checkUserData, signup)
 
-app.get('/pic', (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/pics/22.jpg'))
-})
+// app.get('/pic', (req, res) => {
+//     res.sendFile(path.join(__dirname, '/public/pics/22.jpg'))
+// })
 
 
 // Arduino Specific Routes

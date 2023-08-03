@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const axios = require('axios').default
+const ImageKit = require("imagekit");
+
 const { multipleApiCalls, filterSpotIds } = require('./helperFunctions')
 const { monthsName, exceptionsScripCode } = require('./constants')
 
@@ -25,6 +27,12 @@ const serviceAccount = {
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: process.env.FB_DB_URL
+});
+
+var imagekit = new ImageKit({
+  publicKey: "public_PEiC8Lzfg5wr78rbYp2ihH9u1Bk=",
+  privateKey: "private_OGPzuz1sTQnQ70a7wBypYzteJVo=",
+  urlEndpoint: "https://ik.imagekit.io/c8myoin6h/"
 });
 
 
@@ -249,6 +257,31 @@ exports.arduinoDevData = async (req, res) => {
 
 }
 
+exports.getPicUrl = async (req, res) => {
+
+  const response = await axios.get('https://api.imagekit.io/v1/files', {
+    auth: {
+      username: 'private_OGPzuz1sTQnQ70a7wBypYzteJVo='
+    }
+  });
+
+  let photoUrls = []
+
+  response.data.forEach(url => {
+    photoUrls.push(url.url)
+  })
+
+  const randomNumber = this.randomIntFromInterval(0, photoUrls.length - 1)
+  let currentImageUrl = photoUrls[randomNumber] + "/tr:w-320,l-text,ly-180,pa-5,w-320,bg-00000050,i-04%3a23,fs-32,co-FFFFFF,ia-left,l-end:l-text,lx-85,ly-190,pa-5,i-PM,fs-16,co-FFFFFF,l-end"
+
+  res.redirect(currentImageUrl)
+
+}
+
+exports.randomIntFromInterval = (min, max) => { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 
 exports.getTime = async (timeZone = "Asia/Kolkata") => {
 
@@ -264,7 +297,7 @@ exports.getTime = async (timeZone = "Asia/Kolkata") => {
   hour = (parseInt(hour) < 10) ? `0${hour}` : hour
   time = hour + ":" + min
 
-  const myDate = date.toLocaleDateString('en-us', { timeZone: timeZone, dateStyle: "full" })
+  const myDate = date.toLocaleDateString('en-us', { timeZone: timeZone, dateStyle: "medium" })
 
   return { time: time, amPM: amPM, date: myDate }
 }
