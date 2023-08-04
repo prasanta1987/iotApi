@@ -209,7 +209,7 @@ exports.arduinoDevData = async (req, res) => {
             cmp: strategy.cmp,
             // ltp: str.ltp.toString(),
             lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
-            pnl: parseInt(Pnl)
+            pnl: parseInt(Pnl).toString()
           }
 
           optStrData.push(objData)
