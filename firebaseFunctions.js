@@ -149,109 +149,118 @@ exports.arduinoSignInRout = async (req, res) => {
 
 exports.arduinoDevData = async (req, res) => {
 
-  try {
 
-    const userUID = req.params.userUID || null;
 
-    const dataSnapShot = await db.ref(userUID).once('value', snapShot => {
-      return snapShot
-    })
+  const userUID = req.params.userUID || null;
 
-    let optUrlArrs = [];
-    let spotUrlArrs = [];
-    let futUrlArrs = [];
+  const dataSnapShot = await db.ref(userUID).once('value', snapShot => {
+    return snapShot
+  })
 
-    const dataSnap = await dataSnapShot.val()
-    const strategies = dataSnap.strategies.data;
-    const dispMode = dataSnap.dispMode
-    const ULAsset = dataSnap.strategies.spotName
+  let optUrlArrs = [];
+  let spotUrlArrs = [];
+  let futUrlArrs = [];
 
-    strategies.map(strategy => {
-      if (strategy.instrumentType.toUpperCase() == "OPTION") {
-        if (exceptionsScripCode.includes(dataSnap.strategies.spotName)) {
-          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
-        } else {
-          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/nse/equityoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
-        }
+  const dataSnap = await dataSnapShot.val()
+  const strategies = dataSnap.strategies.data;
+  const dispMode = dataSnap.dispMode
+  const ULAsset = dataSnap.strategies.spotName
+
+  strategies.map(strategy => {
+    if (strategy.instrumentType.toUpperCase() == "OPTION") {
+      if (exceptionsScripCode.includes(dataSnap.strategies.spotName)) {
+        optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
+      } else {
+        optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/nse/equityoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
       }
-    })
+    }
+  })
 
-    const allOptionData = await multipleApiCalls(optUrlArrs)
+  // console.log(optUrlArrs)
 
-    let opCurrentStat = []
-    allOptionData.forEach(data => {
+  const allOptionData = await multipleApiCalls(optUrlArrs)
 
-      let dataObj = {
-        slug: this.dateToMcSlug(data.data.sc_id || data.data.Symbol,
-          data.data.expirydate,
-          parseInt(data.data.Strike_Price),
-          data.data.opttype),
-        cmp: data.data.pricecurrent
-      }
-      opCurrentStat.push(dataObj)
-    })
+  let opCurrentStat = []
+  allOptionData.forEach(data => {
+    // console.log(data)
 
-
-    let optStrData = []
-    let optStrDataObj = {}
-    let totalPnl = 0
-
-    opCurrentStat.forEach(strategy => {
-      dataSnap.strategies.data.forEach(str => {
-        if (strategy.slug == str.slug) {
-
-          let rawSlug = strategy.slug.replace(ULAsset, "")
-          let slug = rawSlug.slice(0, 7) + " " + rawSlug.slice(7)
-          let Pnl = this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
-          totalPnl += parseFloat(Pnl)
-          let objData = {
-            slug: slug,
-            cmp: strategy.cmp,
-            // ltp: str.ltp.toString(),
-            lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
-            pnl: parseInt(Pnl).toString()
-          }
-
-          optStrData.push(objData)
-
-        }
-
-      })
-
-    })
-
-
-    const spotRes = await filterSpotIds([ULAsset])
-
-    optStrDataObj.dispMode = dispMode
-    optStrDataObj.data = optStrData
-    optStrDataObj.spotName = spotRes[0].spotName
-    optStrDataObj.cmp = spotRes[0].cmp
-    optStrDataObj.chng = parseFloat(spotRes[0].spotChng).toString()
-    optStrDataObj.chngPct = parseFloat(spotRes[0].spotChngPct).toFixed(2) + ' %'
-    optStrDataObj.ttlPNL = totalPnl.toString()
-
-
-    console.log(optStrDataObj)
-
-    if (dispMode == "STRATEGY") {
-
-      console.log(optStrDataObj)
-      res.status(200).json(optStrDataObj)
-
-    } else {
-      res.status(200).json({
-        dispMode: dispMode,
-        time: await this.getTime()
-      })
+    let dataObj = {
+      slug: this.dateToMcSlug(data.data.sc_id || data.data.Symbol,
+        data.data.expirydate,
+        parseInt(data.data.Strike_Price),
+        data.data.opttype),
+      cmp: data.data.pricecurrent
     }
 
+    opCurrentStat.push(dataObj)
+  })
 
-  } catch (error) {
 
-    res.status(500).json({ "msg": error })
+  let optStrData = []
+  let optStrDataObj = {}
+  let totalPnl = 0
 
+  // console.log(opCurrentStat);
+
+  opCurrentStat.forEach(strategy => {
+    dataSnap.strategies.data.forEach(str => {
+      if (strategy.slug == str.slug) {
+
+        let rawSlug = strategy.slug.replace(ULAsset, "")
+        let slug = rawSlug.slice(0, 7) + " " + rawSlug.slice(7)
+
+        let Pnl = this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
+        totalPnl += parseFloat(Pnl)
+        let objData = {
+          slug: slug,
+          cmp: strategy.cmp,
+          // ltp: str.ltp.toString(),
+          lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
+          pnl: parseInt(Pnl).toString()
+        }
+
+        optStrData.push(objData)
+
+      }
+
+    })
+
+  })
+
+
+  const spotRes = await filterSpotIds([ULAsset])
+
+  optStrDataObj.dispMode = dispMode
+  optStrDataObj.data = optStrData
+  optStrDataObj.spotName = spotRes[0].spotName
+  optStrDataObj.cmp = spotRes[0].cmp
+  optStrDataObj.chng = parseFloat(spotRes[0].spotChng).toString()
+  optStrDataObj.chngPct = parseFloat(spotRes[0].spotChngPct).toFixed(2) + ' %'
+  optStrDataObj.ttlPNL = totalPnl.toString()
+
+
+  console.log(optStrDataObj)
+
+  if (dispMode == "STRATEGY") {
+
+    console.log(optStrDataObj)
+    res.status(200).json(optStrDataObj)
+
+  } else {
+    res.status(200).json({
+      dispMode: dispMode,
+      time: await this.getTime()
+    })
   }
+
+
+
+
+  // catch (error) {
+
+  //   res.status(500).json({ "msg": error })
+
+  // }
 
 
 }
