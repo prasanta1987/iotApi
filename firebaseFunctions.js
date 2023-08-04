@@ -194,6 +194,7 @@ exports.arduinoDevData = async (req, res) => {
 
     let optStrData = []
     let optStrDataObj = {}
+    let totalPnl = 0
 
     opCurrentStat.forEach(strategy => {
       dataSnap.strategies.data.forEach(str => {
@@ -201,13 +202,14 @@ exports.arduinoDevData = async (req, res) => {
 
           let rawSlug = strategy.slug.replace(ULAsset, "")
           let slug = rawSlug.slice(0, 5) + " " + rawSlug.slice(7)
-
+          let Pnl = this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
+          totalPnl += parseFloat(Pnl)
           let objData = {
             slug: slug,
             cmp: strategy.cmp,
             // ltp: str.ltp.toString(),
             lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
-            pnl: this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
+            pnl: parseInt(Pnl)
           }
 
           optStrData.push(objData)
@@ -221,16 +223,13 @@ exports.arduinoDevData = async (req, res) => {
 
     const spotRes = await filterSpotIds([ULAsset])
 
-    let totalPNL = 0;
-    optStrData.map(pnl => totalPNL += parseFloat(pnl.pnl))
-
     optStrDataObj.dispMode = dispMode
     optStrDataObj.data = optStrData
     optStrDataObj.spotName = spotRes[0].spotName
     optStrDataObj.cmp = spotRes[0].cmp
     optStrDataObj.chng = parseFloat(spotRes[0].spotChng).toString()
     optStrDataObj.chngPct = parseFloat(spotRes[0].spotChngPct).toFixed(2) + ' %'
-    optStrDataObj.ttlPNL = totalPNL.toFixed(2)
+    optStrDataObj.ttlPNL = totalPnl.toString()
 
 
     console.log(optStrDataObj)
