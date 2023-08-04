@@ -201,7 +201,7 @@ exports.arduinoDevData = async (req, res) => {
         if (strategy.slug == str.slug) {
 
           let rawSlug = strategy.slug.replace(ULAsset, "")
-          let slug = rawSlug.slice(0, 5) + " " + rawSlug.slice(7)
+          let slug = rawSlug.slice(0, 7) + " " + rawSlug.slice(7)
           let Pnl = this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
           totalPnl += parseFloat(Pnl)
           let objData = {
