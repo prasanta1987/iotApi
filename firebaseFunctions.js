@@ -200,7 +200,7 @@ exports.arduinoDevData = async (req, res) => {
         if (strategy.slug == str.slug) {
 
           let rawSlug = strategy.slug.replace(ULAsset, "")
-          let slug = rawSlug.slice(0, 7) + " " + rawSlug.slice(7)
+          let slug = rawSlug.slice(0, 5) + " " + rawSlug.slice(7)
 
           let objData = {
             slug: slug,
