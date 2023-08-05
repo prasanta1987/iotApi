@@ -186,7 +186,8 @@ exports.fetchSpotData = async (param) => {
             "mktStatus": soptDataRequest.data.data.market_state,
             "dayHigh": soptDataRequest.data.data.HP || soptDataRequest.data.data.HIGH,
             "dayLow": soptDataRequest.data.data.LP || soptDataRequest.data.data.LOW,
-            "MCID": scripCode
+            "MCID": scripCode,
+"spotNseID : soptDataRequest.data.data.NSEID
         }
 
         if (soptDataRequest.data.data.MKT_LOT) objData.mktLot = soptDataRequest.data.data.MKT_LOT
