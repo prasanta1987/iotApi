@@ -85,7 +85,7 @@ app.get('/nseTicker', nseTicker)
 
 // Authenticated
 app.get('/expStrike/:scripCode/:opType', verifyIdToken, getExpiryandStrikes)
-app.get('/spotFut/:script', verifyIdToken, getSpotFut)
+app.get('/spotFut/:script', getSpotFut)
 app.post('/authArduinoDevice', authArduino)
 // app.get('/getFutureData/:scripcode/:expiry', getFutureDataWithdate)
 
