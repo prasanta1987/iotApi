@@ -176,7 +176,7 @@ exports.fetchSpotData = async (param) => {
     }
 
     let soptDataRequest = await axios.get(baseUrl);
-console.log(soptDataRequest.data.data.NSEID);
+const nseId = (soptDataRequest.data.data.NSEID);
     try {
         objData = {
             "spotName": soptDataRequest.data.data.company,
@@ -187,7 +187,7 @@ console.log(soptDataRequest.data.data.NSEID);
             "dayHigh": soptDataRequest.data.data.HP || soptDataRequest.data.data.HIGH,
             "dayLow": soptDataRequest.data.data.LP || soptDataRequest.data.data.LOW,
             "MCID": scripCode,
-            "spotNseID" : soptDataRequest.data.data.NSEID
+            "spotNseID" : nseId
         }
 
         if (soptDataRequest.data.data.MKT_LOT) objData.mktLot = soptDataRequest.data.data.MKT_LOT
@@ -195,6 +195,8 @@ console.log(soptDataRequest.data.data.NSEID);
             objData.decl = new String(soptDataRequest.data.data.decl)
             objData.adv = new String(soptDataRequest.data.data.adv)
         }
+
+        console.log(objData)
 
 
     } catch (error) {
