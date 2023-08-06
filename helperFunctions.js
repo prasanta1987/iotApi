@@ -176,7 +176,7 @@ exports.fetchSpotData = async (param) => {
     }
 
     let soptDataRequest = await axios.get(baseUrl);
-console.log(soptDataRequest.data.data);
+console.log(soptDataRequest.data.data.NSEID);
     try {
         objData = {
             "spotName": soptDataRequest.data.data.company,
