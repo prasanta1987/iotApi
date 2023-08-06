@@ -162,9 +162,15 @@ exports.arduinoDevData = async (req, res) => {
   let futUrlArrs = [];
 
   const dataSnap = await dataSnapShot.val()
+
+  // console.log(dataSnap.strategies.nseId)
+
   const strategies = dataSnap.strategies.data;
   const dispMode = dataSnap.dispMode
-  const ULAsset = dataSnap.strategies.spotName
+  const ULAsset = dataSnap.strategies.nseId
+  // const ULAsset = dataSnap.strategies.spotName
+  const ULassetNseID = dataSnap.strategies.nseId
+
 
   strategies.map(strategy => {
     if (strategy.instrumentType.toUpperCase() == "OPTION") {
@@ -200,10 +206,13 @@ exports.arduinoDevData = async (req, res) => {
   let optStrDataObj = {}
   let totalPnl = 0
 
-  // console.log(opCurrentStat);
+  console.log("==>", opCurrentStat);
 
   opCurrentStat.forEach(strategy => {
+
     dataSnap.strategies.data.forEach(str => {
+
+      console.log(strategy.slug, "<==>", str.slug)
       if (strategy.slug == str.slug) {
 
         let rawSlug = strategy.slug.replace(ULAsset, "")
@@ -227,6 +236,7 @@ exports.arduinoDevData = async (req, res) => {
 
   })
 
+  console.log(optStrData)
 
   const spotRes = await filterSpotIds([ULAsset])
 
@@ -239,11 +249,11 @@ exports.arduinoDevData = async (req, res) => {
   optStrDataObj.ttlPNL = totalPnl.toString()
 
 
-  console.log(optStrDataObj)
+  // console.log(optStrDataObj)
 
   if (dispMode == "STRATEGY") {
 
-    console.log(optStrDataObj)
+    // console.log(optStrDataObj)
     res.status(200).json(optStrDataObj)
 
   } else {

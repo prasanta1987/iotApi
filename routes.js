@@ -91,17 +91,14 @@ exports.getSpotFut = async (req, res) => {
     delete spotData.spotChngPct
 
     Object.keys(spotData).map(x => {
-        if(parseFloat(spotData[x])) spotData[x] = parseFloat(spotData[x])
-
-     //   if (x != "MCID" && x != "spotName" && x != "futExpiry" && x != "mktStatus") spotData[x] = parseFloat(spotData[x])
-
-  })
+        if (parseFloat(spotData[x]) && x != "futExpiry") spotData[x] = parseFloat(spotData[x])
+    })
 
     let futExpDate = this.timeStamapToMCDate((new Date(`${spotData.futExpiry} ${new Date().getFullYear()}`)).getTime())
 
     try {
         const mktData = await getMarketLot(scripCode, futExpDate)
-        consol.log(mktData)
+        // consol.log(mktData)
         spotData.mktLot = mktData.mktLot
 
     } catch (error) {

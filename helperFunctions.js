@@ -149,8 +149,11 @@ exports.getMarketLot = async (scripCode, exp) => {
 
     const futUrl = `https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesfuture/${scripCode}?expiry=${exp}`
 
+    // console.log(futUrl)
     let futData = await axios.get(futUrl);
     let objData = {}
+
+    // console.log("==>  ", futData.data)
 
     if (futData.data.data.MarketLot) objData.mktLot = futData.data.data.MarketLot;
 
@@ -176,7 +179,7 @@ exports.fetchSpotData = async (param) => {
     }
 
     let soptDataRequest = await axios.get(baseUrl);
-const nseId = (soptDataRequest.data.data.NSEID);
+    const nseId = (soptDataRequest.data.data.NSEID) || scripCode;
     try {
         objData = {
             "spotName": soptDataRequest.data.data.company,
@@ -187,16 +190,16 @@ const nseId = (soptDataRequest.data.data.NSEID);
             "dayHigh": soptDataRequest.data.data.HP || soptDataRequest.data.data.HIGH,
             "dayLow": soptDataRequest.data.data.LP || soptDataRequest.data.data.LOW,
             "MCID": scripCode,
-            "spotNseID" : nseId
+            "spotNseID": nseId
         }
 
         if (soptDataRequest.data.data.MKT_LOT) objData.mktLot = soptDataRequest.data.data.MKT_LOT
         if (soptDataRequest.data.data.decl) {
-            objData.decl = new String(soptDataRequest.data.data.decl)
-            objData.adv = new String(soptDataRequest.data.data.adv)
+            objData.decl = (soptDataRequest.data.data.decl).toString()
+            objData.adv = (soptDataRequest.data.data.adv).toString()
         }
 
-        console.log(objData)
+        // console.log(objData)
 
 
     } catch (error) {
@@ -332,7 +335,6 @@ exports.multipleApiCalls = async (allUrls) => {
 
     allResponses.forEach(data => allData.push(data.data))
     return allData
-
 }
 
 // exports.searchSpot = async (param) => {
