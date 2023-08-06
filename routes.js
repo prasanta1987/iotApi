@@ -90,11 +90,12 @@ exports.getSpotFut = async (req, res) => {
     delete spotData.dayHigh
     delete spotData.spotChngPct
 
-    //Object.keys(spotData).map(x => {
+    Object.keys(spotData).map(x => {
+        if(parseFloat(spotData[x]) != null) spotData[x] = parseFloat(spotData[x])
 
      //   if (x != "MCID" && x != "spotName" && x != "futExpiry" && x != "mktStatus") spotData[x] = parseFloat(spotData[x])
 
-  //  })
+  })
 
     let futExpDate = this.timeStamapToMCDate((new Date(`${spotData.futExpiry} ${new Date().getFullYear()}`)).getTime())
 
