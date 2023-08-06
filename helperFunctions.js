@@ -4,6 +4,51 @@ const { exceptionsScripCode } = require('./constants');
 
 let finalDataObj = {}
 
+
+// APPFEEDS
+// exports.generateUrlList = (lists, scripCode) => {
+
+//     let optUrlLists = []
+//     let urlParamList = []
+//     let index = 0
+//     let indexList = []
+//     finalDataObj = {}
+
+
+//     let scriptsArrray = lists.split("&")
+
+//     scriptsArrray.map(data => {
+
+//         index++
+
+//         let myArrayData = data.split(',')
+//         try {
+
+//             let strikeLength = myArrayData[1].length - 2
+//             myArrayData.splice(1, 0, myArrayData[1].slice(-2)); //CE or PE
+//             myArrayData.splice(2, 0, parseFloat(myArrayData[2].substring(0, strikeLength)).toFixed(2)); //Strike Price
+//             myArrayData.splice(3, 0, myArrayData[4]); //Long or
+//             myArrayData.splice(4, 6)
+//         } catch (error) {
+//             console.log(error)
+//             indexList.push(index)
+//             finalDataObj.stringError = `Query -> ${indexList.join()} Error`;
+//         }
+
+//         urlParamList.push(myArrayData)
+
+//     })
+
+
+//     urlParamList.map(data => {
+//         optUrlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=${scripCode}&ExpiryDate=${data[0]}&strike_price=${data[2]}?tr_lot=${data[3]}&ce_pe=${data[1]}`)
+//     })
+
+//     return optUrlLists
+
+// }
+
+// Price API
 exports.generateUrlList = (lists, scripCode) => {
 
     let optUrlLists = []
@@ -11,7 +56,6 @@ exports.generateUrlList = (lists, scripCode) => {
     let index = 0
     let indexList = []
     finalDataObj = {}
-
 
     let scriptsArrray = lists.split("&")
 
@@ -25,10 +69,7 @@ exports.generateUrlList = (lists, scripCode) => {
             let strikeLength = myArrayData[1].length - 2
             myArrayData.splice(1, 0, myArrayData[1].slice(-2)); //CE or PE
             myArrayData.splice(2, 0, parseFloat(myArrayData[2].substring(0, strikeLength)).toFixed(2)); //Strike Price
-            myArrayData.splice(3, 0, myArrayData[4]); //Long or
-            // myArrayData.splice(3, 0, myArrayData[4].slice(-1)); //Long or
-            // myArrayData.splice(4, 0, myArrayData[5].substring(0, 1)); // Lot Size
-            myArrayData.splice(4, 6)
+            myArrayData.splice(3, 5)
         } catch (error) {
             console.log(error)
             indexList.push(index)
@@ -40,9 +81,18 @@ exports.generateUrlList = (lists, scripCode) => {
     })
 
 
+    // console.log(urlParamList)
+
+
     urlParamList.map(data => {
-        optUrlLists.push(`https://appfeeds.moneycontrol.com/jsonapi/fno/overview&format=json&inst_type=options&option_type=${data[1]}&id=${scripCode}&ExpiryDate=${data[0]}&strike_price=${data[2]}?tr_lot=${data[3]}&ce_pe=${data[1]}`)
+        if (exceptionsScripCode.includes(scripCode)) {
+            optUrlLists.push(`https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/${scripCode}?expiry=${data[0]}&optionType=${data[1]}&strikePrice=${data[2]}`)
+        } else {
+            optUrlLists.push(`https://priceapi.moneycontrol.com/pricefeed/nse/equityoption/${scripCode}?expiry=${data[0]}&optionType=${data[1]}&strikePrice=${data[2]}`)
+        }
     })
+
+    // console.log(optUrlLists)
 
     return optUrlLists
 
@@ -73,10 +123,28 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     finalDataObj.vixDayHigh = vixData.dayHigh
     finalDataObj.vixDayLow = vixData.dayLow
 
-    finalDataObj.optData = await this.fetchOptData(allUrls)
     finalDataObj.futData = await this.fetchFutData(scripCode)
+    const allOptionData = await this.multipleApiCalls(allUrls)
+
+    optDataArray = []
+
+    allOptionData.forEach(res => {
+
+        const data = res.data
+        let objData = {
+            "expiry": data.expirydate,
+            "strikePrice": data.Strike_Price,
+            "ltp": data.pricecurrent,
+            "ce_pe": data.opttype
+        }
 
 
+        optDataArray.push(objData)
+
+    })
+
+
+    finalDataObj.optData = optDataArray
 
     return finalDataObj
 
@@ -310,6 +378,7 @@ exports.filterSpotIds = async (spotList) => {
     return datas
 
 }
+
 
 exports.genUrlList = (param) => {
 

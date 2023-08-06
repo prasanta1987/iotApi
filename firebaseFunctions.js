@@ -252,9 +252,15 @@ exports.arduinoDevData = async (req, res) => {
 
   if (dispMode == "STRATEGY") {
 
-    // console.log(optStrDataObj)
     res.status(200).json(optStrDataObj)
 
+  } else if (dispMode == "MKTSNAPSHOT") {
+
+    const mktData = "";
+    res.status(200).json({
+      dispMode: dispMode,
+      data: await filterSpotIds(["NIFTY", "INDVIX"])
+    })
   } else {
     res.status(200).json({
       dispMode: dispMode,
