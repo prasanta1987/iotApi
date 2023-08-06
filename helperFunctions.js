@@ -49,6 +49,7 @@ let finalDataObj = {}
 // }
 
 // Price API
+
 exports.generateUrlList = (lists, scripCode) => {
 
     let optUrlLists = []
@@ -124,8 +125,13 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     finalDataObj.vixDayLow = vixData.dayLow
 
     finalDataObj.futData = await this.fetchFutData(scripCode)
+
+    // fOR appfeedS
+    // finalDataObj.optData = await this.fetchOptData(allUrls)
     const allOptionData = await this.multipleApiCalls(allUrls)
 
+
+    // ============ Remove for Appfeeds
     optDataArray = []
 
     allOptionData.forEach(res => {
@@ -138,13 +144,14 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
             "ce_pe": data.opttype
         }
 
-
         optDataArray.push(objData)
 
     })
 
 
     finalDataObj.optData = optDataArray
+    // ==============Remove for Appfeeds
+
 
     return finalDataObj
 
