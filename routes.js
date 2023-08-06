@@ -51,7 +51,7 @@ exports.getTechnicalData = async (req, res) => {
 
     let allData = await filterSpotIds([scripCode]);
 
-    objData.soptdata = allData[0]
+    objData.spotdata = allData[0]
 
     res.status(200).json(objData)
 }
