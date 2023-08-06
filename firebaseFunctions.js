@@ -206,24 +206,23 @@ exports.arduinoDevData = async (req, res) => {
   let optStrDataObj = {}
   let totalPnl = 0
 
-  console.log("==>", opCurrentStat);
+  // console.log("==>", opCurrentStat);
 
   opCurrentStat.forEach(strategy => {
 
     dataSnap.strategies.data.forEach(str => {
 
-      console.log(strategy.slug, "<==>", str.slug)
+      // console.log(strategy.slug, "<==>", str.slug)
       if (strategy.slug == str.slug) {
 
         let rawSlug = strategy.slug.replace(ULAsset, "")
-        let slug = rawSlug.slice(0, 7) + " " + rawSlug.slice(7)
 
         let Pnl = this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
         totalPnl += parseFloat(Pnl)
         let objData = {
-          slug: slug,
+          exp: rawSlug.slice(0, 7),
+          descp: rawSlug.slice(7),
           cmp: strategy.cmp,
-          // ltp: str.ltp.toString(),
           lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
           pnl: parseInt(Pnl).toString()
         }
@@ -236,7 +235,7 @@ exports.arduinoDevData = async (req, res) => {
 
   })
 
-  console.log(optStrData)
+  // console.log(optStrData)
 
   const spotRes = await filterSpotIds([ULAsset])
 
@@ -331,7 +330,6 @@ exports.calcPnL = (insType, __ltp, __cmp, __direction, __lotQty, __lotSize) => {
   let lotQty = parseInt(__lotQty)
   let lotSize = parseInt(__lotSize) || 0
 
-  console.log(cmp, ltp, lotSize, lotQty)
   let pnl = 0;
 
   if (insType == "OPTION") {
@@ -348,7 +346,6 @@ exports.calcPnL = (insType, __ltp, __cmp, __direction, __lotQty, __lotSize) => {
 
   }
 
-  console.log(pnl)
   return pnl
 }
 
