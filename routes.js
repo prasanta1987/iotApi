@@ -101,6 +101,7 @@ exports.getSpotFut = async (req, res) => {
 
     try {
         const mktData = await getMarketLot(scripCode, futExpDate)
+        consol.log(mktData)
         spotData.mktLot = mktData.mktLot
 
     } catch (error) {
