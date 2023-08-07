@@ -129,18 +129,16 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     // fOR appfeedS
     // finalDataObj.optData = await this.fetchOptData(allUrls)
 
-    // console.log(allUrls)
 
-    if (Array.isArray(allUrls)) {
-
-        const allOptionData = await this.multipleApiCalls(allUrls)
+    const allOptionData = await this.multipleApiCalls(allUrls)
 
 
-        // ============ Remove for Appfeeds
-        optDataArray = []
+    // ============ Remove for Appfeeds
+    optDataArray = []
 
-        allOptionData.forEach(res => {
+    allOptionData.forEach(res => {
 
+        try {
             const data = res.data
             let objData = {
                 "expiry": data.expirydate,
@@ -151,13 +149,17 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
 
             optDataArray.push(objData)
 
-        })
+
+        } catch (err) {
+            console.log(err)
+        }
+
+    })
 
 
-        finalDataObj.optData = optDataArray
-        // ==============Remove for Appfeeds
+    finalDataObj.optData = optDataArray
+    // ==============Remove for Appfeeds
 
-    }
 
 
 
