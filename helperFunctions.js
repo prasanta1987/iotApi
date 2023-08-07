@@ -129,7 +129,9 @@ exports.batchHttpRequest = async (allUrls, scripCode) => {
     // fOR appfeedS
     // finalDataObj.optData = await this.fetchOptData(allUrls)
 
-    if (!Array.isArray(allUrls)) {
+    // console.log(allUrls)
+
+    if (Array.isArray(allUrls)) {
 
         const allOptionData = await this.multipleApiCalls(allUrls)
 

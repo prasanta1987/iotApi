@@ -163,13 +163,11 @@ exports.arduinoDevData = async (req, res) => {
 
   const dataSnap = await dataSnapShot.val()
 
-  // console.log(dataSnap.strategies.nseId)
+  console.log(dataSnap.strategies)
 
   const strategies = dataSnap.strategies.data;
   const dispMode = dataSnap.dispMode
   const ULAsset = dataSnap.strategies.nseId
-  // const ULAsset = dataSnap.strategies.spotName
-  const ULassetNseID = dataSnap.strategies.nseId
 
 
   strategies.map(strategy => {
@@ -241,7 +239,7 @@ exports.arduinoDevData = async (req, res) => {
 
   optStrDataObj.dispMode = dispMode
   optStrDataObj.data = optStrData
-  optStrDataObj.spotName = spotRes[0].spotName
+  optStrDataObj.spotName = dataSnap.strategies.spotName
   optStrDataObj.cmp = spotRes[0].cmp
   optStrDataObj.chng = parseFloat(spotRes[0].spotChng).toString()
   optStrDataObj.chngPct = parseFloat(spotRes[0].spotChngPct).toFixed(2) + ' %'
