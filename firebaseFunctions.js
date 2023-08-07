@@ -218,8 +218,9 @@ exports.arduinoDevData = async (req, res) => {
         let Pnl = this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
         totalPnl += parseFloat(Pnl)
         let objData = {
-          exp: rawSlug.slice(0, 7),
-          descp: rawSlug.slice(7),
+          slug: rawSlug.slice(0, 7) + " " + rawSlug.slice(7),
+          // exp: rawSlug.slice(0, 7),
+          // descp: rawSlug.slice(7),
           cmp: strategy.cmp,
           lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
           pnl: parseInt(Pnl).toString()
