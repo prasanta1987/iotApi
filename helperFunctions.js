@@ -402,13 +402,13 @@ exports.filterSpotIds = async (spotList) => {
             const data = response.data[1]
             let dataObj = {
                 spotName: data.name,
-                open: data.open,
-                dayHigh: data.high,
-                dayLow: data.low,
-                cmp: data.ltp,
-                prevClose: data.prevclose,
-                spotChng: data.chg,
-                spotChngPct: data.chgper
+                open: parseFloat(data.open).toFixed(2),
+                dayHigh: parseFloat(data.high).toFixed(2),
+                dayLow: parseFloat(data.low).toFixed(2),
+                cmp: parseFloat(data.ltp).toFixed(2),
+                prevClose: parseFloat(data.prevclose).toFixed(2),
+                spotChng: parseFloat(data.chg).toFixed(2),
+                spotChngPct: parseFloat(data.chgper).toFixed(2)
             };
 
             datas.push(dataObj)
