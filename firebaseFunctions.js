@@ -253,11 +253,12 @@ exports.arduinoDevData = async (req, res) => {
 
   } else if (dispMode == "MKTSNAPSHOT") {
 
-    const mktData = "";
+    const timeData = await this.getTime();
+    const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
       data: await filterSpotIds(["NIFTY", "INDVIX", "USDINR"]),
-      time: (await this.getTime()).time
+      time: timeSlug
     })
   } else {
     res.status(200).json({
