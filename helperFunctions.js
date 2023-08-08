@@ -405,7 +405,7 @@ exports.filterSpotIds = async (spotList) => {
                 open: parseFloat(data.open).toFixed(2),
                 dayHigh: parseFloat(data.high).toFixed(2),
                 dayLow: parseFloat(data.low).toFixed(2),
-                cmp: parseFloat(data.ltp).toFixed(2),
+                cmp: parseFloat(data.ltp).toFixed(3),
                 prevClose: parseFloat(data.prevclose).toFixed(2),
                 spotChng: parseFloat(data.chg).toFixed(2),
                 spotChngPct: parseFloat(data.chgper).toFixed(2)
