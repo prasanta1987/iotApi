@@ -360,6 +360,8 @@ exports.filterSpotIds = async (spotList) => {
             spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx");
         } else if (scripCode == "INDVIX") {
             spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN");
+        } else if (scripCode == "USDINR") {
+            spotUrls.push("https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies");
         } else {
             spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode);
         }
@@ -370,28 +372,49 @@ exports.filterSpotIds = async (spotList) => {
 
 
     allOptSpotResponses.map(response => {
-        const data = response.data
 
-        if (data != null) {
+        if (!Array.isArray(response.data)) {
+
+            const data = response.data
+            if (data != null) {
+                let dataObj = {
+                    spotName: data.company,
+                    nseId: data.NSEID || data.company,
+                    open: data.OPN || data.OPEN,
+                    cmp: data.pricecurrent,
+                    dayHigh: data.HIGH || data.HP,
+                    dayLow: data.LOW || data.LP,
+                    prevClose: data.priceprevclose,
+                    spotChng: parseFloat(data.pricechange).toFixed(2),
+                    spotChngPct: parseFloat(data.pricepercentchange).toFixed(2),
+                    adv: (data.adv) ? data.adv.toString() : "0",
+                    decl: (data.decl) ? data.decl.toString() : "0"
+                };
+
+                // (data.adv) ? dataObj.adv = data.adv.toString() : "0";
+                // (data.decl) ? dataObj.decl = data.decl.toString() : "0";
+
+                datas.push(dataObj)
+            }
+
+        } else {
+            console.log(response)
+            const data = response.data[1]
             let dataObj = {
-                spotName: data.company,
-                nseId: data.NSEID || data.company,
-                open: data.OPN || data.OPEN,
-                cmp: data.pricecurrent,
-                dayHigh: data.HIGH || data.HP,
-                dayLow: data.LOW || data.LP,
-                prevClose: data.priceprevclose,
-                spotChng: parseFloat(data.pricechange).toFixed(2),
-                spotChngPct: parseFloat(data.pricepercentchange).toFixed(2),
-                adv: (data.adv) ? data.adv.toString() : "0",
-                decl: (data.decl) ? data.decl.toString() : "0"
+                spotName: data.name,
+                open: data.open,
+                dayHigh: data.high,
+                dayLow: data.low,
+                cmp: data.ltp,
+                prevClose: data.prevclose,
+                spotChng: data.chg,
+                spotChngPct: data.chgper
             };
-
-            // (data.adv) ? dataObj.adv = data.adv.toString() : "0";
-            // (data.decl) ? dataObj.decl = data.decl.toString() : "0";
 
             datas.push(dataObj)
         }
+
+
 
     })
 

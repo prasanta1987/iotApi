@@ -256,7 +256,7 @@ exports.arduinoDevData = async (req, res) => {
     const mktData = "";
     res.status(200).json({
       dispMode: dispMode,
-      data: await filterSpotIds(["NIFTY", "INDVIX"]),
+      data: await filterSpotIds(["NIFTY", "INDVIX", "USDINR"]),
       time: (await this.getTime()).time
     })
   } else {
