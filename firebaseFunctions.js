@@ -219,8 +219,6 @@ exports.arduinoDevData = async (req, res) => {
         totalPnl += parseFloat(Pnl)
         let objData = {
           slug: rawSlug.slice(0, 7) + " " + rawSlug.slice(7),
-          // exp: rawSlug.slice(0, 7),
-          // descp: rawSlug.slice(7),
           cmp: strategy.cmp,
           lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
           pnl: parseInt(Pnl).toString()
@@ -258,7 +256,8 @@ exports.arduinoDevData = async (req, res) => {
     const mktData = "";
     res.status(200).json({
       dispMode: dispMode,
-      data: await filterSpotIds(["NIFTY", "INDVIX"])
+      data: await filterSpotIds(["NIFTY", "INDVIX"]),
+      time: (await this.getTime()).time
     })
   } else {
     res.status(200).json({

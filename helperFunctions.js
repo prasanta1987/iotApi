@@ -383,9 +383,12 @@ exports.filterSpotIds = async (spotList) => {
                 prevClose: data.priceprevclose,
                 spotChng: data.pricechange,
                 spotChngPct: data.pricepercentchange,
-                adv: (data.adv) ? data.adv.toString() : 0,
-                decl: (data.decl) ? data.decl.toString() : 0
-            }
+                adv: (data.adv) ? data.adv.toString() : "0",
+                decl: (data.decl) ? data.decl.toString() : "0"
+            };
+
+            // (data.adv) ? dataObj.adv = data.adv.toString() : "0";
+            // (data.decl) ? dataObj.decl = data.decl.toString() : "0";
 
             datas.push(dataObj)
         }
