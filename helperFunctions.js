@@ -381,8 +381,8 @@ exports.filterSpotIds = async (spotList) => {
                 dayHigh: data.HIGH || data.HP,
                 dayLow: data.LOW || data.LP,
                 prevClose: data.priceprevclose,
-                spotChng: data.pricechange,
-                spotChngPct: data.pricepercentchange,
+                spotChng: parseFloat(data.pricechange).toFixed(2),
+                spotChngPct: parseFloat(data.pricepercentchange).toFixed(2),
                 adv: (data.adv) ? data.adv.toString() : "0",
                 decl: (data.decl) ? data.decl.toString() : "0"
             };
