@@ -169,86 +169,82 @@ exports.arduinoDevData = async (req, res) => {
   const dispMode = dataSnap.dispMode
   const ULAsset = dataSnap.strategies.nseId
 
-  if (dataSnap.triggers) {
-
-    strategies.map(strategy => {
-      if (strategy.instrumentType.toUpperCase() == "OPTION") {
-        if (exceptionsScripCode.includes(dataSnap.strategies.spotName)) {
-          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
-        } else {
-          optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/nse/equityoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
-        }
+  strategies.map(strategy => {
+    if (strategy.instrumentType.toUpperCase() == "OPTION") {
+      if (exceptionsScripCode.includes(dataSnap.strategies.spotName)) {
+        optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
+      } else {
+        optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/nse/equityoption/${dataSnap.strategies.MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
       }
-    })
+    }
+  })
 
-    // console.log(optUrlArrs)
+  // console.log(optUrlArrs)
 
-    const allOptionData = await multipleApiCalls(optUrlArrs)
+  const allOptionData = await multipleApiCalls(optUrlArrs)
 
-    let opCurrentStat = []
-    allOptionData.forEach(data => {
-      // console.log(data)
+  let opCurrentStat = []
+  allOptionData.forEach(data => {
+    // console.log(data)
 
-      let dataObj = {
-        slug: this.dateToMcSlug(data.data.sc_id || data.data.Symbol,
-          data.data.expirydate,
-          parseInt(data.data.Strike_Price),
-          data.data.opttype),
-        cmp: data.data.pricecurrent
-      }
+    let dataObj = {
+      slug: this.dateToMcSlug(data.data.sc_id || data.data.Symbol,
+        data.data.expirydate,
+        parseInt(data.data.Strike_Price),
+        data.data.opttype),
+      cmp: data.data.pricecurrent
+    }
 
-      opCurrentStat.push(dataObj)
-    })
+    opCurrentStat.push(dataObj)
+  })
 
 
-    let optStrData = []
-    let optStrDataObj = {}
-    let totalPnl = 0
+  let optStrData = []
+  let optStrDataObj = {}
+  let totalPnl = 0
 
-    // console.log("==>", opCurrentStat);
+  // console.log("==>", opCurrentStat);
 
-    opCurrentStat.forEach(strategy => {
+  opCurrentStat.forEach(strategy => {
 
-      dataSnap.strategies.data.forEach(str => {
+    dataSnap.strategies.data.forEach(str => {
 
-        // console.log(strategy.slug, "<==>", str.slug)
-        if (strategy.slug == str.slug) {
+      // console.log(strategy.slug, "<==>", str.slug)
+      if (strategy.slug == str.slug) {
 
-          let rawSlug = strategy.slug.replace(ULAsset, "")
+        let rawSlug = strategy.slug.replace(ULAsset, "")
 
-          let Pnl = this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
-          totalPnl += parseFloat(Pnl)
-          let objData = {
-            slug: rawSlug.slice(0, 7) + " " + rawSlug.slice(7),
-            cmp: strategy.cmp,
-            lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
-            pnl: parseInt(Pnl).toString()
-          }
-
-          optStrData.push(objData)
-
+        let Pnl = this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
+        totalPnl += parseFloat(Pnl)
+        let objData = {
+          slug: rawSlug.slice(0, 7) + " " + rawSlug.slice(7),
+          cmp: strategy.cmp,
+          lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
+          pnl: parseInt(Pnl).toString()
         }
 
-      })
+        optStrData.push(objData)
+
+      }
 
     })
 
-    // console.log(optStrData)
+  })
 
-    const spotRes = await filterSpotIds([ULAsset])
+  // console.log(optStrData)
 
-    optStrDataObj.dispMode = dispMode
-    optStrDataObj.data = optStrData
-    optStrDataObj.spotName = dataSnap.strategies.spotName
-    optStrDataObj.cmp = spotRes[0].cmp
-    optStrDataObj.chng = parseFloat(spotRes[0].spotChng).toString()
-    optStrDataObj.chngPct = parseFloat(spotRes[0].spotChngPct).toFixed(2) + ' %'
-    optStrDataObj.ttlPNL = totalPnl.toString()
+  const spotRes = await filterSpotIds([ULAsset])
+
+  optStrDataObj.dispMode = dispMode
+  optStrDataObj.data = optStrData
+  optStrDataObj.spotName = dataSnap.strategies.spotName
+  optStrDataObj.cmp = spotRes[0].cmp
+  optStrDataObj.chng = parseFloat(spotRes[0].spotChng).toString()
+  optStrDataObj.chngPct = parseFloat(spotRes[0].spotChngPct).toFixed(2) + ' %'
+  optStrDataObj.ttlPNL = totalPnl.toString()
 
 
-    // console.log(optStrDataObj)
-
-  }
+  // console.log(optStrDataObj)
 
   if (dispMode == "STRATEGY") {
 
