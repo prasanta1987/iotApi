@@ -361,8 +361,8 @@ exports.filterSpotIds = async (spotList) => {
         } else if (scripCode == "INDVIX") {
             spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN");
         } else if (scripCode == "USDINR") {
-            spotUrls.push("https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies");
-            //spotUrls.push("https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies?source=webCurrency&currency=USDINR");
+            //spotUrls.push("https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies");
+            spotUrls.push("https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies?source=webCurrency&currency=USDINR");
         } else {
             spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode);
         }
@@ -400,7 +400,7 @@ exports.filterSpotIds = async (spotList) => {
 
         } else {
             console.log(response)
-            const data = response.data[1]
+            const data = response.data[0]
             let dataObj = {
                 spotName: data.name,
                 open: parseFloat(data.open).toFixed(2),
