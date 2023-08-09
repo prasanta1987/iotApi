@@ -360,7 +360,10 @@ exports.filterSpotIds = async (spotList) => {
             spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx");
         } else if (scripCode == "INDVIX") {
             spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN");
-        } else if (scripCode == "USDINR") {
+        } else if (scripCode == "NASDAQ") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/usMarket/index/CCMP:IND");
+        }
+        else if (scripCode == "USDINR") {
             spotUrls.push("https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies?source=webCurrency&currency=USDINR");
         } else {
             spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode);
@@ -378,15 +381,15 @@ exports.filterSpotIds = async (spotList) => {
             const data = response.data
             if (data != null) {
                 let dataObj = {
-                    spotName: data.company,
+                    spotName: data.company || data.name,
                     nseId: data.NSEID || data.company,
-                    open: data.OPN || data.OPEN,
-                    cmp: data.pricecurrent,
-                    dayHigh: data.HIGH || data.HP,
-                    dayLow: data.LOW || data.LP,
-                    prevClose: data.priceprevclose,
-                    spotChng: parseFloat(data.pricechange).toFixed(2),
-                    spotChngPct: parseFloat(data.pricepercentchange).toFixed(2),
+                    open: data.OPN || data.OPEN || data.open.replace(",", ""),
+                    cmp: data.pricecurrent || data.current_price.replace(",", ""),
+                    dayHigh: data.HIGH || data.HP || data.high.replace(",", ""),
+                    dayLow: data.LOW || data.LP || data.low.replace(",", ""),
+                    prevClose: data.priceprevclose || data.prev_close.replace(",", ""),
+                    spotChng: data.net_change || (parseFloat(data.pricechange).toFixed(2)),
+                    spotChngPct: data.percent_change || parseFloat(data.pricepercentchange).toFixed(2),
                     adv: (data.adv) ? data.adv.toString() : "0",
                     decl: (data.decl) ? data.decl.toString() : "0"
                 };
