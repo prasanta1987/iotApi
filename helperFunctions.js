@@ -269,8 +269,8 @@ exports.fetchSpotData = async (param) => {
         objData = {
             "spotName": soptDataRequest.data.data.company,
             "spotPrice": soptDataRequest.data.data.pricecurrent,
-            "spotChng": soptDataRequest.data.data.pricechange,
-            "spotChngPct": soptDataRequest.data.data.pricepercentchange,
+            "spotChng": parseFloat(soptDataRequest.data.data.pricechange).toFixed(2),
+            "spotChngPct": parseFloat(soptDataRequest.data.data.pricepercentchange).toFixed(2),
             "mktStatus": soptDataRequest.data.data.market_state,
             "dayHigh": soptDataRequest.data.data.HP || soptDataRequest.data.data.HIGH,
             "dayLow": soptDataRequest.data.data.LP || soptDataRequest.data.data.LOW,
@@ -389,7 +389,7 @@ exports.filterSpotIds = async (spotList) => {
                     dayLow: data.LOW || data.LP || data.low.replace(",", ""),
                     prevClose: data.priceprevclose || data.prev_close.replace(",", ""),
                     spotChng: data.net_change || (parseFloat(data.pricechange).toFixed(2)),
-                    spotChngPct: data.percent_change || parseFloat(data.pricepercentchange).toFixed(2),
+                    spotChngPct: (data.percent_change || parseFloat(data.pricepercentchange).toFixed(2)) + " %",
                     adv: (data.adv) ? data.adv.toString() : "0",
                     decl: (data.decl) ? data.decl.toString() : "0"
                 };

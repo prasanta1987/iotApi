@@ -278,7 +278,8 @@ exports.arduinoDevData = async (req, res) => {
 
 }
 
-exports.getPicUrl = async (req, res) => {
+
+exports.getAllPic = async (tags = "") => {
 
   const response = await axios.get('https://api.imagekit.io/v1/files', {
     auth: {
@@ -286,17 +287,38 @@ exports.getPicUrl = async (req, res) => {
     }
   });
 
-  let photoUrls = []
+  let allUrls = []
+  response.data.forEach(data => {
+    let dataObj = {
+      url: data.url,
+      tags: data.tags
+    }
 
-  response.data.forEach(url => {
-    photoUrls.push(url.url)
+    allUrls.push(dataObj)
   })
+
+  return allUrls
+}
+
+exports.listPics = async (req, res) => {
+
+}
+
+exports.getPicUrl = async (req, res) => {
+
+  // let photoUrls = []
+  // const response = await this.getAllPic()
+  // response.forEach(url => {
+  //   photoUrls.push(url.url)
+  // })
+
+  const photoUrls = await this.getAllPic();
 
   const randomNumber = this.randomIntFromInterval(0, photoUrls.length - 1)
   let time = ((await this.getTime()).time).replace(":", "%3a")
   let amPM = (await this.getTime()).amPM
 
-  let currentImageUrl = `${photoUrls[randomNumber]}/tr:w-320,h-240,l-text,ly-207,pa-5,w-320,bg-00000060,i-${time},fs-32,co-FFFFFF,ia-left,l-end:l-text,lx-90,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
+  let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-207,pa-5,w-320,bg-00000060,i-${time},fs-32,co-FFFFFF,ia-left,l-end:l-text,lx-90,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
 
   res.status(200).json({ url: currentImageUrl })
 
