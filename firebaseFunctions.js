@@ -281,7 +281,7 @@ exports.arduinoDevData = async (req, res) => {
 
 exports.getAllPic = async (tags = "") => {
 
-  const response = await axios.get('https://api.imagekit.io/v1/files', {
+  const response = await axios.get(`https://api.imagekit.io/v1/files?tags=${tags}`, {
     auth: {
       username: 'private_OGPzuz1sTQnQ70a7wBypYzteJVo='
     }
@@ -302,15 +302,18 @@ exports.getAllPic = async (tags = "") => {
 
 exports.listPics = async (req, res) => {
 
+  const tag = (req.params.tag || "").toUpperCase()
+
+  const photoUrls = await this.getAllPic(tag);
+
+  // console.log(photoUrls)
+
+
+  res.status(200).json(photoUrls)
+
 }
 
 exports.getPicUrl = async (req, res) => {
-
-  // let photoUrls = []
-  // const response = await this.getAllPic()
-  // response.forEach(url => {
-  //   photoUrls.push(url.url)
-  // })
 
   const photoUrls = await this.getAllPic();
 

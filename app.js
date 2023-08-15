@@ -15,7 +15,8 @@ const { fnoDataFetch, search, getSpotData,
 const { FBsignIn, authStateCheck, chckLogin,
     FBsignInArduino, authApiCall,
     arduinoSignInRout, arduinoAskCred,
-    arduinoDelKeyValue, authArduino, arduinoDevData, getPicUrl } = require('./firebaseFunctions');
+    arduinoDelKeyValue, authArduino, arduinoDevData,
+    listPics, getPicUrl } = require('./firebaseFunctions');
 
 
 const app = express()
@@ -99,6 +100,8 @@ app.post('/addArduinoDevice', arduinoAskCred)
 app.post('/deleteDeviceKey', arduinoDelKeyValue)
 app.get('/getArduinoData/:userUID', arduinoDevData)
 app.get('/pic', getPicUrl)
+app.get('/listPics/:tag', listPics)
+app.get('/listPics', listPics)
 // app.post('/getWatchList', getWatchLists);
 
 
