@@ -91,7 +91,7 @@ exports.arduinoDelKeyValue = async (req, res) => {
 
 exports.arduinoAskCred = async (req, res) => {
 
-  let devOtp = req.headers.__dev || false;
+  let devOtp = req.params.devSlNum || false;
 
 
   const dataSnapShot = await deviceAddRef.child(devOtp).once('value', snapShot => {
@@ -256,7 +256,7 @@ exports.arduinoDevData = async (req, res) => {
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await filterSpotIds(["NIFTY", "INDVIX", "BANKNIFTY"]),
+      data: await filterSpotIds(["NASDAQ", "INDVIX", "BANKNIFTY"]),
       time: timeSlug
     })
   } else {
