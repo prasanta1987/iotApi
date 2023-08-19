@@ -96,7 +96,7 @@ app.post('/signOutArduino', (req, res) => {
     req.session.logedIn = false
     res.status(200).json({ "msg": "Signed Out" })
 })
-app.get('/addArduinoDevice/:devSlNum', arduinoAskCred)
+app.post('/addArduinoDevice', arduinoAskCred)
 app.post('/deleteDeviceKey', arduinoDelKeyValue)
 app.get('/getArduinoData/:userUID', arduinoDevData)
 app.get('/pic', getPicUrl)

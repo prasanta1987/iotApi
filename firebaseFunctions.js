@@ -91,7 +91,7 @@ exports.arduinoDelKeyValue = async (req, res) => {
 
 exports.arduinoAskCred = async (req, res) => {
 
-  let devOtp = req.params.devSlNum || false;
+  let devOtp = req.headers.__dev || false;
 
 
   const dataSnapShot = await deviceAddRef.child(devOtp).once('value', snapShot => {
@@ -323,7 +323,8 @@ exports.getPicUrl = async (req, res) => {
 
   let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-207,pa-5,w-320,bg-00000060,i-${time},fs-32,co-FFFFFF,ia-left,l-end:l-text,lx-90,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
 
-  res.status(200).json({ url: currentImageUrl })
+  res.redirect(currentImageUrl);
+  // res.status(200).json({ url: currentImageUrl })
 
 }
 
