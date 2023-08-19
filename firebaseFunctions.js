@@ -256,7 +256,7 @@ exports.arduinoDevData = async (req, res) => {
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await filterSpotIds(["NASDAQ", "INDVIX", "BANKNIFTY"]),
+      data: await filterSpotIds(["NIFTY","NASDAQ", "BANKNIFTY"]),
       time: timeSlug
     })
   } else {
