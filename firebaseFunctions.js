@@ -167,6 +167,7 @@ exports.arduinoDevData = async (req, res) => {
 
   const strategies = dataSnap.strategies.data;
   const dispMode = dataSnap.dispMode
+  const photoTags = dataSnap.photoTags
   const ULAsset = dataSnap.strategies.nseId
 
   strategies.map(strategy => {
@@ -262,6 +263,7 @@ exports.arduinoDevData = async (req, res) => {
   } else {
     res.status(200).json({
       dispMode: dispMode,
+      photoTags: photoTags || "",
       time: await this.getTime()
     })
   }
@@ -315,7 +317,9 @@ exports.listPics = async (req, res) => {
 
 exports.getPicUrl = async (req, res) => {
 
-  const photoUrls = await this.getAllPic();
+  const tags = (req.params.tags || "").toUpperCase()
+  const photoUrls = await this.getAllPic(tags);
+  console.log(photoUrls)
 
   const randomNumber = this.randomIntFromInterval(0, photoUrls.length - 1)
   let time = ((await this.getTime()).time).replace(":", "%3a")
@@ -325,7 +329,6 @@ exports.getPicUrl = async (req, res) => {
   // let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-207,pa-5,w-320,bg-00000060,i-${time},fs-32,co-FFFFFF,ia-left,l-end:l-text,lx-90,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
 
   res.redirect(currentImageUrl);
-  // res.status(200).json({ url: currentImageUrl })
 
 }
 

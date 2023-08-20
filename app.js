@@ -99,6 +99,7 @@ app.post('/signOutArduino', (req, res) => {
 app.post('/addArduinoDevice', arduinoAskCred)
 app.post('/deleteDeviceKey', arduinoDelKeyValue)
 app.get('/getArduinoData/:userUID', arduinoDevData)
+app.get('/pic/:tags', getPicUrl)
 app.get('/pic', getPicUrl)
 app.get('/listPics/:tag', listPics)
 app.get('/listPics', listPics)
