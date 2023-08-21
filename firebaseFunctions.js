@@ -293,7 +293,8 @@ exports.getAllPic = async (tags = "") => {
   response.data.forEach(data => {
     let dataObj = {
       url: data.url,
-      tags: data.tags
+      tags: data.tags,
+      fileId: data.fileId
     }
 
     allUrls.push(dataObj)
