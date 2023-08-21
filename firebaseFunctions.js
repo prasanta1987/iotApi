@@ -303,6 +303,32 @@ exports.getAllPic = async (tags = "") => {
   return allUrls
 }
 
+exports.updatePic = async (req, res) => {
+
+  const fileId = req.params.fileId || ""
+  const tags = req.params.tags || ""
+
+  let allTags = []
+
+  tags.split(",").forEach(tag => allTags.push(tag))
+
+  try {
+
+    const response = await axios.patch(`https://api.imagekit.io/v1/files/${fileId}/details`,
+      { 'tags': allTags },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        auth: { username: 'private_OGPzuz1sTQnQ70a7wBypYzteJVo=' }
+      }
+    )
+    res.status(200).json(response.data.tags)
+
+  } catch (error) {
+    res.status(500).json({ "error": "Something Went Wrong" })
+  }
+
+}
+
 exports.listPics = async (req, res) => {
 
   const tag = (req.params.tag || "").toUpperCase()
@@ -332,6 +358,8 @@ exports.getPicUrl = async (req, res) => {
   res.redirect(currentImageUrl);
 
 }
+
+
 
 exports.randomIntFromInterval = (min, max) => { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min)

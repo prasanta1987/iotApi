@@ -16,7 +16,7 @@ const { FBsignIn, authStateCheck, chckLogin,
     FBsignInArduino, authApiCall,
     arduinoSignInRout, arduinoAskCred,
     arduinoDelKeyValue, authArduino, arduinoDevData,
-    listPics, getPicUrl } = require('./firebaseFunctions');
+    listPics, getPicUrl, updatePic } = require('./firebaseFunctions');
 
 
 const app = express()
@@ -103,6 +103,7 @@ app.get('/pic/:tags', getPicUrl)
 app.get('/pic', getPicUrl)
 app.get('/listPics/:tag', listPics)
 app.get('/listPics', listPics)
+app.get('/updatePics/:fileId/:tags', updatePic)
 // app.post('/getWatchList', getWatchLists);
 
 
