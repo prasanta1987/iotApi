@@ -1,6 +1,6 @@
 const axios = require("axios").default;
 const url = require('url')
-const { exceptionsScripCode } = require('./constants');
+const { exceptionsScripCode, monthsName } = require('./constants');
 
 let finalDataObj = {}
 
@@ -452,6 +452,141 @@ exports.multipleApiCalls = async (allUrls) => {
     return allData
 }
 
+
+exports.getStratagryData = async (dataSnap) => {
+
+    const strategies = dataSnap.strategies.data
+    const spotName = dataSnap.strategies.spotName
+    const MCID = dataSnap.strategies.MCID
+    const ULAsset = dataSnap.strategies.nseId
+    const dispMode = dataSnap.dispMode
+
+    // strategies,
+    //     dataSnap.strategies.spotName,
+    //     dataSnap.strategies.MCID, dataSnap.strategies.nseId, dispMode
+
+    let optUrlArrs = [];
+    let spotUrlArrs = [];
+    let futUrlArrs = [];
+
+
+    strategies.map(strategy => {
+        if (strategy.instrumentType.toUpperCase() == "OPTION") {
+            if (exceptionsScripCode.includes(spotName)) {
+                optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/notapplicable/indicesoption/${MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
+            } else {
+                optUrlArrs.push(`https://priceapi.moneycontrol.com/pricefeed/nse/equityoption/${MCID}?expiry=${strategy.expiry}&optionType=${strategy.opType}&strikePrice=${strategy.strike.toFixed(2)}`)
+            }
+        }
+    })
+
+    console.log(optUrlArrs)
+
+    const allOptionData = await this.multipleApiCalls(optUrlArrs)
+
+    let opCurrentStat = []
+    allOptionData.forEach(data => {
+        // console.log(data)
+
+        let dataObj = {
+            slug: this.dateToMcSlug(data.data.sc_id || data.data.Symbol,
+                data.data.expirydate,
+                parseInt(data.data.Strike_Price),
+                data.data.opttype),
+            cmp: data.data.pricecurrent
+        }
+
+        opCurrentStat.push(dataObj)
+    })
+
+
+    let optStrData = []
+    let optStrDataObj = {}
+    let totalPnl = 0
+
+    // console.log("==>", opCurrentStat);
+
+    opCurrentStat.forEach(strategy => {
+
+        strategies.forEach(str => {
+
+            // console.log(strategy.slug, "<==>", str.slug)
+            if (strategy.slug == str.slug) {
+
+                let rawSlug = strategy.slug.replace(ULAsset, "")
+
+                let Pnl = this.calcPnL(str.instrumentType, str.ltp, strategy.cmp, str.direction, str.lotQty, str.lotSize)
+                totalPnl += parseFloat(Pnl)
+                let objData = {
+                    slug: rawSlug.slice(0, 7) + " " + rawSlug.slice(7),
+                    cmp: strategy.cmp,
+                    lotQty: ((str.direction == "LONG") ? "+" : "-") + str.lotQty.toString(),
+                    pnl: parseInt(Pnl).toString()
+                }
+
+                optStrData.push(objData)
+
+            }
+
+        })
+
+    })
+
+    // console.log(optStrData)
+
+    const spotRes = await this.filterSpotIds([ULAsset])
+
+    optStrDataObj.dispMode = dispMode
+    optStrDataObj.data = optStrData
+    optStrDataObj.spotName = dataSnap.strategies.spotName
+    optStrDataObj.cmp = spotRes[0].cmp
+    optStrDataObj.chng = parseFloat(spotRes[0].spotChng).toString()
+    optStrDataObj.chngPct = parseFloat(spotRes[0].spotChngPct).toFixed(2) + ' %'
+    optStrDataObj.ttlPNL = totalPnl.toString()
+
+
+    // console.log(optStrDataObj)
+
+    return optStrDataObj
+}
+
+
+
+exports.dateToMcSlug = (symbol, expiry, strike, type) => {
+
+    let d = new Date(expiry)
+    let mcDatString = `${d.getDate()}${monthsName[d.getMonth()]}${d.getFullYear().toString().substring(2)}`
+
+    return symbol + mcDatString + strike + type
+
+}
+
+
+exports.calcPnL = (insType, __ltp, __cmp, __direction, __lotQty, __lotSize) => {
+
+    let cmp = parseFloat(__cmp);
+    let ltp = parseFloat(__ltp)
+    let lotQty = parseInt(__lotQty)
+    let lotSize = parseInt(__lotSize) || 0
+
+    let pnl = 0;
+
+    if (insType == "OPTION") {
+
+        pnl = (__direction == "LONG")
+            ? ((cmp - ltp) * lotSize * lotQty).toFixed(2)
+            : ((ltp - cmp) * lotSize * lotQty).toFixed(2)
+
+    } else if (insType == "SPOT") {
+
+        pnl = (__direction == "LONG")
+            ? ((cmp - ltp) * lotQty).toFixed(2)
+            : ((ltp - cmp) * lotQty).toFixed(2)
+
+    }
+
+    return pnl
+}
 // exports.searchSpot = async (param) => {
 
 //     param = param.toUpperCase()
