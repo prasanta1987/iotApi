@@ -160,9 +160,6 @@ exports.arduinoDevData = async (req, res) => {
 
   const dataSnap = await dataSnapShot.val()
 
-  // console.log(dataSnap.strategies)
-
-  const strategies = dataSnap.strategies.data;
   const dispMode = dataSnap.dispMode
   const photoTags = dataSnap.photoTags
 
@@ -179,7 +176,7 @@ exports.arduinoDevData = async (req, res) => {
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await filterSpotIds(["NASDAQ","USDINR" ,"NIFTY"]),
+      data: await filterSpotIds(["NASDAQ", "USDINR", "NIFTY"]),
       time: timeSlug
     })
   } else {
@@ -191,19 +188,7 @@ exports.arduinoDevData = async (req, res) => {
   }
 
 
-
-
-  // catch (error) {
-
-  //   res.status(500).json({ "msg": error })
-
-  // }
-
-
 }
-
-
-
 
 
 exports.getAllPic = async (tags = "") => {
@@ -252,9 +237,9 @@ exports.getPicUrl = async (req, res) => {
   let amPM = (await this.getTime()).amPM
 
 
-let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,i-${time},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
+  let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,i-${time},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
 
-//  let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-205,pa-5,w-320,bg-00000060,i-${time},fs-36,co-FFFFFF,ia-left,l-end:l-text,lx-100,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
+  //  let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-205,pa-5,w-320,bg-00000060,i-${time},fs-36,co-FFFFFF,ia-left,l-end:l-text,lx-100,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
   // let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-207,pa-5,w-320,bg-00000060,i-${time},fs-32,co-FFFFFF,ia-left,l-end:l-text,lx-90,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
 
   res.redirect(currentImageUrl);
@@ -287,12 +272,6 @@ exports.updatePic = async (req, res) => {
   }
 
 }
-
-
-exports.randomIntFromInterval = (min, max) => { // min and max included 
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
 
 
 exports.randomIntFromInterval = (min, max) => { // min and max included 
