@@ -162,9 +162,9 @@ exports.arduinoDevData = async (req, res) => {
 
   const dispMode = dataSnap.dispMode
   const photoTags = dataSnap.photoTags
-  const watchList = dataSnap.WATCHLIST
+  const mktSnapShotList = dataSnap.mktSnapShotList
 
-  console.log(watchList.split(","))
+  console.log(mktSnapShotList.split(","))
 
 
   if (dispMode == "STRATEGY") {
@@ -178,7 +178,7 @@ exports.arduinoDevData = async (req, res) => {
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await filterSpotIds(watchList.split(",")),
+      data: await filterSpotIds(mktSnapShotList.split(",")),
       time: timeSlug
     })
   } else {
