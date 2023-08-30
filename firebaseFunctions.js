@@ -162,7 +162,7 @@ exports.arduinoDevData = async (req, res) => {
 
   const dispMode = dataSnap.dispMode
   const photoTags = dataSnap.photoTags
-  const watchList = dataSnap.WATCHLIST || "NIFTY,NASDAQ,USDINR"
+  const watchList = dataSnap.WATCHLIST
 
   console.log(watchList.split(","))
 
