@@ -162,7 +162,9 @@ exports.arduinoDevData = async (req, res) => {
 
   const dispMode = dataSnap.dispMode
   const photoTags = dataSnap.photoTags
+  const watchList = dataSnap.WATCHLIST || "NIFTY,NASDAQ,USDINR"
 
+  // console.log(watchList.split(","))
 
 
   if (dispMode == "STRATEGY") {
@@ -176,7 +178,7 @@ exports.arduinoDevData = async (req, res) => {
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await filterSpotIds(["NASDAQ", "USDINR", "NIFTY"]),
+      data: await filterSpotIds(watchList.split(",")),
       time: timeSlug
     })
   } else {
