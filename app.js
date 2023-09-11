@@ -28,11 +28,7 @@ var corsOptions = {
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-app.use(session({
-    secret: 'IMPK3161',
-    resave: true,
-    saveUninitialized: true
-}));
+
 app.use(express.json());
 app.use(cors());
 // app.use(cors(corsOptions));
