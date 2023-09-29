@@ -106,7 +106,7 @@ app.get('/updatePics/:fileId/:tags', updatePic)
 // Authenticated
 
 app.post('/pingTest', (req, res) => {
-    console.log(req.body)
+    console.log(req)
 res.status(200).json({ "msg": "PONG" })
 })
 
