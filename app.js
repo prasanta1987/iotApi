@@ -4,6 +4,7 @@ const cors = require('cors')
 const path = require("path");
 const axios = require("axios").default;
 const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser')
 require('dotenv').config()
 
 const { fnoDataFetch, search, getSpotData,
@@ -21,6 +22,9 @@ const { FBsignIn, authStateCheck, chckLogin,
 
 const app = express()
 const port = process.env.PORT || 3161
+app.use(bodyParser.json({ type: 'application/*+json' }))
+app.use(bodyParser.text({ type: 'text/html' }))
+
 // require('events').EventEmitter.defaultMaxListeners = 0
 
 var corsOptions = {
@@ -106,8 +110,8 @@ app.get('/updatePics/:fileId/:tags', updatePic)
 // Authenticated
 
 app.post('/pingTest', (req, res) => {
-    console.log(req)
-res.status(200).json({ "msg": "PONG" })
+    console.log(req.body)
+    res.status(200).json({ "msg": "PONG" })
 })
 
 // API Request Ends
