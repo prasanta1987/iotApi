@@ -156,8 +156,8 @@ exports.mktSnapShot = async (req, res) => {
 
 exports.getOptionsChain = async (req, res) => {
 
-    const scriptCode = req.body.scriptCode
-    const expDate = req.body.expDate
+    const scriptCode = req.params.scriptCode.toLowerCase() || "nifty";
+    const expDate = req.params.expDate || '';
     const response = await axios.get(`https://webapi.niftytrader.in/webapi/option/fatch-option-chain?symbol=${scriptCode}&expiryDate=${expDate}`)
 
     res.status(200).json(response.data)

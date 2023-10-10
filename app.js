@@ -20,6 +20,7 @@ const { FBsignIn, authStateCheck, chckLogin,
     listPics, getPicUrl, updatePic } = require('./firebaseFunctions');
 
 
+
 const app = express()
 const port = process.env.PORT || 3161
 app.use(bodyParser.json({ type: 'application/*+json' }))
@@ -82,7 +83,7 @@ app.get('/search/:script', search) //Will be Depricated
 app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
-app.post('/optionChain', getOptionsChain)
+app.get('/optionChain/:scriptCode/:expDate', getOptionsChain)
 
 
 // Authenticated
