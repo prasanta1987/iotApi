@@ -11,7 +11,7 @@ const { fnoDataFetch, search, getSpotData,
     signInArduino,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes, getSpotFut,
-    getTechnicalData, batchSpotData } = require('./routes');
+    getTechnicalData, batchSpotData, getOptionsChain } = require('./routes');
 
 const { FBsignIn, authStateCheck, chckLogin,
     FBsignInArduino, authApiCall,
@@ -82,6 +82,7 @@ app.get('/search/:script', search) //Will be Depricated
 app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
+app.get('/optionChain', getOptionsChain)
 
 
 // Authenticated
@@ -113,6 +114,8 @@ app.post('/pingTest', (req, res) => {
     console.log(req.body)
     res.status(200).json({ "msg": "PONG" })
 })
+
+
 
 // API Request Ends
 
