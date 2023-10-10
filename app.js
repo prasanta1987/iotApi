@@ -82,7 +82,7 @@ app.get('/search/:script', search) //Will be Depricated
 app.get('/marketSnapShot', mktSnapShot)
 app.get('/globalMktData', globalMktData)
 app.get('/nseTicker', nseTicker)
-app.get('/optionChain', getOptionsChain)
+app.post('/optionChain', getOptionsChain)
 
 
 // Authenticated
