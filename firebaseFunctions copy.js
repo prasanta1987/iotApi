@@ -5,7 +5,29 @@ const ImageKit = require("imagekit");
 const { multipleApiCalls, filterSpotIds, getStratagryData } = require('./helperFunctions')
 const { monthsName, exceptionsScripCode } = require('./constants')
 
+require('dotenv').config()
 
+const admin = require('firebase-admin');
+
+
+const serviceAccount = {
+  "type": process.env.FB_ADM_type,
+  "project_id": process.env.FB_ADM_project_id,
+  "private_key_id": process.env.FB_ADM_private_key_id,
+  "private_key": process.env.FB_ADM_private_key,
+  "client_email": process.env.FB_ADM_client_email,
+  "client_id": process.env.FB_ADM_client_id,
+  "auth_uri": process.env.FB_ADM_auth_uri,
+  "token_uri": process.env.FB_ADM_token_uri,
+  "auth_provider_x509_cert_url": process.env.FB_ADM_auth_provider_x509_cert_url,
+  "client_x509_cert_url": process.env.FB_ADM_client_x509_cert_url,
+  "universe_domain": process.env.FB_ADM_universe_domain
+}
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.FB_DB_URL
+});
 
 var imagekit = new ImageKit({
   publicKey: "public_PEiC8Lzfg5wr78rbYp2ihH9u1Bk=",
@@ -13,28 +35,23 @@ var imagekit = new ImageKit({
   urlEndpoint: "https://ik.imagekit.io/c8myoin6h/"
 });
 
-const firebase = require("firebase/app");
-const { getDatabase, ref, set, get, child, update, once, onValue } = require('firebase/database');
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } = require("firebase/auth");
-
-const firebaseConfig = {
-  apiKey: 'AIzaSyAVVVvQPkU69o16cw5Wc_2l-k5xF9JnmBc',
-  databaseURL: 'https://investobaba-default-rtdb.asia-southeast1.firebasedatabase.app',
-};
-
-const fbApp = firebase.initializeApp(firebaseConfig);
-const database = getDatabase();
-const auth = getAuth();
-const dbRef = ref(getDatabase());
 
 
-// set(child(dbRef, 'devices'), "TEST")
+var db = admin.database();
+var deviceAddRef = db.ref("devices");
 
-// get(child(dbRef, `devices`)).then((snapshot) => {
-//   console.log(snapshot.val());
-// }).catch((error) => {
-//   console.error("===>", error);
-// });
+// admin.auth().getUserByEmail("prasanta.1987@hotmail.com")
+//   .then(data => {
+//     console.log(data.uid)
+//   })
+//   .catch(err => {
+//     console.log(err)
+//   })
+
+
+// admin.database().ref('/devices/123456').once('value', snapshot => {
+//   console.log(snapshot.val())
+// })
 
 exports.authArduino = async (req, res) => {
 
@@ -44,125 +61,19 @@ exports.authArduino = async (req, res) => {
 
   try {
 
-    await update(child(dbRef, 'devices'), {
+    await deviceAddRef.child(devOtp).update({
       email: email,
       uid: uid
-    })
+    });
 
     res.status(200).json({ "msg": "Success" })
   } catch (error) {
     res.status(500).json({ "msg": "Error" })
   }
 
+
+
 }
-
-exports.arduinoAskCred = async (req, res) => {
-
-  let devOtp = req.headers.__dev || false;
-
-
-  const dataSnapShot = await deviceAddRef.child(devOtp).once('value', snapShot => {
-    return snapShot
-  })
-
-  const dataSnap = await dataSnapShot.val()
-
-  console.log(dataSnap)
-
-  if (dataSnap == null) {
-
-    const usersRef = deviceAddRef.child(devOtp);
-
-    await usersRef.set({
-      email: false,
-      uid: false
-    });
-
-    res.status(200).json({ "msg": "Credential Requested" })
-
-  } else {
-
-    if (dataSnap.email == false && dataSnap.uid == false) {
-
-      res.status(200).json({ "msg": "Waiting for Credential" })
-
-    } else {
-
-      res.status(200).json(dataSnap)
-
-    }
-
-  }
-}
-
-// exports.FBsignIn = async (req, res) => {
-
-//   let userName = req.body.name || false
-//   let password = req.body.passwd || false
-
-//   try {
-//     const userCredential = await signInWithEmailAndPassword(auth, userName, password)
-//     res.status(200).json({ "msg": "success" })
-
-//   } catch (error) {
-
-//     res.status(200).json({ "msg": error })
-//   }
-
-// }
-
-
-// exports.FBsignInArduino = async (req, res) => {
-
-//   let userName = req.headers.uname || false;
-//   let password = req.headers.code || false;
-
-//   try {
-//     const userCredential = await signInWithEmailAndPassword(auth, userName, password)
-
-//     res.status(200).send("Login Successfull")
-
-//   } catch (error) {
-
-//     res.status(401).send("Login Failed")
-//   }
-
-// }
-
-// exports.authStateCheck = async (req, res) => {
-
-//   const user = await auth.currentUser;
-
-//   if (user) {
-//     res.status(200).json({ "msg": user })
-//   } else {
-//     res.status(200).json({ "error": "error" })
-//   }
-// }
-
-// exports.authApiCall = async (req, res, next) => {
-
-//   const user = await auth.currentUser;
-
-//   if (user) {
-//     return next()
-//   } else {
-//     res.status(401).send("Unautorized Access")
-//   }
-// }
-
-// exports.chckLogin = async (req, res, next) => {
-
-//   try {
-//     const user = await auth.currentUser.getIdToken();
-//     return next()
-//   } catch (error) {
-//     res.redirect('/')
-//   }
-// }
-
-
-
 
 exports.arduinoDelKeyValue = async (req, res) => {
 
@@ -408,7 +319,89 @@ exports.getTime = async (timeZone = "Asia/Kolkata") => {
 
 // Client Library Below
 
+// const firebase = require("firebase/app");
+// const { getDatabase, ref, set, get, child } = require('firebase/database');
+// const { getAuth,
+//   createUserWithEmailAndPassword,
+//   signInWithEmailAndPassword,
+//   onAuthStateChanged } = require("firebase/auth");
 
+// const firebaseConfig = {
+//   apiKey: process.env.FB_API_KEY,
+//   databaseURL: process.env.FB_DB_URL,
+// };
+
+// const fbApp = firebase.initializeApp(firebaseConfig);
+// const database = getDatabase();
+// const auth = getAuth();
+// const dbRef = ref(getDatabase());
+
+
+// exports.FBsignIn = async (req, res) => {
+
+//   let userName = req.body.name || false
+//   let password = req.body.passwd || false
+
+//   try {
+//     const userCredential = await signInWithEmailAndPassword(auth, userName, password)
+//     res.status(200).json({ "msg": "success" })
+
+//   } catch (error) {
+
+//     res.status(200).json({ "msg": error })
+//   }
+
+// }
+
+
+// exports.FBsignInArduino = async (req, res) => {
+
+//   let userName = req.headers.uname || false;
+//   let password = req.headers.code || false;
+
+//   try {
+//     const userCredential = await signInWithEmailAndPassword(auth, userName, password)
+
+//     res.status(200).send("Login Successfull")
+
+//   } catch (error) {
+
+//     res.status(401).send("Login Failed")
+//   }
+
+// }
+
+// exports.authStateCheck = async (req, res) => {
+
+//   const user = await auth.currentUser;
+
+//   if (user) {
+//     res.status(200).json({ "msg": user })
+//   } else {
+//     res.status(200).json({ "error": "error" })
+//   }
+// }
+
+// exports.authApiCall = async (req, res, next) => {
+
+//   const user = await auth.currentUser;
+
+//   if (user) {
+//     return next()
+//   } else {
+//     res.status(401).send("Unautorized Access")
+//   }
+// }
+
+// exports.chckLogin = async (req, res, next) => {
+
+//   try {
+//     const user = await auth.currentUser.getIdToken();
+//     return next()
+//   } catch (error) {
+//     res.redirect('/')
+//   }
+// }
 
 
 
