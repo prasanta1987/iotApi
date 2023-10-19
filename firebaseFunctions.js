@@ -1,20 +1,13 @@
 const jwt = require('jsonwebtoken');
 const axios = require('axios').default
-const ImageKit = require("imagekit");
 
 const { multipleApiCalls, filterSpotIds, getStratagryData } = require('./helperFunctions')
 const { monthsName, exceptionsScripCode } = require('./constants')
 
 
 
-var imagekit = new ImageKit({
-  publicKey: "public_PEiC8Lzfg5wr78rbYp2ihH9u1Bk=",
-  privateKey: "private_OGPzuz1sTQnQ70a7wBypYzteJVo=",
-  urlEndpoint: "https://ik.imagekit.io/c8myoin6h/"
-});
-
 const firebase = require("firebase/app");
-const { getDatabase, ref, set, get, child, update, once, onValue } = require('firebase/database');
+const { getDatabase, ref, set, get, child, update } = require('firebase/database');
 const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } = require("firebase/auth");
 
 const firebaseConfig = {
@@ -36,16 +29,54 @@ const dbRef = ref(getDatabase());
 //   console.error("===>", error);
 // });
 
+exports.arduinoAskCred = async (req, res) => {
+
+  let devOtp = req.body.deviceSlNo || false;
+
+  const dataSnapShot = await get(child(dbRef, `devices/${devOtp}`))
+  const dataSnap = await dataSnapShot.val()
+
+  console.log(dataSnap)
+
+  if (dataSnap == null) {
+
+    await update(child(dbRef, `devices/${devOtp}`), {
+      imageKitApi: false,
+      uid: false
+    })
+
+    res.status(200).json({ "msg": "Credential Requested" })
+
+  } else {
+
+    if (dataSnap.imageKitApi == false && dataSnap.uid == false) {
+
+      res.status(200).json({ "msg": "Waiting for Credential" })
+
+    } else {
+
+      res.status(200).json(dataSnap)
+
+      await update(child(dbRef, `devices/${devOtp}`), {
+        imageKitApi: null,
+        uid: null
+      })
+    }
+
+  }
+}
+
+
 exports.authArduino = async (req, res) => {
 
-  let devOtp = req.headers.__dev || false;
-  let email = req.headers.__email || false;
-  let uid = req.headers.__uid || false;
+  let imageKitApi = req.body.imageKitApi || false;
+  let uid = req.body.uid || false;
+
 
   try {
 
-    await update(child(dbRef, 'devices'), {
-      email: email,
+    await update(child(dbRef, `devices/${devOtp}`), {
+      imageKitApi: imageKitApi,
       uid: uid
     })
 
@@ -54,186 +85,6 @@ exports.authArduino = async (req, res) => {
     res.status(500).json({ "msg": "Error" })
   }
 
-}
-
-exports.arduinoAskCred = async (req, res) => {
-
-  let devOtp = req.headers.__dev || false;
-
-
-  const dataSnapShot = await deviceAddRef.child(devOtp).once('value', snapShot => {
-    return snapShot
-  })
-
-  const dataSnap = await dataSnapShot.val()
-
-  console.log(dataSnap)
-
-  if (dataSnap == null) {
-
-    const usersRef = deviceAddRef.child(devOtp);
-
-    await usersRef.set({
-      email: false,
-      uid: false
-    });
-
-    res.status(200).json({ "msg": "Credential Requested" })
-
-  } else {
-
-    if (dataSnap.email == false && dataSnap.uid == false) {
-
-      res.status(200).json({ "msg": "Waiting for Credential" })
-
-    } else {
-
-      res.status(200).json(dataSnap)
-
-    }
-
-  }
-}
-
-// exports.FBsignIn = async (req, res) => {
-
-//   let userName = req.body.name || false
-//   let password = req.body.passwd || false
-
-//   try {
-//     const userCredential = await signInWithEmailAndPassword(auth, userName, password)
-//     res.status(200).json({ "msg": "success" })
-
-//   } catch (error) {
-
-//     res.status(200).json({ "msg": error })
-//   }
-
-// }
-
-
-// exports.FBsignInArduino = async (req, res) => {
-
-//   let userName = req.headers.uname || false;
-//   let password = req.headers.code || false;
-
-//   try {
-//     const userCredential = await signInWithEmailAndPassword(auth, userName, password)
-
-//     res.status(200).send("Login Successfull")
-
-//   } catch (error) {
-
-//     res.status(401).send("Login Failed")
-//   }
-
-// }
-
-// exports.authStateCheck = async (req, res) => {
-
-//   const user = await auth.currentUser;
-
-//   if (user) {
-//     res.status(200).json({ "msg": user })
-//   } else {
-//     res.status(200).json({ "error": "error" })
-//   }
-// }
-
-// exports.authApiCall = async (req, res, next) => {
-
-//   const user = await auth.currentUser;
-
-//   if (user) {
-//     return next()
-//   } else {
-//     res.status(401).send("Unautorized Access")
-//   }
-// }
-
-// exports.chckLogin = async (req, res, next) => {
-
-//   try {
-//     const user = await auth.currentUser.getIdToken();
-//     return next()
-//   } catch (error) {
-//     res.redirect('/')
-//   }
-// }
-
-
-
-
-exports.arduinoDelKeyValue = async (req, res) => {
-
-  try {
-    let devOtp = req.headers.__dev || false;
-    await deviceAddRef.child(devOtp).set(null);
-
-    res.status(200).json({ "msg": "Success" })
-  } catch (error) {
-    res.status(500).json({ "msg": "Error" })
-  }
-
-
-}
-
-exports.arduinoAskCred = async (req, res) => {
-
-  let devOtp = req.headers.__dev || false;
-
-
-  const dataSnapShot = await deviceAddRef.child(devOtp).once('value', snapShot => {
-    return snapShot
-  })
-
-  const dataSnap = await dataSnapShot.val()
-
-  console.log(dataSnap)
-
-  if (dataSnap == null) {
-
-    const usersRef = deviceAddRef.child(devOtp);
-
-    await usersRef.set({
-      email: false,
-      uid: false
-    });
-
-    res.status(200).json({ "msg": "Credential Requested" })
-
-  } else {
-
-    if (dataSnap.email == false && dataSnap.uid == false) {
-
-      res.status(200).json({ "msg": "Waiting for Credential" })
-
-    } else {
-
-      res.status(200).json(dataSnap)
-
-    }
-
-  }
-}
-
-exports.arduinoSignInRout = async (req, res) => {
-
-  let userEmail = req.headers.__email || false;
-  let userUid = req.headers.__uid || false;
-
-  console.log(userEmail, userUid)
-
-  const userData = await admin.auth().getUserByEmail(userEmail);
-  const uid = userData.uid
-
-  if (userUid == uid) {
-    req.session.logedIn = true
-    res.status(200).json({ 'msg': 'Login Successful' });
-  } else {
-    req.session.logedIn = false
-    res.status(401).json({ 'msg': 'Login Failed' });
-  }
 }
 
 exports.arduinoDevData = async (req, res) => {

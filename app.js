@@ -13,10 +13,8 @@ const { fnoDataFetch, search, getSpotData,
     getWatchLists, getExpiryandStrikes, getSpotFut,
     getTechnicalData, batchSpotData, getOptionsChain } = require('./routes');
 
-const { FBsignIn, authStateCheck, chckLogin,
-    FBsignInArduino, authApiCall,
-    arduinoSignInRout, arduinoAskCred,
-    arduinoDelKeyValue, authArduino, arduinoDevData,
+const { arduinoAskCred,
+    authArduino, arduinoDevData,
     listPics, getPicUrl, updatePic } = require('./firebaseFunctions');
 
 
@@ -93,32 +91,13 @@ app.post('/authArduinoDevice', authArduino)
 // app.get('/getFutureData/:scripcode/:expiry', getFutureDataWithdate)
 
 // Arduino Specific Routes
-app.post('/signInArduino', arduinoSignInRout)
-app.post('/signOutArduino', (req, res) => {
-    req.session.logedIn = false
-    res.status(200).json({ "msg": "Signed Out" })
-})
 app.post('/addArduinoDevice', arduinoAskCred)
-app.post('/deleteDeviceKey', arduinoDelKeyValue)
 app.get('/getArduinoData/:userUID', arduinoDevData)
 app.get('/pic/:tags', getPicUrl)
 app.get('/pic', getPicUrl)
 app.get('/listPics/:tag', listPics)
 app.get('/listPics', listPics)
 app.get('/updatePics/:fileId/:tags', updatePic)
-// app.post('/getWatchList', getWatchLists);
-
-
-// Authenticated
-
-app.post('/pingTest', (req, res) => {
-    console.log(req.body)
-    res.status(200).json({ "msg": "PONG" })
-})
-
-
-
-// API Request Ends
 
 
 // Page Navigation
@@ -126,32 +105,9 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html
 app.get('/strategy', (req, res) => res.sendFile(path.join(__dirname, '/public/strategy.html')));
 
 
-// Sign-In Sign-Up Handler
-
-// app.post('/signIn', FBsignIn)
-// app.post('/signIn', signIn)
-// app.post('/signOut', signOut)
-// app.post('/signUp', checkUserData, signup)
-
-// app.get('/pic', (req, res) => {
-//     res.sendFile(path.join(__dirname, '/public/pics/22.jpg'))
-// })
 
 
-// Arduino Specific Routes
-// app.post('/signInArduino', FBsignInArduino) //Arduino Specific
-
-// Arduino Specific Routes
-
-// app.post('/loginStatus', (req, res) => {
-
-//     // if (!req.session.logedIn) req.session.logedIn = false
-//     // if (!req.session.userName) req.session.userName = null
-
-//     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
-// })
-// app.post('/loginStatus', chckLogin)
-// app.post('/loginStatus', authStateCheck)
+// MQTT
 
 
 const mqtt = require("mqtt");
