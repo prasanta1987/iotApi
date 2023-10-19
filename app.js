@@ -68,11 +68,14 @@ const verifyIdToken = (req, res, next) => {
 
 // API Request Starts
 
-// Un-Authenticated
+app.get('/spots/:scripts', batchSpotData)
+
+
+
+// OLD
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
 app.get('/technicals/:scripCode/', getTechnicalData)
-app.get('/spots/:scripts', batchSpotData)
 
 
 app.get('/search/:script', search) //Will be Depricated
@@ -85,12 +88,13 @@ app.get('/optionChain/:scriptCode/:expDate', getOptionsChain)
 
 
 // Authenticated
-app.get('/expStrike/:scripCode/:opType', verifyIdToken, getExpiryandStrikes)
+app.get('/expStrike/:scripCode/:opType', getExpiryandStrikes)
 app.get('/spotFut/:script', getSpotFut)
 app.post('/authArduinoDevice', authArduino)
 // app.get('/getFutureData/:scripcode/:expiry', getFutureDataWithdate)
 
-// Arduino Specific Routes
+
+// Arduino Specific Routes Starts
 app.post('/addArduinoDevice', arduinoAskCred)
 app.get('/getArduinoData/:userUID', arduinoDevData)
 app.get('/pic/:tags', getPicUrl)
@@ -98,6 +102,7 @@ app.get('/pic', getPicUrl)
 app.get('/listPics/:tag', listPics)
 app.get('/listPics', listPics)
 app.get('/updatePics/:fileId/:tags', updatePic)
+// Arduino Specific Routes Ends
 
 
 // Page Navigation

@@ -1,7 +1,7 @@
 const axios = require("axios").default;
 const { generateUrlList, batchHttpRequest, sendHttpRequest,
     searchSpot, fetchSpotData, fetchFutData, getMarketLot,
-    genUrlList, getMcIds, genSpotDatas, filterSpotIds } = require('./helperFunctions');
+    genUrlList, getMcIds, genSpotDatas, batchStockData } = require('./helperFunctions');
 
 
 const auth = require('./firebaseFunctions')
@@ -10,7 +10,7 @@ exports.batchSpotData = async (req, res) => {
 
     const spotList = req.params.scripts.toUpperCase().split(",")
 
-    let allData = await filterSpotIds(spotList)
+    let allData = await batchStockData(spotList)
 
     res.send(allData)
 

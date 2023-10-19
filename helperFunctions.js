@@ -5,6 +5,140 @@ const { exceptionsScripCode, monthsName } = require('./constants');
 let finalDataObj = {}
 
 
+// for Batch SPOT Data cum Search 
+exports.batchStockData = async (spotList) => {
+
+    spotMcIdsUrls = []
+    spotList.forEach(spotName => {
+
+        if (exceptionsScripCode.includes(spotName)) {
+            spotMcIdsUrls.push(spotName)
+        } else {
+            let data = this.genUrlList(spotName)
+            spotMcIdsUrls.push(data)
+        }
+    })
+
+
+    let spotMcIds = []
+    let filteredUrls = []
+
+    spotMcIdsUrls.forEach(url => {
+        if (!exceptionsScripCode.includes(url)) {
+            filteredUrls.push(url)
+        } else {
+            spotMcIds.push(url)
+        }
+    })
+
+    let allMcIdsResponse = await this.multipleApiCalls(filteredUrls)
+    allMcIdsResponse.map(response => spotMcIds.push(response[0].sc_id))
+
+
+    let spotUrls = []
+    let datas = []
+
+    spotMcIds.forEach(scripCode => {
+        if (scripCode == "NIFTY" || scripCode == "NIFTY 50") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX");
+        } else if (scripCode == "BANKNIFTY" || scripCode == "BANK NIFTY") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx");
+        } else if (scripCode == "INDVIX") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN");
+        } else if (scripCode == "NASDAQ") {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/usMarket/index/CCMP:IND");
+        } else if (scripCode == "USDINR") {
+            spotUrls.push("https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies?source=webCurrency&currency=USDINR");
+        } else {
+            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode);
+        }
+    })
+
+
+    let allOptSpotResponses = await this.multipleApiCalls(spotUrls)
+
+
+
+    allOptSpotResponses.map(response => {
+
+        if (!Array.isArray(response.data)) {
+
+            const data = response.data
+            if (data != null) {
+                let dataObj = {
+                    spotName: data.company || data.name,
+                    nseId: data.NSEID || data.company,
+                    open: data.OPN || data.OPEN || data.open.replace(",", ""),
+                    cmp: data.pricecurrent || data.current_price.replace(",", ""),
+                    dayHigh: data.HIGH || data.HP || data.high.replace(",", ""),
+                    dayLow: data.LOW || data.LP || data.low.replace(",", ""),
+                    prevClose: data.priceprevclose || data.prev_close.replace(",", ""),
+                    spotChng: data.net_change || (parseFloat(data.pricechange).toFixed(2)),
+                    spotChngPct: (data.percent_change || parseFloat(data.pricepercentchange).toFixed(2)),
+                    // adv: (data.adv) ? data.adv.toString() : "0",
+                    // decl: (data.decl) ? data.decl.toString() : "0"
+                };
+
+                switch (data.company) {
+                    case "NIFTY 50":
+                        dataObj.lotSize = "50"
+                        break;
+
+                    case "NIFTY BANK":
+                        dataObj.lotSize = "15"
+                        break;
+
+                    default:
+                        dataObj.lotSize = data.MKT_LOT.toString()
+                        break;
+                }
+
+                (data.adv) ? dataObj.adv = data.adv.toString() : "0";
+                (data.decl) ? dataObj.decl = data.decl.toString() : "0";
+
+                datas.push(dataObj)
+            }
+
+        } else {
+            const data = response.data[0]
+            let dataObj = {
+                spotName: data.name,
+                open: parseFloat(data.open).toFixed(2),
+                dayHigh: parseFloat(data.high).toFixed(2),
+                dayLow: parseFloat(data.low).toFixed(2),
+                cmp: parseFloat(data.ltp).toFixed(3),
+                prevClose: parseFloat(data.prevclose).toFixed(2),
+                spotChng: parseFloat(data.chg).toFixed(2),
+                spotChngPct: parseFloat(data.chgper).toFixed(2)
+            };
+
+            datas.push(dataObj)
+        }
+
+
+
+    })
+
+    return datas
+
+}
+
+exports.genUrlList = (param) => {
+
+    param = param.toUpperCase()
+
+    if (param == "NIFTY") {
+        return "NIFTY"
+    } else if (param == "BANKNIFTY") {
+        return "BANKNIFTY"
+    } else if (param == "INDVIX") {
+        return "INDVIX"
+    } else {
+        return `https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`
+    }
+}
+
+
 // APPFEEDS
 // exports.generateUrlList = (lists, scripCode) => {
 
@@ -320,126 +454,7 @@ exports.searchSpot = async (param) => {
 
 
 
-// for Batch SPOT Data cum Search 
-exports.filterSpotIds = async (spotList) => {
 
-    spotMcIdsUrls = []
-    spotList.forEach(spotName => {
-
-        if (exceptionsScripCode.includes(spotName)) {
-            spotMcIdsUrls.push(spotName)
-        } else {
-            let data = this.genUrlList(spotName)
-            spotMcIdsUrls.push(data)
-        }
-    })
-
-
-    let spotMcIds = []
-    let filteredUrls = []
-
-    spotMcIdsUrls.forEach(url => {
-        if (!exceptionsScripCode.includes(url)) {
-            filteredUrls.push(url)
-        } else {
-            spotMcIds.push(url)
-        }
-    })
-
-    let allMcIdsResponse = await this.multipleApiCalls(filteredUrls)
-    allMcIdsResponse.map(response => spotMcIds.push(response[0].sc_id))
-
-
-    let spotUrls = []
-    let datas = []
-
-    spotMcIds.forEach(scripCode => {
-        if (scripCode == "NIFTY" || scripCode == "NIFTY 50") {
-            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX");
-        } else if (scripCode == "BANKNIFTY" || scripCode == "BANK NIFTY") {
-            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3Bnbx");
-        } else if (scripCode == "INDVIX") {
-            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BIDXN");
-        } else if (scripCode == "NASDAQ") {
-            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/usMarket/index/CCMP:IND");
-        }
-        else if (scripCode == "USDINR") {
-            spotUrls.push("https://api.moneycontrol.com/mcapi/v1/us-markets/getCurrencies?source=webCurrency&currency=USDINR");
-        } else {
-            spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode);
-        }
-    })
-
-
-    let allOptSpotResponses = await this.multipleApiCalls(spotUrls)
-
-
-    allOptSpotResponses.map(response => {
-
-        if (!Array.isArray(response.data)) {
-
-            const data = response.data
-            if (data != null) {
-                let dataObj = {
-                    spotName: data.company || data.name,
-                    nseId: data.NSEID || data.company,
-                    open: data.OPN || data.OPEN || data.open.replace(",", ""),
-                    cmp: data.pricecurrent || data.current_price.replace(",", ""),
-                    dayHigh: data.HIGH || data.HP || data.high.replace(",", ""),
-                    dayLow: data.LOW || data.LP || data.low.replace(",", ""),
-                    prevClose: data.priceprevclose || data.prev_close.replace(",", ""),
-                    spotChng: data.net_change || (parseFloat(data.pricechange).toFixed(2)),
-                    spotChngPct: (data.percent_change || parseFloat(data.pricepercentchange).toFixed(2)),
-                    adv: (data.adv) ? data.adv.toString() : "0",
-                    decl: (data.decl) ? data.decl.toString() : "0"
-                };
-
-                // (data.adv) ? dataObj.adv = data.adv.toString() : "0";
-                // (data.decl) ? dataObj.decl = data.decl.toString() : "0";
-
-                datas.push(dataObj)
-            }
-
-        } else {
-            // console.log(response)
-            const data = response.data[0]
-            let dataObj = {
-                spotName: data.name,
-                open: parseFloat(data.open).toFixed(2),
-                dayHigh: parseFloat(data.high).toFixed(2),
-                dayLow: parseFloat(data.low).toFixed(2),
-                cmp: parseFloat(data.ltp).toFixed(3),
-                prevClose: parseFloat(data.prevclose).toFixed(2),
-                spotChng: parseFloat(data.chg).toFixed(2),
-                spotChngPct: parseFloat(data.chgper).toFixed(2)
-            };
-
-            datas.push(dataObj)
-        }
-
-
-
-    })
-
-    return datas
-
-}
-
-
-exports.genUrlList = (param) => {
-
-    param = param.toUpperCase()
-
-    if (param == "NIFTY") {
-        return "NIFTY"
-    } else if (param == "BANKNIFTY") {
-        return "BANKNIFTY"
-    } else if (param == "INDVIX") {
-        return "INDVIX"
-    } else {
-        return `https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`
-    }
-}
 
 
 exports.multipleApiCalls = async (allUrls) => {
