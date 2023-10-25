@@ -54,13 +54,13 @@ exports.batchStockData = async (spotList) => {
         }
     })
 
-
+console.log(spotUrls)
     let allOptSpotResponses = await this.multipleApiCalls(spotUrls)
 
 
 
     allOptSpotResponses.map(response => {
-
+console.log(response.data);
         if (!Array.isArray(response.data)) {
 
             const data = response.data
