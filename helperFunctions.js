@@ -15,11 +15,12 @@ exports.batchStockData = async (spotList) => {
             spotMcIdsUrls.push(spotName)
         } else {
             let data = this.genUrlList(spotName)
+            console.log("-->",data)
             spotMcIdsUrls.push(data)
         }
     })
 
-
+console.log(spotMcIdsUrls)
     let spotMcIds = []
     let filteredUrls = []
 
