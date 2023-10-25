@@ -15,12 +15,10 @@ exports.batchStockData = async (spotList) => {
             spotMcIdsUrls.push(spotName)
         } else {
             let data = this.genUrlList(spotName)
-            console.log("-->",data)
             spotMcIdsUrls.push(data)
         }
     })
 
-console.log(spotMcIdsUrls)
     let spotMcIds = []
     let filteredUrls = []
 
@@ -35,7 +33,7 @@ console.log(spotMcIdsUrls)
     let allMcIdsResponse = await this.multipleApiCalls(filteredUrls)
     allMcIdsResponse.map(response => spotMcIds.push(response[0].sc_id))
 
-
+console.log(spotMcIds)
     let spotUrls = []
     let datas = []
 
