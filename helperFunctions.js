@@ -8,6 +8,8 @@ let finalDataObj = {}
 // for Batch SPOT Data cum Search 
 exports.batchStockData = async (spotList) => {
 
+
+    console.log(spotList)
     spotMcIdsUrls = []
     spotList.forEach(spotName => {
 
@@ -21,6 +23,9 @@ exports.batchStockData = async (spotList) => {
 
     let spotMcIds = []
     let filteredUrls = []
+
+    console.log(spotMcIdsUrls)
+
 
     spotMcIdsUrls.forEach(url => {
         if (!exceptionsScripCode.includes(url)) {
