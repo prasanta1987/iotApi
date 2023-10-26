@@ -32,6 +32,7 @@ exports.batchStockData = async (spotList) => {
 
     let allMcIdsResponse = await this.multipleApiCalls(filteredUrls)
     allMcIdsResponse.map(response => {
+        console.log(response)
         spotMcIds.push(response[0].sc_id)
     })
 
