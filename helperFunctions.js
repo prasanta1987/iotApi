@@ -38,6 +38,8 @@ exports.batchStockData = async (spotList) => {
     let spotUrls = []
     let datas = []
 
+    console.log(spotMcIds)
+
     spotMcIds.forEach(scripCode => {
         if (scripCode == "NIFTY" || scripCode == "NIFTY 50") {
             spotUrls.push("https://priceapi.moneycontrol.com/pricefeed/notapplicable/inidicesindia/in%3BNSX");
