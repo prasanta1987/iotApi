@@ -104,6 +104,14 @@ app.get('/listPics', listPics)
 app.get('/updatePics/:fileId/:tags', updatePic)
 // Arduino Specific Routes Ends
 
+app.post('/pingTest', (req, res) => {
+
+    console.log(req.body)
+    res.status(200).json({
+        "msg": "Success"
+    })
+})
+
 
 // Page Navigation
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
