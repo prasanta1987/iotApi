@@ -8,8 +8,6 @@ let finalDataObj = {}
 // for Batch SPOT Data cum Search 
 exports.batchStockData = async (spotList) => {
 
-
-    console.log(spotList)
     spotMcIdsUrls = []
     spotList.forEach(spotName => {
 
@@ -24,8 +22,6 @@ exports.batchStockData = async (spotList) => {
     let spotMcIds = []
     let filteredUrls = []
 
-    console.log(spotMcIdsUrls)
-
 
     spotMcIdsUrls.forEach(url => {
         if (!exceptionsScripCode.includes(url)) {
@@ -37,14 +33,11 @@ exports.batchStockData = async (spotList) => {
 
     let allMcIdsResponse = await this.multipleApiCalls(filteredUrls)
     allMcIdsResponse.map(response => {
-        console.log(response)
         spotMcIds.push(response[0].sc_id)
     })
 
     let spotUrls = []
     let datas = []
-
-    console.log(spotMcIds)
 
     spotMcIds.forEach(scripCode => {
         if (scripCode == "NIFTY" || scripCode == "NIFTY 50") {
@@ -62,10 +55,7 @@ exports.batchStockData = async (spotList) => {
         }
     })
 
-    console.log(spotUrls)
     let allOptSpotResponses = await this.multipleApiCalls(spotUrls)
-
-
 
     allOptSpotResponses.map(response => {
         if (!Array.isArray(response.data)) {
@@ -96,7 +86,7 @@ exports.batchStockData = async (spotList) => {
                         break;
 
                     default:
-                        dataObj.lotSize = data.MKT_LOT.toString()
+                        dataObj.lotSize = (data.MKT_LOT) ? data.MKT_LOT.toString() : "0";
                         break;
                 }
 
