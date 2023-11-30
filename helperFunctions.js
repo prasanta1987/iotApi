@@ -447,11 +447,6 @@ exports.searchSpot = async (param) => {
 }
 
 
-
-
-
-
-
 exports.multipleApiCalls = async (allUrls) => {
 
     let allData = []
@@ -597,6 +592,30 @@ exports.calcPnL = (insType, __ltp, __cmp, __direction, __lotQty, __lotSize) => {
 
     return pnl
 }
+
+// ImageKit
+exports.getAllPic = async (tags = "") => {
+
+    const response = await axios.get(`https://api.imagekit.io/v1/files?tags=${tags}`, {
+        auth: {
+            username: 'private_OGPzuz1sTQnQ70a7wBypYzteJVo='
+        }
+    });
+
+    let allUrls = []
+    response.data.forEach(data => {
+        let dataObj = {
+            url: data.url,
+            tags: data.tags,
+            fileId: data.fileId
+        }
+
+        allUrls.push(dataObj)
+    })
+
+    return allUrls
+}
+
 // exports.searchSpot = async (param) => {
 
 //     param = param.toUpperCase()

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const axios = require('axios').default
 
-const { multipleApiCalls, batchStockData, getStratagryData } = require('./helperFunctions')
+const { multipleApiCalls, getAllPic, batchStockData, getStratagryData } = require('./helperFunctions')
 const { monthsName, exceptionsScripCode } = require('./constants')
 
 
@@ -135,36 +135,12 @@ exports.arduinoDevData = async (req, res) => {
 }
 
 
-exports.getAllPic = async (tags = "") => {
 
-  const response = await axios.get(`https://api.imagekit.io/v1/files?tags=${tags}`, {
-    auth: {
-      username: 'private_OGPzuz1sTQnQ70a7wBypYzteJVo='
-    }
-  });
-
-  let allUrls = []
-  response.data.forEach(data => {
-    let dataObj = {
-      url: data.url,
-      tags: data.tags,
-      fileId: data.fileId
-    }
-
-    allUrls.push(dataObj)
-  })
-
-  return allUrls
-}
 
 exports.listPics = async (req, res) => {
 
   const tag = (req.params.tag || "").toUpperCase()
-
-  const photoUrls = await this.getAllPic(tag);
-
-  // console.log(photoUrls)
-
+  const photoUrls = await getAllPic(tag);
 
   res.status(200).json(photoUrls)
 
@@ -173,7 +149,7 @@ exports.listPics = async (req, res) => {
 exports.getPicUrl = async (req, res) => {
 
   const tags = (req.params.tags || "").toUpperCase()
-  const photoUrls = await this.getAllPic(tags);
+  const photoUrls = await getAllPic(tags);
   console.log(photoUrls)
 
   const randomNumber = this.randomIntFromInterval(0, photoUrls.length - 1)
