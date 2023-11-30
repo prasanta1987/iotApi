@@ -72,8 +72,6 @@ exports.batchStockData = async (spotList) => {
                     prevClose: data.priceprevclose || data.prev_close.replace(",", ""),
                     spotChng: data.net_change || (parseFloat(data.pricechange).toFixed(2)),
                     spotChngPct: (data.percent_change || parseFloat(data.pricepercentchange).toFixed(2)),
-                    // adv: (data.adv) ? data.adv.toString() : "0",
-                    // decl: (data.decl) ? data.decl.toString() : "0"
                 };
 
                 switch (data.company) {

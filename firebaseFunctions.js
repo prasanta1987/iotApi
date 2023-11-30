@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const axios = require('axios').default
 
-const { multipleApiCalls, filterSpotIds, getStratagryData } = require('./helperFunctions')
+const { multipleApiCalls, batchStockData, getStratagryData } = require('./helperFunctions')
 const { monthsName, exceptionsScripCode } = require('./constants')
 
 
@@ -93,12 +93,12 @@ exports.arduinoDevData = async (req, res) => {
 
   const userUID = req.params.userUID || null;
 
-  const dataSnapShot = await db.ref(userUID).once('value', snapShot => {
-    return snapShot
-  })
+  console.log(userUID)
 
+  const dataSnapShot = await get(child(dbRef, `/${userUID}`))
+  const dataSnap = await dataSnapShot.val();
 
-  const dataSnap = await dataSnapShot.val()
+  console.log(dataSnap)
 
   const dispMode = dataSnap.dispMode
   const photoTags = dataSnap.photoTags
@@ -119,7 +119,7 @@ exports.arduinoDevData = async (req, res) => {
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await filterSpotIds(mktSnapShotList),
+      data: await batchStockData(mktSnapShotList),
       time: timeSlug
     })
   } else if (dispMode == "WATCHLIST") {
@@ -128,7 +128,7 @@ exports.arduinoDevData = async (req, res) => {
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await filterSpotIds(watchList),
+      data: await batchStockData(watchList),
       time: timeSlug
     })
 
