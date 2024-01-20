@@ -49,9 +49,11 @@ exports.getTechnicalData = async (req, res) => {
     objData.min60data = arrayData[2]
     objData.dailydata = arrayData[3]
 
-    let allData = await filterSpotIds([scripCode]);
 
-    objData.spotdata = allData[0]
+
+    // let allData = await filterSpotIds([scripCode]);
+
+    // objData.spotdata = allData[0]
 
     res.status(200).json(objData)
 }

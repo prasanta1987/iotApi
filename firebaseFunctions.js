@@ -5,7 +5,6 @@ const { multipleApiCalls, getAllPic, batchStockData, getStratagryData } = requir
 const { monthsName, exceptionsScripCode } = require('./constants')
 
 
-
 const firebase = require("firebase/app");
 const { getDatabase, ref, set, get, child, update } = require('firebase/database');
 const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } = require("firebase/auth");

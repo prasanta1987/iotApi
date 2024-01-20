@@ -63,8 +63,6 @@ const verifyIdToken = (req, res, next) => {
 }
 
 
-
-
 // Middlewares Ends Here
 
 // API Request Starts
