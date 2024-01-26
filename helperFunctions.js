@@ -6,6 +6,29 @@ const { exceptionsScripCode,
 
 let finalDataObj = {}
 
+exports.getSpotDatas = async (spotList, functions = "ALL") => {
+
+    let datas = []
+    let parm = functions.toUpperCase()
+
+    let spotMcIds = await this.getMCIds(spotList)
+    let spotUrls = this.dataUrl(spotMcIds)
+
+    let allOptSpotResponses = await this.multipleApiCalls(spotUrls)
+
+    allOptSpotResponses.map(response => {
+
+        if (!Array.isArray(response.data)) {
+            if (response.data != null) datas.push(structuredSpotData(response.data, parm))
+        } else {
+            datas.push(structuredCurrencyData(response.data[0]))
+        }
+
+    })
+
+    return datas
+
+}
 
 exports.searchMCIds = (param) => {
 

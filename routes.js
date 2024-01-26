@@ -3,7 +3,7 @@ const axios = require("axios").default;
 const { generateUrlList, batchHttpRequest,
     searchSpot, fetchSpotData, fetchFutData,
     getMarketLot, batchStockData, dataUrl, getMCIds,
-    multipleApiCalls, searchMCIds } = require('./helperFunctions');
+    multipleApiCalls, searchMCIds, getSpotDatas } = require('./helperFunctions');
 
 const { structuredSpotData,
     structuredCurrencyData } = require('./constants');
@@ -14,51 +14,15 @@ exports.singleSpotData = async (req, res) => {
     const spotList = req.params.scripts.toUpperCase().split(",")[0]
     const functions = req.query.data
 
-    let datas = []
 
-    let spotMcIds = await getMCIds(spotList)
-    let spotUrls = dataUrl(spotMcIds)
-
-    let allOptSpotResponses = await multipleApiCalls(spotUrls)
-
-    allOptSpotResponses.map(response => {
-
-        if (!Array.isArray(response.data)) {
-            if (response.data != null) datas.push(structuredSpotData(response.data, functions))
-        } else {
-            datas.push(structuredCurrencyData(response.data[0]))
-        }
-
-    })
-
-
-    res.send(datas.pop())
+    res.send((await getSpotDatas(spotList, functions)).pop())
 
 }
 
 exports.batchSpotData = async (req, res) => {
 
     const spotList = req.params.scripts
-
-    let datas = []
-
-    let spotMcIds = await getMCIds(spotList)
-    let spotUrls = dataUrl(spotMcIds)
-
-    let allOptSpotResponses = await multipleApiCalls(spotUrls)
-
-    allOptSpotResponses.map(response => {
-
-        if (!Array.isArray(response.data)) {
-            if (response.data != null) datas.push(structuredSpotData(response.data))
-        } else {
-            datas.push(structuredCurrencyData(response.data[0]))
-        }
-
-    })
-
-
-    res.send(datas)
+    res.send(await getSpotDatas(spotList))
 
 }
 
@@ -97,22 +61,7 @@ exports.getTechnicalData = async (req, res) => {
 
 
 
-    let allData = []
-
-    let spotMcIds = await getMCIds(scripCode)
-    let spotUrls = dataUrl(spotMcIds)
-
-    let allOptSpotResponses = await multipleApiCalls(spotUrls)
-
-    allOptSpotResponses.map(response => {
-
-        if (!Array.isArray(response.data)) {
-            if (response.data != null) allData.push(structuredSpotData(response.data))
-        } else {
-            allData.push(structuredCurrencyData(response.data[0]))
-        }
-
-    })
+    let allData = await getSpotDatas(scripCode)
 
     objData.spotdata = allData[0]
 
