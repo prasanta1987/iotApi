@@ -124,24 +124,25 @@ app.get('/strategy', (req, res) => res.sendFile(path.join(__dirname, '/public/st
 // MQTT
 
 
-const mqtt = require("mqtt");
-const client = mqtt.connect("mqtt://broker.hivemq.com");
+// const mqtt = require("mqtt");
+// const client = mqtt.connect("mqtt://broker.hivemq.com");
 
-client.on("connect", () => {
-    client.subscribe("pk_text", (err) => {
-        if (!err) {
-            client.publish("pk_text", (new Date().getTime()).toString());
-        }
-    });
+// client.on("connect", () => {
+//     client.subscribe("pk_text", (err) => {
+//         if (!err) {
+//             client.publish("pk_text", (new Date().getTime()).toString());
+//         }
+//     });
 
-});
+// });
 
-client.on("message", (topic, message) => {
-    // message is Buffer
-    // console.log(topic)
-    console.log(message.toString());
-    // client.end();
-});
+// client.on("message", (topic, message) => {
+//     // message is Buffer
+//     console.log(topic)
+//     console.log(message.toString());
+//     // client.end();
+// });
+
 
 
 app.use(express.static(path.join(__dirname, 'public')));
