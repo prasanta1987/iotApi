@@ -1,18 +1,64 @@
 const axios = require("axios").default;
-const { generateUrlList, batchHttpRequest, sendHttpRequest,
-    searchSpot, fetchSpotData, fetchFutData, getMarketLot,
-    genUrlList, getMcIds, genSpotDatas, batchStockData } = require('./helperFunctions');
 
+const { generateUrlList, batchHttpRequest,
+    searchSpot, fetchSpotData, fetchFutData,
+    getMarketLot, batchStockData, dataUrl, getMCIds,
+    multipleApiCalls, searchMCIds } = require('./helperFunctions');
+
+const { structuredSpotData,
+    structuredCurrencyData } = require('./constants');
 
 const auth = require('./firebaseFunctions')
 
+exports.singleSpotData = async (req, res) => {
+    const spotList = req.params.scripts.toUpperCase().split(",")[0]
+    const functions = req.query.data
+
+    let datas = []
+
+    let spotMcIds = await getMCIds(spotList)
+    let spotUrls = dataUrl(spotMcIds)
+
+    let allOptSpotResponses = await multipleApiCalls(spotUrls)
+
+    allOptSpotResponses.map(response => {
+
+        if (!Array.isArray(response.data)) {
+            if (response.data != null) datas.push(structuredSpotData(response.data, functions))
+        } else {
+            datas.push(structuredCurrencyData(response.data[0]))
+        }
+
+    })
+
+
+    res.send(datas.pop())
+
+}
+
 exports.batchSpotData = async (req, res) => {
 
-    const spotList = req.params.scripts.toUpperCase().split(",")
+    const spotList = req.params.scripts
 
-    let allData = await batchStockData(spotList)
+    let datas = []
 
-    res.send(allData)
+    let spotMcIds = await getMCIds(spotList)
+    let spotUrls = dataUrl(spotMcIds)
+
+    let allOptSpotResponses = await multipleApiCalls(spotUrls)
+
+    allOptSpotResponses.map(response => {
+
+        if (!Array.isArray(response.data)) {
+            if (response.data != null) datas.push(structuredSpotData(response.data))
+        } else {
+            datas.push(structuredCurrencyData(response.data[0]))
+        }
+
+    })
+
+
+    res.send(datas)
 
 }
 

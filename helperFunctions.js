@@ -7,30 +7,6 @@ const { exceptionsScripCode,
 let finalDataObj = {}
 
 
-// for Batch SPOT Data cum Search 
-exports.batchStockData = async (spotList) => {
-
-    let datas = []
-
-    let spotMcIds = await this.getMCIds(spotList)
-    let spotUrls = this.dataUrl(spotMcIds)
-
-    let allOptSpotResponses = await this.multipleApiCalls(spotUrls)
-
-    allOptSpotResponses.map(response => {
-
-        if (!Array.isArray(response.data)) {
-            if (response.data != null) datas.push(structuredSpotData(response.data))
-        } else {
-            datas.push(structuredCurrencyData(response.data[0]))
-        }
-
-    })
-
-    return datas
-
-}
-
 exports.searchMCIds = (param) => {
 
     param = param.toUpperCase()
@@ -69,10 +45,12 @@ exports.dataUrl = (spotIds) => {
     return spotUrls
 }
 
-exports.getMCIds = async (spotList) => {
+exports.getMCIds = async (spotNames) => {
 
     spotMcIdsUrls = []
-    spotList.forEach(spotName => {
+
+    let spotLists = spotNames.toUpperCase().split(",")
+    spotLists.forEach(spotName => {
 
         if (exceptionsScripCode.includes(spotName)) {
             spotMcIdsUrls.push(spotName)
@@ -304,6 +282,7 @@ exports.getMarketLot = async (scripCode, exp) => {
 
 exports.fetchSpotData = async (param) => {
 
+    console.log("==>", param)
     let baseUrl
     let objData = {}
     let scripCode = param.toUpperCase()

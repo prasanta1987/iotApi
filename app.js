@@ -11,7 +11,8 @@ const { fnoDataFetch, search, getSpotData,
     signInArduino,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes, getSpotFut,
-    getTechnicalData, batchSpotData, getOptionsChain } = require('./routes');
+    getTechnicalData, batchSpotData, getOptionsChain,
+    singleSpotData } = require('./routes');
 
 const { arduinoAskCred,
     authArduino, arduinoDevData,
@@ -68,6 +69,7 @@ const verifyIdToken = (req, res, next) => {
 // API Request Starts
 
 app.get('/spots/:scripts', batchSpotData)
+app.get('/spot/:scripts', singleSpotData)
 
 
 
