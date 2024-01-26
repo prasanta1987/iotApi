@@ -47,18 +47,31 @@ exports.structuredSpotData = (data, functions = "all") => {
 
 }
 
-exports.structuredCurrencyData = (data) => {
+exports.structuredCurrencyData = (data, functions = "all") => {
 
-    let dataObj = {
-        spotName: data.name,
-        open: parseFloat(data.open).toFixed(2),
-        dayHigh: parseFloat(data.high).toFixed(2),
-        dayLow: parseFloat(data.low).toFixed(2),
-        cmp: parseFloat(data.ltp).toFixed(3),
-        prevClose: parseFloat(data.prevclose).toFixed(2),
-        spotChng: parseFloat(data.chg).toFixed(2),
-        spotChngPct: parseFloat(data.chgper).toFixed(2)
-    };
+    let parm = functions.toUpperCase();
 
-    return dataObj
+
+    switch (parm) {
+        case "LTP":
+            return parseFloat(data.ltp).toFixed(3)
+
+        case "PRECLOSE":
+            return parseFloat(data.prevclose).toFixed(2)
+
+        default:
+            let dataObj = {
+                spotName: data.name,
+                open: parseFloat(data.open).toFixed(2),
+                dayHigh: parseFloat(data.high).toFixed(2),
+                dayLow: parseFloat(data.low).toFixed(2),
+                cmp: parseFloat(data.ltp).toFixed(3),
+                prevClose: parseFloat(data.prevclose).toFixed(2),
+                spotChng: parseFloat(data.chg).toFixed(2),
+                spotChngPct: parseFloat(data.chgper).toFixed(2)
+            };
+
+            return dataObj
+    }
+
 }

@@ -21,7 +21,7 @@ exports.getSpotDatas = async (spotList, functions = "ALL") => {
         if (!Array.isArray(response.data)) {
             if (response.data != null) datas.push(structuredSpotData(response.data, parm))
         } else {
-            datas.push(structuredCurrencyData(response.data[0]))
+            datas.push(structuredCurrencyData(response.data[0], parm))
         }
 
     })
