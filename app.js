@@ -76,7 +76,7 @@ app.get('/spot/:scripts', singleSpotData)
 // OLD
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
-app.get('/technicals/:scripCode/', getTechnicalData)
+app.get('/technicals/:scripts/', getTechnicalData)
 
 
 app.get('/search/:script', search) //Will be Depricated

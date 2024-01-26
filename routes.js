@@ -64,7 +64,7 @@ exports.batchSpotData = async (req, res) => {
 
 exports.getTechnicalData = async (req, res) => {
 
-    let scripCode = req.params.scripCode.toUpperCase()
+    let scripCode = req.params.scripts.toUpperCase()
 
     if (scripCode == "NIFTY") {
         scripCode = "NIFTY 50"
@@ -97,7 +97,23 @@ exports.getTechnicalData = async (req, res) => {
 
 
 
-    let allData = await batchStockData([scripCode]);
+    let allData = []
+
+    let spotMcIds = await getMCIds(scripCode)
+    let spotUrls = dataUrl(spotMcIds)
+
+    let allOptSpotResponses = await multipleApiCalls(spotUrls)
+
+    allOptSpotResponses.map(response => {
+
+        if (!Array.isArray(response.data)) {
+            if (response.data != null) allData.push(structuredSpotData(response.data))
+        } else {
+            allData.push(structuredCurrencyData(response.data[0]))
+        }
+
+    })
+
     objData.spotdata = allData[0]
 
     res.status(200).json(objData)
