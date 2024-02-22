@@ -21,8 +21,16 @@ exports.structuredSpotData = (data, functions = "all") => {
             return data['52L']
         case "SECTOR":
             return data.main_sector || "INDEX"
+        case "LTH":
+            return data.LTH || "INDEX"
+        case "LTL":
+            return data.LTL || "INDEX"
+        case "MKTCAP":
+            return data['MKTCAP'].toFixed(2) || "INDEX"
+        case "INDPE":
+            return data.IND_PE || "INDEX"
         case "PE":
-            data = (data['PE']) ? data['PE'].toFixed(2) : "0"
+            data = (data['PECONS']) ? data['PECONS'].toFixed(2) : "0"
             return data
         case "PB":
             data = (data['PB']) ? data['PB'].toFixed(2) : "0"
