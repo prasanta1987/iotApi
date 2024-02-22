@@ -5,12 +5,28 @@ exports.structuredSpotData = (data, functions = "all") => {
 
     let parm = functions.toUpperCase();
     let dataObj = {}
+
+    console.log(data)
+
     switch (parm) {
         case "LTP":
             return data.pricecurrent || data.current_price.replace(",", "")
-
         case "PRECLOSE":
             return data.priceprevclose || data.prev_close.replace(",", "")
+        case "NAME":
+            return data.SC_FULLNM || data.company
+        case "52WHIGH":
+            return data['52H']
+        case "52WLOW":
+            return data['52L']
+        case "SECTOR":
+            return data.main_sector || "INDEX"
+        case "PE":
+            data = (data['PE']) ? data['PE'].toFixed(2) : "0"
+            return data
+        case "PB":
+            data = (data['PB']) ? data['PB'].toFixed(2) : "0"
+            return data
 
         default:
             dataObj = {
@@ -50,7 +66,6 @@ exports.structuredSpotData = (data, functions = "all") => {
 exports.structuredCurrencyData = (data, functions = "all") => {
 
     let parm = functions.toUpperCase();
-
 
     switch (parm) {
         case "LTP":
