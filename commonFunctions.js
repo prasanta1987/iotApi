@@ -15,10 +15,10 @@ exports.structuredSpotData = (data, functions = "all") => {
             return data.priceprevclose || data.prev_close.replace(",", "")
         case "NAME":
             return data.SC_FULLNM || data.company
-        case "52WHIGH":
-            return data['52H']
-        case "52WLOW":
-            return data['52L']
+        case "52WH":
+            return data['52H'] || data["52wkhi"]
+        case "52WL":
+            return data['52L'] || data["52wklow"]
         case "SECTOR":
             return data.main_sector || "INDEX"
         case "LTH":
