@@ -12,7 +12,7 @@ const { fnoDataFetch, search, getSpotData,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes, getSpotFut,
     getTechnicalData, batchSpotData, getOptionsChain,
-    singleSpotData } = require('./routes');
+    singleSpotData, getTimeData } = require('./routes');
 
 const { arduinoAskCred,
     authArduino, arduinoDevData,
@@ -96,6 +96,7 @@ app.post('/authArduinoDevice', authArduino)
 
 
 // Arduino Specific Routes Starts
+app.post('/getTime', getTimeData)
 app.post('/addArduinoDevice', arduinoAskCred)
 app.get('/getArduinoData/:userUID', arduinoDevData)
 app.get('/pic/:tags', getPicUrl)

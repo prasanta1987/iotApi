@@ -2,7 +2,7 @@ const axios = require("axios").default;
 const url = require('url')
 const { exceptionsScripCode,
     monthsName, structuredSpotData,
-    structuredCurrencyData } = require('./constants');
+    structuredCurrencyData } = require('./commonFunctions');
 
 let finalDataObj = {}
 

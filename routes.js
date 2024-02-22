@@ -1,14 +1,11 @@
 const axios = require("axios").default;
 
+const { getTime } = require("./commonFunctions");
 const { generateUrlList, batchHttpRequest,
     searchSpot, fetchSpotData, fetchFutData,
     getMarketLot, batchStockData, dataUrl, getMCIds,
     multipleApiCalls, searchMCIds, getSpotDatas } = require('./helperFunctions');
 
-const { structuredSpotData,
-    structuredCurrencyData } = require('./constants');
-
-const auth = require('./firebaseFunctions')
 
 exports.singleSpotData = async (req, res) => {
     const spotList = req.params.scripts.toUpperCase().split(",")[0]
@@ -239,4 +236,10 @@ exports.getExpiryandStrikes = async (req, res) => {
 
 exports.removeDuplicates = (arr) => {
     return [...new Set(arr)];
+}
+
+
+exports.getTimeData = async (req, res) => {
+    const data = await getTime()
+    res.status(200).json(data)
 }

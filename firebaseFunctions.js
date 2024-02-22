@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios').default
 
 const { multipleApiCalls, getAllPic, batchStockData, getStratagryData } = require('./helperFunctions')
-const { monthsName, exceptionsScripCode } = require('./constants')
+const { randomIntFromInterval, getTime } = require('./commonFunctions')
 
 
 const firebase = require("firebase/app");
@@ -105,7 +105,7 @@ exports.arduinoDevData = async (req, res) => {
 
   } else if (dispMode == "MKTSNAPSHOT") {
 
-    const timeData = await this.getTime();
+    const timeData = await getTime();
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
@@ -114,7 +114,7 @@ exports.arduinoDevData = async (req, res) => {
     })
   } else if (dispMode == "WATCHLIST") {
 
-    const timeData = await this.getTime();
+    const timeData = await getTime();
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
@@ -126,7 +126,7 @@ exports.arduinoDevData = async (req, res) => {
     res.status(200).json({
       dispMode: dispMode,
       photoTags: photoTags || "",
-      time: await this.getTime()
+      time: await getTime()
     })
   }
 
@@ -151,7 +151,7 @@ exports.getPicUrl = async (req, res) => {
   const photoUrls = await getAllPic(tags);
   console.log(photoUrls)
 
-  const randomNumber = this.randomIntFromInterval(0, photoUrls.length - 1)
+  const randomNumber = randomIntFromInterval(0, photoUrls.length - 1)
   let time = ((await this.getTime()).time).replace(":", "%3a")
   let amPM = (await this.getTime()).amPM
 
@@ -190,29 +190,4 @@ exports.updatePic = async (req, res) => {
     res.status(500).json({ "error": "Something Went Wrong" })
   }
 
-}
-
-
-exports.randomIntFromInterval = (min, max) => { // min and max included 
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-
-exports.getTime = async (timeZone = "Asia/Kolkata") => {
-
-  let date = new Date()
-  let time = date.toLocaleTimeString('en-us', { timeZone: timeZone, timeStyle: 'short' })
-
-  const amPM = time.slice(-3).trim()
-  time = time.replace(amPM, "").trim()
-
-  let hour = time.split(":")[0]
-  let min = time.split(":")[1]
-
-  hour = (parseInt(hour) < 10) ? `0${hour}` : hour
-  time = hour + ":" + min
-
-  const myDate = date.toLocaleDateString('en-us', { timeZone: timeZone, dateStyle: "medium" })
-
-  return { time: time, amPM: amPM, date: myDate }
 }
