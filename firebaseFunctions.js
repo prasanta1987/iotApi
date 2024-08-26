@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const axios = require('axios').default
 
-const { multipleApiCalls, getAllPic, batchStockData, getStratagryData } = require('./helperFunctions')
+const { multipleApiCalls, getAllPic, getStratagryData } = require('./helperFunctions')
 const { randomIntFromInterval, getTime } = require('./commonFunctions')
 
+const {batchSpotData} = require('./routes');
 
 const firebase = require("firebase/app");
 const { getDatabase, ref, set, get, child, update } = require('firebase/database');
