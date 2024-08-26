@@ -119,7 +119,7 @@ exports.arduinoDevData = async (req, res) => {
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await batchStockData(watchList),
+      data: await batchSpotData(watchList),
       time: timeSlug
     })
 
