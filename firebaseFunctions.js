@@ -157,6 +157,7 @@ exports.getPicUrl = async (req, res) => {
   let amPM = (await getTime()).amPM
 
 
+time = time.toString()
   // let currentImageUrl = photoUrls[randomNumber].url
 
   //let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240`
