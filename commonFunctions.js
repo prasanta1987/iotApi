@@ -6,7 +6,7 @@ exports.structuredSpotData = (data, functions = "all") => {
     let parm = functions.toUpperCase();
     let dataObj = {}
 
-    console.log(data)
+    // console.log(data)
 
     switch (parm) {
         case "LTP":

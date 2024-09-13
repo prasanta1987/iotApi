@@ -1,10 +1,11 @@
 const jwt = require('jsonwebtoken');
 const axios = require('axios').default
 
-const { multipleApiCalls, getAllPic, getStratagryData } = require('./helperFunctions')
+const { multipleApiCalls, getSpotDatas, getAllPic, getStratagryData } = require('./helperFunctions')
+const { batchStockData } = require('./routes')
 const { randomIntFromInterval, getTime } = require('./commonFunctions')
 
-const {batchSpotData} = require('./routes');
+const { batchSpotData } = require('./routes');
 
 const firebase = require("firebase/app");
 const { getDatabase, ref, set, get, child, update } = require('firebase/database');
@@ -106,11 +107,13 @@ exports.arduinoDevData = async (req, res) => {
 
   } else if (dispMode == "MKTSNAPSHOT") {
 
+    console.log(mktSnapShotList.toString())
+
     const timeData = await getTime();
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await batchStockData(mktSnapShotList),
+      data: await getSpotDatas(mktSnapShotList.toString()),
       time: timeSlug
     })
   } else if (dispMode == "WATCHLIST") {
@@ -119,7 +122,7 @@ exports.arduinoDevData = async (req, res) => {
     const timeSlug = timeData.time + " " + timeData.amPM
     res.status(200).json({
       dispMode: dispMode,
-      data: await batchSpotData(watchList),
+      data: await getSpotDatas(watchList.toString()),
       time: timeSlug
     })
 
@@ -153,7 +156,7 @@ exports.getPicUrl = async (req, res) => {
   console.log(photoUrls)
 
   const randomNumber = randomIntFromInterval(0, photoUrls.length - 1)
-  let time = ((await getTime()).time).replace(":","•")
+  let time = ((await getTime()).time).replace(":", "•")
   let amPM = (await getTime()).amPM
 
 
@@ -161,9 +164,9 @@ exports.getPicUrl = async (req, res) => {
 
   //let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240`
 
-let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240:l-text,ly-205,pa-5,w-320,bg-00000060,i-${time},fs-36,co-FFFFFF,ia-left,l-end:l-text,lx-110,ly-210,i-${amPM},fs-16,co-FFFFFF,l-end`
+  let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240:l-text,ly-205,pa-5,w-320,bg-00000060,i-${time},fs-36,co-FFFFFF,ia-left,l-end:l-text,lx-110,ly-210,i-${amPM},fs-16,co-FFFFFF,l-end`
 
-// let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-205,pa-5,w-320,bg-00000060,i-${time},fs-36,co-FFFFFF,ia-left,l-end:l-text,lx-100,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
+  // let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-205,pa-5,w-320,bg-00000060,i-${time},fs-36,co-FFFFFF,ia-left,l-end:l-text,lx-100,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
 
 
   // let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-207,pa-5,w-320,bg-00000060,i-${time},fs-32,co-FFFFFF,ia-left,l-end:l-text,lx-90,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`

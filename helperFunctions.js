@@ -8,6 +8,8 @@ let finalDataObj = {}
 
 exports.getSpotDatas = async (spotList, functions = "ALL") => {
 
+    console.log("GET SPOT LIST =>", spotList)
+
     let datas = []
     let parm = functions.toUpperCase()
 
@@ -71,6 +73,8 @@ exports.dataUrl = (spotIds) => {
 exports.getMCIds = async (spotNames) => {
 
     spotMcIdsUrls = []
+
+    console.log("GET McID =>", spotNames)
 
     let spotLists = spotNames.toUpperCase().split(",")
     spotLists.forEach(spotName => {

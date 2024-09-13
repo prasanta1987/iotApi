@@ -19,6 +19,7 @@ exports.singleSpotData = async (req, res) => {
 exports.batchSpotData = async (req, res) => {
 
     const spotList = req.params.scripts
+    // console.log(spotList)
     res.send(await getSpotDatas(spotList))
 
 }
