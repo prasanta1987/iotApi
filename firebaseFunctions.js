@@ -153,7 +153,7 @@ exports.getPicUrl = async (req, res) => {
   console.log(photoUrls)
 
   const randomNumber = randomIntFromInterval(0, photoUrls.length - 1)
-  let time = ((await getTime()).time).replace(":", "%3a")
+  let time = ((await getTime()).time)
   let amPM = (await getTime()).amPM
 
 
