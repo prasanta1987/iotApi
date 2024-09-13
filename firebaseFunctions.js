@@ -153,7 +153,7 @@ exports.getPicUrl = async (req, res) => {
   console.log(photoUrls)
 
   const randomNumber = randomIntFromInterval(0, photoUrls.length - 1)
-  let time = ((await getTime()).time).replace(":","•")
+  let time = ((await getTime()).time).replace(":","≈")
   let amPM = (await getTime()).amPM
 
 
@@ -161,7 +161,7 @@ exports.getPicUrl = async (req, res) => {
 
   //let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240`
 
-let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240:l-text,ly-205,pa-5,w-320,bg-00000060,ie-${time},fs-36,co-FFFFFF,ia-left,l-end:l-text,lx-100,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
+let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240:l-text,ly-205,pa-5,w-320,bg-00000060,i-${time},fs-36,co-FFFFFF,ia-left,l-end:l-text,lx-100,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
 
 // let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-205,pa-5,w-320,bg-00000060,i-${time},fs-36,co-FFFFFF,ia-left,l-end:l-text,lx-100,ly-212,i-${amPM},fs-16,co-FFFFFF,l-end`
 
