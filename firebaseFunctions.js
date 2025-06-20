@@ -160,8 +160,9 @@ exports.getPicUrl = async (req, res) => {
   let amPM = (await getTime()).amPM
   
   let encodedTime = btoa(time);
+  console.log(encodedTime)
 
-  let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${encodedTime},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
+  let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${time},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
   
   // let currentImageUrl = `${photoUrls[randomNumber].url}/tr:w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,i-${time},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
   // let currentImageUrl =photoUrls[randomNumber].url
