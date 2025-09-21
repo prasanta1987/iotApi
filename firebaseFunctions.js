@@ -34,6 +34,9 @@ exports.arduinoAskCred = async (req, res) => {
 
   let devOtp = req.body.deviceSlNo || false;
 
+
+  console.log("=>", req.body)
+
   const dataSnapShot = await get(child(dbRef, `devices/${devOtp}`))
   const dataSnap = await dataSnapShot.val()
 
