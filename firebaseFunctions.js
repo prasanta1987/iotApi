@@ -160,30 +160,20 @@ exports.getAudPicUrl = async (req, res) => {
 
   const randomNumber = randomIntFromInterval(0, photoUrls.length - 1)
   let time = ((await getTime()).time)
-  // let time = ((await getTime()).time).replace(":", "•")
   let amPM = (await getTime()).amPM
 
   let encodedTime = btoa(time);
   console.log(encodedTime)
 
   let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${encodedTime},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
-  // let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-640,h-480,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${encodedTime},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
-
-  // res.redirect(currentImageUrl);
-  // res.send
-  // res.status(200).json({ "msg": currentImageUrl })
 
   try {
-    // Fetch the image data as a buffer
     const response = await axios.get(currentImageUrl, {
       responseType: 'arraybuffer' // Get the response as a binary buffer
     });
 
-    // Set the appropriate Content-Type header (image/jpeg for JPG)
-    // You might want to dynamically get this from the response headers if handling multiple formats
-    res.setHeader('Content-Type', 'image/jpeg');
 
-    // Send the image data in the response body
+    res.setHeader('Content-Type', 'image/jpeg');
     res.send(response.data);
 
   } catch (error) {
@@ -196,33 +186,24 @@ exports.getPicUrl = async (req, res) => {
 
   const tags = (req.params.tags || "").toUpperCase()
   const photoUrls = await getAllPic(tags);
-  console.log(photoUrls)
+  // console.log(photoUrls)
+  // console.log(tags)
 
   const randomNumber = randomIntFromInterval(0, photoUrls.length - 1)
   let time = ((await getTime()).time)
-  // let time = ((await getTime()).time).replace(":", "•")
   let amPM = (await getTime()).amPM
 
-  let encodedTime = btoa(time);
-  console.log(encodedTime)
-
-  // let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${encodedTime},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
+  // let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${btoa(time)},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
 
 
   let currentImageUrl = photoUrls[randomNumber].url
-  // res.redirect(currentImageUrl);
 
   try {
-    // Fetch the image data as a buffer
     const response = await axios.get(currentImageUrl, {
       responseType: 'arraybuffer' // Get the response as a binary buffer
     });
 
-    // Set the appropriate Content-Type header (image/jpeg for JPG)
-    // You might want to dynamically get this from the response headers if handling multiple formats
     res.setHeader('Content-Type', 'image/jpeg');
-
-    // Send the image data in the response body
     res.send(response.data);
 
   } catch (error) {
