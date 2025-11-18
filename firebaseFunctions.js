@@ -152,6 +152,28 @@ exports.listPics = async (req, res) => {
 
 }
 
+export.getAudPicUrl = async(req, res)=>{
+
+    const tags = (req.params.tags || "").toUpperCase()
+  const photoUrls = await getAllPic(tags);
+  console.log(photoUrls)
+
+  const randomNumber = randomIntFromInterval(0, photoUrls.length - 1)
+  let time = ((await getTime()).time)
+  // let time = ((await getTime()).time).replace(":", "•")
+  let amPM = (await getTime()).amPM
+  
+  let encodedTime = btoa(time);
+  console.log(encodedTime)
+
+  let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${encodedTime},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
+  
+
+  // res.redirect(currentImageUrl);
+  // res.send
+  res.status(200).json({ "msg": currentImageUrl })
+}
+
 exports.getPicUrl = async (req, res) => {
 
   const tags = (req.params.tags || "").toUpperCase()

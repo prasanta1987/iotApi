@@ -16,7 +16,7 @@ const { fnoDataFetch, search, getSpotData,
 
 const { arduinoAskCred,
     authArduino, arduinoDevData,
-    listPics, getPicUrl, updatePic } = require('./firebaseFunctions');
+    listPics, getPicUrl, updatePic,getAudPicUrl } = require('./firebaseFunctions');
 
 
 
@@ -101,6 +101,7 @@ app.post('/addArduinoDevice', arduinoAskCred)
 app.get('/getArduinoData/:userUID', arduinoDevData)
 app.get('/pic/:tags', getPicUrl)
 app.get('/pic', getPicUrl)
+app.get('/getArduinoPic', getAudPicUrl)
 app.get('/listPics/:tag', listPics)
 app.get('/listPics', listPics)
 app.get('/updatePics/:fileId/:tags', updatePic)
