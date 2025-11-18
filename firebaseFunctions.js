@@ -171,7 +171,25 @@ exports.getAudPicUrl = async (req, res) => {
 
   // res.redirect(currentImageUrl);
   // res.send
-  res.status(200).json({ "msg": currentImageUrl })
+  // res.status(200).json({ "msg": currentImageUrl })
+
+  try {
+    // Fetch the image data as a buffer
+    const response = await axios.get(currentImageUrl, {
+      responseType: 'arraybuffer' // Get the response as a binary buffer
+    });
+
+    // Set the appropriate Content-Type header (image/jpeg for JPG)
+    // You might want to dynamically get this from the response headers if handling multiple formats
+    res.setHeader('Content-Type', 'image/jpeg');
+
+    // Send the image data in the response body
+    res.send(response.data);
+
+  } catch (error) {
+    console.error('Error fetching image:', error);
+    res.status(500).send('Error loading image');
+  }
 }
 
 exports.getPicUrl = async (req, res) => {
@@ -191,10 +209,27 @@ exports.getPicUrl = async (req, res) => {
   // let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${encodedTime},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
 
 
-  let currentImageUrl =photoUrls[randomNumber].url
+  let currentImageUrl = photoUrls[randomNumber].url
+  // res.redirect(currentImageUrl);
 
+  try {
+    // Fetch the image data as a buffer
+    const response = await axios.get(currentImageUrl, {
+      responseType: 'arraybuffer' // Get the response as a binary buffer
+    });
 
-  res.redirect(currentImageUrl);
+    // Set the appropriate Content-Type header (image/jpeg for JPG)
+    // You might want to dynamically get this from the response headers if handling multiple formats
+    res.setHeader('Content-Type', 'image/jpeg');
+
+    // Send the image data in the response body
+    res.send(response.data);
+
+  } catch (error) {
+    console.error('Error fetching image:', error);
+    res.status(500).send('Error loading image');
+  }
+
 
 }
 
