@@ -35,15 +35,15 @@ exports.arduinoAskCred = async (req, res) => {
   let devOtp = req.body.deviceSlNo || false;
 
 
-  console.log("=>", req.body)
+  //console.log("=>", req.body)
 
   const dataSnapShot = await get(child(dbRef, `devices/${devOtp}`))
   const dataSnap = await dataSnapShot.val()
 
   console.log(dataSnap)
 
-  if (dataSnap == null) {
-
+  if (dataSnap === null) {
+console.log("===>", req.body)
     await update(child(dbRef, `devices/${devOtp}`), {
       imageKitApi: false,
       uid: false
