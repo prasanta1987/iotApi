@@ -3,7 +3,6 @@ const session = require('express-session');
 const cors = require('cors')
 const path = require("path");
 const axios = require("axios").default;
-const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
@@ -16,7 +15,7 @@ const { fnoDataFetch, search, getSpotData,
 
 const { arduinoAskCred,
     authArduino, arduinoDevData,
-    listPics, getPicUrl, updatePic,getAudPicUrl } = require('./firebaseFunctions');
+    listPics, getPicUrl, updatePic, getAudPicUrl } = require('./firebaseFunctions');
 
 
 
@@ -63,8 +62,8 @@ const verifyIdToken = (req, res, next) => {
 
 }
 
-
 // Middlewares Ends Here
+
 
 // API Request Starts
 
