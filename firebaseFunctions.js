@@ -40,10 +40,10 @@ exports.arduinoAskCred = async (req, res) => {
   const dataSnapShot = await get(child(dbRef, `devices/${devOtp}`))
   const dataSnap = await dataSnapShot.val()
 
+  console.log("===>", req.body)
   console.log(dataSnap)
 
-  if (dataSnap === null) {
-console.log("===>", req.body)
+  if (dataSnap == null) {
     await update(child(dbRef, `devices/${devOtp}`), {
       imageKitApi: false,
       uid: false
@@ -53,7 +53,7 @@ console.log("===>", req.body)
 
   } else {
 
-    if (dataSnap.imageKitApi == false && dataSnap.uid == false) {
+    if (dataSnap.imageKitApi == false || dataSnap.uid == false) {
 
       res.status(200).json({ "msg": "Waiting for Credential" })
 
