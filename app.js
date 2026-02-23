@@ -1,6 +1,6 @@
 import express from 'express';
-import { getDbData, authCheck } from './firebaseFunctions.js'
-import { getFeedData, SSE } from './routes.js'
+import { authCheck } from './helperFunctions/firebaseFunctions.js'
+import { getFeedData, setFeedData, SSE } from './routes/fireBaseRoutes.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,11 +8,14 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 
+// Firebase Routs
+app.post('/liveData', authCheck, SSE);
 app.get('/getData', authCheck, getFeedData);
+// app.get('/setData', authCheck, setFeedData);
 
 
-app.get('/stream-devices', authCheck, SSE);
-
+// Money Control Routes
+// app.get()
 
 
 

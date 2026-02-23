@@ -69,7 +69,7 @@ const verifyIdToken = (req, res, next) => {
 // New Route Start
 
 
-import admin from './firebaseConfig/adminConfig';
+import admin from '../firebaseConfig/adminConfig';
 
 app.get('/apiKeyCheck', async (req, res) => {
 

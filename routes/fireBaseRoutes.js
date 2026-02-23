@@ -1,5 +1,5 @@
-import { getDbData } from './firebaseFunctions.js'
-import admin from './firebaseConfig/adminConfig.js';
+import { getDbData } from '../helperFunctions/firebaseFunctions.js'
+import admin from '../firebaseConfig/adminConfig.js';
 
 export const getFeedData = async (req, res) => {
 
@@ -12,7 +12,7 @@ export const getFeedData = async (req, res) => {
 
     if (!deviceCode) res.status(401).json({ error: "Device Code Required" });
 
-    const keysToRemove = ['isSelected', "time"];
+    const keysToRemove = ['isSelected', "time", "mcu"];
 
     if (feedName == "ALL" || feedName == '') {
         dbRef = `${uid}/${deviceCode}/devFeeds`;
@@ -41,6 +41,28 @@ export const getFeedData = async (req, res) => {
 
 }
 
+
+export const setFeedData = async (req, res) => {
+
+    const uid = res.locals.userUID;
+    const { deviceCode, feedName } = req.query;
+
+    if (!deviceCode || !feedName) {
+        let errors = {};
+
+        if (!deviceCode) errors.deviceCode = "Device Code is required";
+        if (!feedName) errors.feedName = "Device Code is required";
+
+        res.status(401).json({ "error": errors });
+    }
+
+    const dbRef = `${userUID}/${deviceCode}/devFeeds/${feedName}`;
+
+
+
+
+}
+
 export const SSE = async (req, res) => {
     const uid = res.locals.userUID;
     const { deviceCode, feedName } = req.query;
@@ -53,7 +75,7 @@ export const SSE = async (req, res) => {
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders();
 
-    const keysToRemove = ['isSelected', 'time'];
+    const keysToRemove = ['isSelected', 'time', 'mcu'];
     const dbPath = (feedName === "ALL" || !feedName)
         ? `${uid}/${deviceCode}/devFeeds`
         : `${uid}/${deviceCode}/devFeeds/${feedName}`;
@@ -94,6 +116,6 @@ export const SSE = async (req, res) => {
         clearInterval(heartbeat); // Stop the heartbeat
         dbRef.off('value', onValueChange); // Remove Firebase listener
         res.end();
-        console.log(`Connection closed for UID: ${uid}`);
+        console.log(`Connection closed`);
     });
 }

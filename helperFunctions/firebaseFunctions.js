@@ -1,4 +1,4 @@
-import admin from './firebaseConfig/adminConfig.js';
+import admin from '../firebaseConfig/adminConfig.js';
 
 export const getDbData = async (reference) => {
 
@@ -35,3 +35,13 @@ export const authCheck = async (req, res, next) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+export const setDBData = async (reference) => {
+
+    const db = admin.database();
+    const dbRef = db.ref(reference);
+    await dbRef.update(data);
+
+    return data
+}
+
