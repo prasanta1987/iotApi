@@ -1,5 +1,20 @@
 
-export const spotData = async (req, res) => {
+
+export const singleSpotData = async (req, res) => {
+    const spotName = req.query.spotName || "";
+    const filter = req.query.filter;
+
+    if (!spotName) return res.status(400).json({ error: "Spot Name Required" });
+
+    const scriptId = await searchMCIds(spotName);
+    const data = await spotDataUrl(scriptId);
+
+    if (!filter) return res.status(200).json(data);
+    
+    res.status(200).json(data[filter]);
+}
+
+export const multipleSpotData = async (req, res) => {
 
     const spotName = req.query.spotName || "";
     if (!spotName) return res.status(400).json({ error: "Spot Name Required" });
@@ -90,7 +105,7 @@ export const spotDataUrl = async (scripCode) => {
 export const structuredSpotData = async (data, scripCode) => {
 
     let dataObj = {};
-    
+
     if (scripCode != "USDINR") {
         dataObj.name = data.data.NSEID || data.data.company;
         dataObj.cmp = data.data.pricecurrent;
