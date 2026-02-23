@@ -3,7 +3,6 @@ const session = require('express-session');
 const cors = require('cors')
 const path = require("path");
 const axios = require("axios").default;
-const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
@@ -11,13 +10,12 @@ const { fnoDataFetch, search, getSpotData,
     signInArduino,
     mktSnapShot, globalMktData, nseTicker,
     getWatchLists, getExpiryandStrikes, getSpotFut,
-    getTechnicalData, batchSpotData, getOptionsChain } = require('./routes');
+    getTechnicalData, batchSpotData, getOptionsChain,
+    singleSpotData, getTimeData } = require('./routes');
 
-const { FBsignIn, authStateCheck, chckLogin,
-    FBsignInArduino, authApiCall,
-    arduinoSignInRout, arduinoAskCred,
-    arduinoDelKeyValue, authArduino, arduinoDevData,
-    listPics, getPicUrl, updatePic } = require('./firebaseFunctions');
+const { arduinoAskCred,
+    authArduino, arduinoDevData,
+    listPics, getPicUrl, updatePic, getAudPicUrl } = require('./firebaseFunctions');
 
 
 
@@ -64,17 +62,20 @@ const verifyIdToken = (req, res, next) => {
 
 }
 
-
-
 // Middlewares Ends Here
+
 
 // API Request Starts
 
-// Un-Authenticated
+app.get('/spots/:scripts', batchSpotData)
+app.get('/spot/:scripts', singleSpotData)
+
+
+
+// OLD
 app.get('/all/:script/:data', fnoDataFetch)
 app.get('/all/:script/', getSpotData)
-app.get('/technicals/:scripCode/', getTechnicalData)
-app.get('/spots/:scripts', batchSpotData)
+app.get('/technicals/:scripts/', getTechnicalData)
 
 
 app.get('/search/:script', search) //Will be Depricated
@@ -87,38 +88,32 @@ app.get('/optionChain/:scriptCode/:expDate', getOptionsChain)
 
 
 // Authenticated
-app.get('/expStrike/:scripCode/:opType', verifyIdToken, getExpiryandStrikes)
+app.get('/expStrike/:scripCode/:opType', getExpiryandStrikes)
 app.get('/spotFut/:script', getSpotFut)
 app.post('/authArduinoDevice', authArduino)
 // app.get('/getFutureData/:scripcode/:expiry', getFutureDataWithdate)
 
-// Arduino Specific Routes
-app.post('/signInArduino', arduinoSignInRout)
-app.post('/signOutArduino', (req, res) => {
-    req.session.logedIn = false
-    res.status(200).json({ "msg": "Signed Out" })
-})
+
+// Arduino Specific Routes Starts
+app.post('/getTime', getTimeData)
 app.post('/addArduinoDevice', arduinoAskCred)
-app.post('/deleteDeviceKey', arduinoDelKeyValue)
 app.get('/getArduinoData/:userUID', arduinoDevData)
 app.get('/pic/:tags', getPicUrl)
 app.get('/pic', getPicUrl)
+app.get('/getArduinoPic', getAudPicUrl)
+app.get('/getArduinoPic/:tag', getAudPicUrl)
 app.get('/listPics/:tag', listPics)
 app.get('/listPics', listPics)
 app.get('/updatePics/:fileId/:tags', updatePic)
-// app.post('/getWatchList', getWatchLists);
-
-
-// Authenticated
+// Arduino Specific Routes Ends
 
 app.post('/pingTest', (req, res) => {
+
     console.log(req.body)
-    res.status(200).json({ "msg": "PONG" })
+
+    res.status(200).json(req.body)
 })
 
-
-
-// API Request Ends
 
 
 // Page Navigation
@@ -126,52 +121,30 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html
 app.get('/strategy', (req, res) => res.sendFile(path.join(__dirname, '/public/strategy.html')));
 
 
-// Sign-In Sign-Up Handler
-
-// app.post('/signIn', FBsignIn)
-// app.post('/signIn', signIn)
-// app.post('/signOut', signOut)
-// app.post('/signUp', checkUserData, signup)
-
-// app.get('/pic', (req, res) => {
-//     res.sendFile(path.join(__dirname, '/public/pics/22.jpg'))
-// })
 
 
-// Arduino Specific Routes
-// app.post('/signInArduino', FBsignInArduino) //Arduino Specific
-
-// Arduino Specific Routes
-
-// app.post('/loginStatus', (req, res) => {
-
-//     // if (!req.session.logedIn) req.session.logedIn = false
-//     // if (!req.session.userName) req.session.userName = null
-
-//     res.status(200).json({ "logInStat": req.session.logedIn, "userName": req.session.userName })
-// })
-// app.post('/loginStatus', chckLogin)
-// app.post('/loginStatus', authStateCheck)
+// MQTT
 
 
-const mqtt = require("mqtt");
-const client = mqtt.connect("mqtt://broker.hivemq.com");
+// const mqtt = require("mqtt");
+// const client = mqtt.connect("mqtt://broker.hivemq.com");
 
-client.on("connect", () => {
-    client.subscribe("pk_text", (err) => {
-        if (!err) {
-            client.publish("pk_text", (new Date().getTime()).toString());
-        }
-    });
+// client.on("connect", () => {
+//     client.subscribe("pk_text", (err) => {
+//         if (!err) {
+//             client.publish("pk_text", (new Date().getTime()).toString());
+//         }
+//     });
 
-});
+// });
 
-client.on("message", (topic, message) => {
-    // message is Buffer
-    // console.log(topic)
-    console.log(message.toString());
-    // client.end();
-});
+// client.on("message", (topic, message) => {
+//     // message is Buffer
+//     console.log(topic)
+//     console.log(message.toString());
+//     // client.end();
+// });
+
 
 
 app.use(express.static(path.join(__dirname, 'public')));

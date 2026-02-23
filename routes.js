@@ -1,24 +1,32 @@
 const axios = require("axios").default;
-const { generateUrlList, batchHttpRequest, sendHttpRequest,
-    searchSpot, fetchSpotData, fetchFutData, getMarketLot,
-    genUrlList, getMcIds, genSpotDatas, filterSpotIds } = require('./helperFunctions');
+
+const { getTime } = require("./commonFunctions");
+const { generateUrlList, batchHttpRequest,
+    searchSpot, fetchSpotData, fetchFutData,
+    getMarketLot, batchStockData, dataUrl, getMCIds,
+    multipleApiCalls, searchMCIds, getSpotDatas } = require('./helperFunctions');
 
 
-const auth = require('./firebaseFunctions')
+exports.singleSpotData = async (req, res) => {
+    const spotList = req.params.scripts.toUpperCase().split(",")[0]
+    const functions = req.query.data
+
+
+    res.send((await getSpotDatas(spotList, functions)).pop())
+
+}
 
 exports.batchSpotData = async (req, res) => {
 
-    const spotList = req.params.scripts.toUpperCase().split(",")
-
-    let allData = await filterSpotIds(spotList)
-
-    res.send(allData)
+    const spotList = req.params.scripts
+    // console.log(spotList)
+    res.send(await getSpotDatas(spotList))
 
 }
 
 exports.getTechnicalData = async (req, res) => {
 
-    let scripCode = req.params.scripCode.toUpperCase()
+    let scripCode = req.params.scripts.toUpperCase()
 
     if (scripCode == "NIFTY") {
         scripCode = "NIFTY 50"
@@ -49,7 +57,9 @@ exports.getTechnicalData = async (req, res) => {
     objData.min60data = arrayData[2]
     objData.dailydata = arrayData[3]
 
-    let allData = await filterSpotIds([scripCode]);
+
+
+    let allData = await getSpotDatas(scripCode)
 
     objData.spotdata = allData[0]
 
@@ -227,4 +237,10 @@ exports.getExpiryandStrikes = async (req, res) => {
 
 exports.removeDuplicates = (arr) => {
     return [...new Set(arr)];
+}
+
+
+exports.getTimeData = async (req, res) => {
+    const data = await getTime()
+    res.status(200).json(data)
 }
