@@ -1,242 +1,37 @@
-const jwt = require('jsonwebtoken');
-const axios = require('axios').default
+import admin from './firebaseConfig/adminConfig.js';
 
-const { multipleApiCalls, getSpotDatas, getAllPic, getStratagryData } = require('./helperFunctions')
-const { batchStockData } = require('./routes')
-const { randomIntFromInterval, getTime } = require('./commonFunctions')
+export const getDbData = async (reference) => {
 
-const { batchSpotData } = require('./routes');
+    const db = admin.database();
+    const dbRef = db.ref(reference);
+    const snapshot = await dbRef.once('value');
+    const data = snapshot.val();
 
-const firebase = require("firebase/app");
-const { getDatabase, ref, set, get, child, update } = require('firebase/database');
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } = require("firebase/auth");
+    return data
+}
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyAVVVvQPkU69o16cw5Wc_2l-k5xF9JnmBc',
-  databaseURL: 'https://investobaba-default-rtdb.asia-southeast1.firebasedatabase.app',
-};
+export const authCheck = async (req, res, next) => {
+    const apiKey = req.query.apiKey;
 
-const fbApp = firebase.initializeApp(firebaseConfig);
-const database = getDatabase();
-const auth = getAuth();
-const dbRef = ref(getDatabase());
-
-
-// set(child(dbRef, 'devices'), "TEST")
-
-// get(child(dbRef, `devices`)).then((snapshot) => {
-//   console.log(snapshot.val());
-// }).catch((error) => {
-//   console.error("===>", error);
-// });
-
-exports.arduinoAskCred = async (req, res) => {
-
-  let devOtp = req.body.deviceSlNo || false;
-
-
-  //console.log("=>", req.body)
-
-  const dataSnapShot = await get(child(dbRef, `devices/${devOtp}`))
-  const dataSnap = await dataSnapShot.val()
-
-  console.log("===>", req.body)
-  console.log(dataSnap)
-
-  if (dataSnap == null) {
-    await update(child(dbRef, `devices/${devOtp}`), {
-      imageKitApi: false,
-      uid: false
-    })
-
-    res.status(200).json({ "msg": "Credential Requested" })
-
-  } else {
-
-    if (dataSnap.imageKitApi == false || dataSnap.uid == false) {
-
-      res.status(200).json({ "msg": "Waiting for Credential" })
-
-    } else {
-
-      res.status(200).json(dataSnap)
-
-      await update(child(dbRef, `devices/${devOtp}`), {
-        imageKitApi: null,
-        uid: null
-      })
+    // 1. Check if key is provided
+    if (!apiKey) {
+        return res.status(401).json({ error: "API Key Required" });
     }
 
-  }
-}
+    try {
 
-exports.authArduino = async (req, res) => {
+        const userUID = await getDbData(`userCred/APItoUID/${apiKey}/fbUID`);
 
-  let imageKitApi = req.body.imageKitApi || false;
-  let uid = req.body.uid || false;
+        // 2. Validate key against database
+        if (!userUID) {
+            return res.status(401).json({ error: "Invalid API Key" });
+        }
 
-
-  try {
-
-    await update(child(dbRef, `devices/${devOtp}`), {
-      imageKitApi: imageKitApi,
-      uid: uid
-    })
-
-    res.status(200).json({ "msg": "Success" })
-  } catch (error) {
-    res.status(500).json({ "msg": "Error" })
-  }
-
-}
-
-exports.arduinoDevData = async (req, res) => {
-
-  const userUID = req.params.userUID || null;
-
-  const dataSnapShot = await get(child(dbRef, `/${userUID}`))
-  const dataSnap = await dataSnapShot.val();
-
-  const dispMode = dataSnap.dispMode
-  const photoTags = dataSnap.photoTags
-  const mktSnapShotList = dataSnap.mktSnapShotList.split(",")
-  const watchList = dataSnap.WATCHLIST.split(",")
-
-
-  if (dispMode == "STRATEGY") {
-
-    const optStrDataObj = await getStratagryData(dataSnap)
-    res.status(200).json(optStrDataObj)
-
-  } else if (dispMode == "MKTSNAPSHOT") {
-
-    console.log(mktSnapShotList.toString())
-
-    const timeData = await getTime();
-    const timeSlug = timeData.time + " " + timeData.amPM
-    res.status(200).json({
-      dispMode: dispMode,
-      data: await getSpotDatas(mktSnapShotList.toString()),
-      time: timeSlug
-    })
-  } else if (dispMode == "WATCHLIST") {
-
-    const timeData = await getTime();
-    const timeSlug = timeData.time + " " + timeData.amPM
-    res.status(200).json({
-      dispMode: dispMode,
-      data: await getSpotDatas(watchList.toString()),
-      time: timeSlug
-    })
-
-  } else {
-    res.status(200).json({
-      dispMode: dispMode,
-      photoTags: photoTags || "",
-      time: await getTime()
-    })
-  }
-
-
-}
-
-
-
-
-exports.listPics = async (req, res) => {
-
-  const tag = (req.params.tag || "").toUpperCase()
-  const photoUrls = await getAllPic(tag);
-
-  res.status(200).json(photoUrls)
-
-}
-
-exports.getAudPicUrl = async (req, res) => {
-
-  const tags = (req.params.tags || "").toUpperCase()
-  const photoUrls = await getAllPic(tags);
-  console.log(photoUrls)
-
-  const randomNumber = randomIntFromInterval(0, photoUrls.length - 1)
-  let time = ((await getTime()).time)
-  let amPM = (await getTime()).amPM
-
-  let encodedTime = btoa(time);
-  console.log(encodedTime)
-
-  let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${encodedTime},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
-
-  try {
-    const response = await axios.get(currentImageUrl, {
-      responseType: 'arraybuffer' // Get the response as a binary buffer
-    });
-
-
-    res.setHeader('Content-Type', 'image/jpeg');
-    res.send(response.data);
-
-  } catch (error) {
-    console.error('Error fetching image:', error);
-    res.status(500).send('Error loading image');
-  }
-}
-
-exports.getPicUrl = async (req, res) => {
-
-  const tags = (req.params.tags || "").toUpperCase()
-  const photoUrls = await getAllPic(tags);
-  // console.log(photoUrls)
-  // console.log(tags)
-
-  const randomNumber = randomIntFromInterval(0, photoUrls.length - 1)
-  let time = ((await getTime()).time)
-  let amPM = (await getTime()).amPM
-
-  // let currentImageUrl = `${photoUrls[randomNumber].url}&tr=w-320,h-240,l-text,ly-195,pa-5,w-320,bg-00000060,ie-${btoa(time)},fs-50,co-FFFFFF,ia-left,l-end:l-text,lx-130,ly-200,i-${amPM},fs-20,co-FFFFFF,l-end`
-
-
-  let currentImageUrl = photoUrls[randomNumber].url
-
-  try {
-    const response = await axios.get(currentImageUrl, {
-      responseType: 'arraybuffer' // Get the response as a binary buffer
-    });
-
-    res.setHeader('Content-Type', 'image/jpeg');
-    res.send(response.data);
-
-  } catch (error) {
-    console.error('Error fetching image:', error);
-    res.status(500).send('Error loading image');
-  }
-
-
-}
-
-
-exports.updatePic = async (req, res) => {
-
-  const fileId = req.params.fileId || ""
-  const tags = req.params.tags || ""
-
-  let allTags = []
-
-  tags.split(",").forEach(tag => allTags.push(tag))
-
-  try {
-
-    const response = await axios.patch(`https://api.imagekit.io/v1/files/${fileId}/details`,
-      { 'tags': allTags },
-      {
-        headers: { 'Content-Type': 'application/json' },
-        auth: { username: 'private_OGPzuz1sTQnQ70a7wBypYzteJVo=' }
-      }
-    )
-    res.status(200).json(response.data.tags)
-
-  } catch (error) {
-    res.status(500).json({ "error": "Something Went Wrong" })
-  }
-
-}
+        // 3. Success: Store UID for the next route and proceed
+        res.locals.userUID = userUID;
+        next();
+    } catch (error) {
+        console.error("Auth Middleware Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
