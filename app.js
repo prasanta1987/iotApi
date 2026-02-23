@@ -1,6 +1,7 @@
 import express from 'express';
 import { authCheck } from './helperFunctions/firebaseFunctions.js'
 import { getFeedData, setFeedData, SSE } from './routes/fireBaseRoutes.js'
+import { spotData } from './routes/stockDataRoute.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,7 +16,7 @@ app.get('/getData', authCheck, getFeedData);
 
 
 // Money Control Routes
-// app.get()
+app.get('/spotData', spotData);
 
 
 
