@@ -13,6 +13,7 @@ export const spotData = async (req, res) => {
 
         const finalIds = scriptIds.filter(id => id !== null);
 
+
         const url = await Promise.all(
             finalIds.map(id => spotDataUrl(id))
         );
@@ -51,6 +52,8 @@ export const searchMCIds = async (param) => {
         return "BANKNIFTY"
     } else if (param == "INDVIX") {
         return "INDVIX"
+    } else if (param == "USDINR") {
+        return "USDINR"
     } else {
         const data = await fetchData(`https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?query=${param}&type=0&format=json`);
         return data[0].sc_id
@@ -75,29 +78,44 @@ export const spotDataUrl = async (scripCode) => {
         spotUrl = "https://priceapi.moneycontrol.com/pricefeed/nse/equitycash/" + scripCode;
     }
 
+    console.log(spotUrl);
+
     let data = await fetchData(spotUrl);
-    data = await structuredSpotData(data);
+    data = await structuredSpotData(data, scripCode);
     return data;
 
 }
 
 
-export const structuredSpotData = async (data) => {
-
+export const structuredSpotData = async (data, scripCode) => {
     console.log(data)
-
     let dataObj = {};
+    if (scripCode != "USDINR") {
+        dataObj.name = data.data.NSEID || data.data.company;
+        dataObj.cmp = data.data.pricecurrent;
+        dataObj.open = data.data.OPN || data.data.OPEN;
+        dataObj.high = data.data.HIGH || data.data.HP;
+        dataObj.low = data.data.LOW || data.data.LP;
+        dataObj.preClose = data.data.LOW || data.data.priceprevclose;
+        dataObj.lotSize = data.data.MKT_LOT;
+        dataObj.change = data.data.pricechange;
+        dataObj.changePct = data.data.pricepercentchange;
+        dataObj.adv = data.data.adv;
+        dataObj.decl = data.data.decl;
 
-    dataObj.nseID = data.data.NSEID || data.data.company;
-    dataObj.cmp = data.data.pricecurrent;
-    dataObj.open = data.data.OPN || data.data.OPEN
-    dataObj.high = data.data.HIGH || data.data.HP
-    dataObj.low = data.data.LOW || data.data.LP
-    dataObj.preClose = data.data.LOW || data.data.priceprevclose
-    dataObj.lotSize = data.data.MKT_LOT
+    } else {
+        dataObj.name = data.data[0].searchName;
+        dataObj.cmp = data.data[0].ltp;
+        dataObj.open = data.data[0].open;
+        dataObj.high = data.data[0].high;
+        dataObj.low = data.data[0].low;
+        dataObj.preClose = data.data[0].prevclose;
+        dataObj.change = data.data[0].chg;
+        dataObj.changePct = data.data[0].chgper;
+    }
 
     for (let key in dataObj) {
-        if (key !== "nseID" && dataObj[key] !== undefined) {
+        if (key !== "name" && dataObj[key] !== undefined) {
             const cleanValue = String(dataObj[key]).replace(/,/g, '');
             dataObj[key] = parseFloat(cleanValue);
         }
