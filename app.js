@@ -16,7 +16,7 @@ app.get('/getData', authCheck, getFeedData);
 
 
 // Money Control Routes
-app.get('/spotData', spotData);
+app.get('/spots', spotData);
 
 
 

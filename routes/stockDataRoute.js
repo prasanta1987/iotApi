@@ -88,8 +88,9 @@ export const spotDataUrl = async (scripCode) => {
 
 
 export const structuredSpotData = async (data, scripCode) => {
-    console.log(data)
+
     let dataObj = {};
+    
     if (scripCode != "USDINR") {
         dataObj.name = data.data.NSEID || data.data.company;
         dataObj.cmp = data.data.pricecurrent;
