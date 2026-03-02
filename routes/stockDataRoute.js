@@ -10,35 +10,47 @@ export const singleSpotData = async (req, res) => {
     const data = await spotDataUrl(scriptId);
 
     if (!filter) return res.status(200).json(data);
-    
+
     res.status(200).json(data[filter]);
 }
 
 export const multipleSpotData = async (req, res) => {
+    const { spotName = "", filter = null } = req.query;
 
-    const spotName = req.query.spotName || "";
     if (!spotName) return res.status(400).json({ error: "Spot Name Required" });
 
+    const filterSet = filter ? new Set([...filter.split(",").map(s => s.trim()), "name"]) : null;
     const spotNames = spotName.toUpperCase().split(",").map(s => s.trim());
 
     try {
-        const scriptIds = await Promise.all(
-            spotNames.map(name => searchMCIds(name))
+        const results = await Promise.allSettled(
+            spotNames.map(async (name) => {
+                const id = await searchMCIds(name);
+                if (!id) return null;
+
+                const rawData = await spotDataUrl(id);
+                
+                if (filterSet) {
+                    const filtered = {};
+                    for (const key in rawData) {
+                        if (filterSet.has(key)) filtered[key] = rawData[key];
+                    }
+                    return filtered;
+                }
+                return rawData;
+            })
         );
 
-        const finalIds = scriptIds.filter(id => id !== null);
+        const finalData = results
+            .filter(r => r.status === 'fulfilled' && r.value !== null)
+            .map(r => r.value);
 
-
-        const url = await Promise.all(
-            finalIds.map(id => spotDataUrl(id))
-        );
-
-
-        res.status(200).json(url);
+        res.status(200).json(finalData);
     } catch (error) {
         res.status(500).json({ error: "Server Error", details: error.message });
     }
 }
+
 
 
 export const fetchData = async (url) => {
